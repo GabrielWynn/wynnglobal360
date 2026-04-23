@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { getAuthHeaders } from '@/lib/supabase'
+import { getAuthHeaders, supabase } from '@/lib/supabase'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
