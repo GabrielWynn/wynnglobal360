@@ -97,25 +97,22 @@ function buildCards(showToast: () => void): CardType[] {
       onClick: showToast,
     },
 
-    // ── Card 3: Model Portfolio (Coming Soon) ───────────────────────────
+    // ── Card 3: Model Portfolio (Live) ──────────────────────────────────
     {
-      category: "Coming Soon",
+      category: "Live",
       title: "Model Portfolio",
-      description: "Portfolio construction and management platform",
+      description: "Track portfolio performance across all platforms and profiles",
       background: (
-        <div className="absolute inset-0">
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(135deg, #2d3748 0%, #3d4f6b 50%, #2d3748 100%)",
-            }}
-          />
-          <ComingSoonOverlay />
-        </div>
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(135deg, #2d3748 0%, #3d4f6b 50%, #2d3748 100%)",
+          }}
+        />
       ),
-      extra: <ComingSoonBadge />,
-      onClick: showToast,
+      extra: <LiveBadge />,
+      onClick: () => window.open("/model-portfolio", "_blank"),
     },
 
     // ── Card 4: AI Chatbot (Coming Soon) ────────────────────────────────

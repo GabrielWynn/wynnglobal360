@@ -49,14 +49,25 @@ export default function Navbar() {
 
       if (!session || cancelled) return;
 
-      const { data } = await supabase
-        .from("ifas")
-        .select("name, role")
-        .eq("user_id", session.user.id)
-        .maybeSingle();
+      // Link user_id on every load — idempotent, no-ops if already linked.
+      // This guarantees the ifas row is linked even for OAuth sign-ins (e.g.
+      // Microsoft) where the login page's link-ifa call is never reached.
+      fetch("/api/auth/link-ifa", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      }).catch(() => {});
 
+      // Use /api/auth/me which does user_id → email fallback with the service
+      // role, ensuring unlinked accounts (no user_id set yet) are still found.
+      const res = await fetch("/api/auth/me", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+
+      if (!res.ok || cancelled) return;
+
+      const data = await res.json();
       if (data && !cancelled) {
-        setProfile({ name: data.name, role: data.role });
+        setProfile({ name: data.name ?? "", role: data.role ?? "ifa" });
       }
     }
 

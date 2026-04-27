@@ -347,24 +347,15 @@ export default function MasterFilePage() {
   async function loadData(includeDeleted = showDeleted) {
     setLoading(true)
     try {
-      let allData: CommissionRecord[] = []
-      const PAGE = 1000
-      let from = 0
-      while (true) {
-        let q = supabase
-          .from('commission_records')
-          .select('*, platform:platforms(name), upload_batch:csv_upload_batches(filename)')
-          .order('transaction_date', { ascending: false })
-          .range(from, from + PAGE - 1)
-        if (!includeDeleted) q = q.eq('is_deleted', false)
-        const { data: page, error } = await q
-        if (error) throw error
-        if (!page || page.length === 0) break
-        allData = allData.concat(page as unknown as CommissionRecord[])
-        if (page.length < PAGE) break
-        from += PAGE
+      const authHeaders = await getAuthHeaders()
+      const url = `/api/commission/commission-records${includeDeleted ? '?include_deleted=true' : ''}`
+      const res = await fetch(url, { headers: authHeaders })
+      if (!res.ok) {
+        const { error } = await res.json()
+        throw new Error(error ?? `HTTP ${res.status}`)
       }
-      setRowData(allData)
+      const { records } = await res.json()
+      setRowData(records ?? [])
     } catch (err: any) {
       const msg: string = err?.message ?? err?.code ?? JSON.stringify(err)
       console.error('Error loading commission records:', msg)
@@ -704,6 +695,9 @@ export default function MasterFilePage() {
       if (!fe && fresh) {
         gridRef.current?.api.applyTransaction({ update: [fresh as unknown as CommissionRecord] })
         recomputeSummary()
+      } else {
+        // Re-fetch failed (e.g. RLS not yet warmed up) — full reload keeps grid consistent
+        await loadData()
       }
     } catch (err: any) {
       alert(`Failed to save: ${err.message}`)
@@ -905,8 +899,10 @@ export default function MasterFilePage() {
       setIfaList((data ?? []) as IFAEntry[])
     }
     if (platformList.length === 0) {
-      const { data } = await supabase.from('platforms').select('id, code, name').order('name')
-      setPlatformList((data ?? []) as PlatformEntry[])
+      const headers = await getAuthHeaders()
+      const res = await fetch('/api/commission/platforms', { headers })
+      const { platforms } = await res.json()
+      setPlatformList((platforms ?? []) as PlatformEntry[])
     }
   }
 

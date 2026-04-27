@@ -74,6 +74,7 @@ export async function POST(request: Request) {
       .from('commission_records')
       .update({ status: newStatus, updated_at: new Date().toISOString() })
       .in('id', ids)
+      .eq('is_deleted', false) // never touch soft-deleted records
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 

@@ -1,0 +1,1314 @@
+Sheet,Period,Profile,Fund_Name,ISIN,Initial_Price,Final_Price,Return_Pct,Weight,Weighted_Return
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil A,Fidelity Funds Global Multi Asset Income A Acc USD,LU0905233846,13.3,14.36,0.079699,0.5,0.03985
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil A,Fidelity Funds Global Multi Asset Income A Acc USD,LU0905233846,14.36,14.51,0.010446,0.25,0.002612
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil A,JPM US Bond A Acc USD,LU0070215933,261.39,258.78,-0.009985,0.15,-0.001498
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil A,JPM US Bond A Acc USD,LU0070215933,258.78,259.55,0.002976,0.25,0.000744
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil A,PIMCO Global Investment Grade Credit E Acc USD I,IE00B3K7XK29,19.51,19.58,0.003588,0.1,0.000359
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil A,PIMCO Global Investment Grade Credit E Acc USD I,IE00B3K7XK29,19.58,19.67,0.004597,0.25,0.001149
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil A,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,1.7,1.97,0.158824,0.25,0.039706
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil A,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,1.97,1.99,0.010152,0.25,0.002538
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil B,PIMCO Global Investment Grade Credit E Acc USD,IE00B3K7XK29,19.51,19.58,0.003588,0.2,0.000718
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil B,Fidelity Funds Global Multi Asset Income A Acc USD,LU0905233846,14.17,14.51,0.023994,0.1,0.002399
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil B,Ninety One GSF Global Franchise A Acc USD,LU0426412945,65.91,77.51,0.175998,0.2,0.0352
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil B,JPM US Bond A Acc USD,LU0070215933,257.5,259.55,0.007961,0.1,0.000796
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil B,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,1.7,1.97,0.158824,0.5,0.079412
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil B,PIMCO Global Investment Grade Credit E Acc USD I,IE00B3K7XK29,19.52,19.67,0.007684,0.1,0.000768
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil B,BlackRock GF World Technology A2 Acc USD,LU0056508442,64.41,81.4,0.263779,0.05,0.013189
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil B,Ninety One GSF Global Franchise A Acc USD,LU0426412945,77.51,78.31,0.010321,0.1,0.001032
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil B,Polar Capital Healthcare Opportunities R USD,IE00B3NLTK32,54.49,64.1,0.176363,0.05,0.008818
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil B,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,1.97,1.99,0.010152,0.35,0.003553
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil B,Schroder ISF Emerging Markets A Acc USD,LU0106252389,21.58,21.97,0.018072,0.1,0.001807
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil B,DWS Noor Precious Metals Securities A Acc USD,IE00BMF77083,0.73,0.86,0.178082,0.05,0.008904
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,Ninety One GSF Global Franchise A Acc USD,LU0426412945,68.39,78.35,0.145635,0.15,0.021845
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil B,JPM Global Natural Resources A Acc USD,LU0266512127,10.84,11.71,0.080258,0.05,0.004013
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,1.7,1.97,0.158824,0.5,0.079412
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil B,Guinness Global Innovators C Acc USD,IE00BQXX3F31,21.25,21.88,0.029647,0.05,0.001482
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,Schroder ISF Emerging Markets A Acc USD,LU0106252389,16.38,21.65,0.321734,0.1,0.032173
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,Polar Capital Biotechnology R USD,IE00B3XLHR60,31.38,40.5,0.290631,0.04,0.011625
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,BlackRock GF World Technology A2 Acc USD,LU0056508442,64.41,81.4,0.263779,0.06,0.015827
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil C,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,1.97,1.99,0.010152,0.35,0.003553
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,Polar Capital Healthcare Opportunities R USD,IE00B3NLTK32,54.49,64.1,0.176363,0.07,0.012345
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil C,Schroder ISF Emerging Markets A Acc USD,LU0106252389,21.58,21.97,0.018072,0.15,0.002711
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,DWS Noor Precious Metals Securities A Acc USD I,IE00BMF77083,0.91,0.78,-0.142857,0.04,-0.005714
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil C,DWS Noor Precious Metals Securities A Acc USD,IE00BMF77083,0.73,0.86,0.178082,0.05,0.008904
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,JPM Global Natural Resources A Acc USD,LU0266512127,8.41,11.48,0.365042,0.04,0.014602
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil C,JPM Global Natural Resources A Acc USD,LU0266512127,10.84,11.71,0.080258,0.05,0.004013
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,21.25,21.88,0.029647,0.1,0.002965
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil C,Guinness Global Equity Income C Acc USD,IE00BVYPNW00,16.27,17.35,0.06638,0.1,0.006638
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,Ninety One GSF Global Franchise A Acc USD,LU0426412945,68.39,78.35,0.145635,0.1,0.014564
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil C,RobecoSAM Smart Energy Equities D Acc USD,LU2145461914,59.22,60.08,0.014522,0.1,0.001452
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,1.7,1.97,0.158824,0.4,0.06353
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil C,HSBC GIF Global Equity Climate Change AC Acc USD,LU0323239441,14.63,14.94,0.021189,0.1,0.002119
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,Schroder ISF Emerging Markets A Acc USD,LU0106252389,16.38,21.65,0.321734,0.15,0.04826
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,Polar Capital Biotechnology R USD,IE00B3XLHR60,31.38,40.5,0.290631,0.05,0.014532
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,BlackRock GF World Technology A2 Acc USD,LU0056508442,64.41,81.4,0.263779,0.1,0.026378
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil D,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,1.97,1.99,0.010152,0.15,0.001523
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,Polar Capital Healthcare Opportunities R USD,IE00B3NLTK32,54.49,64.1,0.176363,0.1,0.017636
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil D,Schroder ISF Emerging Markets A Acc USD,LU0106252389,21.58,21.97,0.018072,0.15,0.002711
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,DWS Noor Precious Metals Securities A Acc USD,IE00BMF77083,0.91,0.78,-0.142857,0.05,-0.007143
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil D,DWS Noor Precious Metals Securities A Acc USD,IE00BMF77083,0.73,0.86,0.178082,0.1,0.017808
+RL360,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,JPM Global Natural Resources A Acc USD,LU0266512127,8.41,11.48,0.365042,0.05,0.018252
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil D,JPM Global Natural Resources A Acc USD,LU0266512127,10.84,11.71,0.080258,0.1,0.008026
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,21.25,21.88,0.029647,0.13,0.003854
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil D,Guinness Global Equity Income C Acc USD,IE00BVYPNW00,16.27,17.35,0.06638,0.13,0.008629
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil D,RobecoSAM Smart Energy Equities D Acc USD,LU2145461914,59.22,60.08,0.014522,0.12,0.001743
+RL360,Portafolio Modelo Marzo 2021 - Abril 2021,Perfil D,HSBC GIF Global Equity Climate Change AC Acc USD,LU0323239441,14.63,14.94,0.021189,0.12,0.002543
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil A,Fidelity Funds Global Multi Asset Income A Acc USD,LU0905233846,14.39,14.46,0.004864,0.25,0.001216
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil A,Fidelity Funds Global Multi Asset Income A Acc USD,LU0905233846,14.16,13.19,-0.068503,0.25,-0.017126
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil A,JPM US Bond A Acc USD,LU0070215933,259.55,263.77,0.016259,0.25,0.004065
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil A,JPM US Bond A Acc USD,LU0070215933,263.77,237.13,-0.100997,0.25,-0.025249
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil A,PIMCO Global Investment Grade Credit E Acc USD I,IE00B3K7XK29,19.67,20.05,0.019319,0.25,0.00483
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil A,PIMCO Global Investment Grade Credit E Acc USD I,IE00B3K7XK29,20.05,17.26,-0.139152,0.25,-0.034788
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil A,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,1.99,2.04,0.025126,0.25,0.006281
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil A,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,2.04,1.82,-0.107843,0.25,-0.026961
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil B,Fidelity Funds Global Multi Asset Income A Acc USD,LU0905233846,14.39,14.46,0.004864,0.1,0.000486
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil B,Fidelity Funds Global Multi Asset Income A Acc USD,LU0905233846,14.16,13.19,-0.068503,0.1,-0.00685
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil B,JPM US Bond A Acc USD,LU0070215933,259.55,263.77,0.016259,0.1,0.001626
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil B,JPM US Bond A Acc USD,LU0070215933,263.77,237.13,-0.100997,0.1,-0.0101
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil B,PIMCO Global Investment Grade Credit E Acc USD I,IE00B3K7XK29,19.67,20.05,0.019319,0.1,0.001932
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil B,PIMCO Global Investment Grade Credit E Acc USD I,IE00B3K7XK29,20.05,17.26,-0.139152,0.1,-0.013915
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil B,Ninety One GSF Global Franchise A Acc USD,LU0426412945,78.31,82.01,0.047248,0.1,0.004725
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil B,Ninety One GSF Global Franchise A Acc USD,LU0426412945,82.01,71.83,-0.124131,0.1,-0.012413
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil B,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,1.99,2.04,0.025126,0.35,0.008794
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil B,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,2.04,1.82,-0.107843,0.35,-0.037745
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil B,Schroder ISF Emerging Markets A Acc USD,LU0106252389,21.97,20.91,-0.048248,0.1,-0.004825
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil B,Schroder ISF Emerging Markets A Acc USD,LU0106252389,20.91,16.61,-0.205643,0.1,-0.020564
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil B,BGF World Gold A2 Acc USD,LU0055631609,45.77,41,-0.104217,0.05,-0.005211
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil B,DWS Noor Precious Metals Securities A Acc USD,IE00BMF77083,0.78,0.74,-0.051282,0.05,-0.002564
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil B,JPM Global Natural Resources A Acc USD,LU0266512127,11.71,11.42,-0.024765,0.05,-0.001238
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil B,JPM Global Natural Resources A Acc USD,LU0266512127,11.42,14.01,0.226795,0.05,0.01134
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil B,Guinness Global Innovators C Acc USD,IE00BQXX3F31,21.88,23.29,0.064442,0.05,0.003222
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil B,Guinness Global Innovators C Acc USD,IE00BQXX3F31,23.29,18.92,-0.187634,0.05,-0.009382
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil C,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,1.99,2.04,0.025126,0.35,0.008794
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil C,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,2.04,1.82,-0.107843,0.35,-0.037745
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil C,Schroder ISF Emerging Markets A Acc USD,LU0106252389,21.97,20.91,-0.048248,0.15,-0.007237
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil C,Schroder ISF Emerging Markets A Acc USD,LU0106252389,20.91,16.61,-0.205643,0.15,-0.030846
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil C,BGF World Gold A2 Acc USD,LU0055631609,45.77,41,-0.104217,0.05,-0.005211
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil C,DWS Noor Precious Metals Securities A Acc USD,IE00BMF77083,0.78,0.74,-0.051282,0.05,-0.002564
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil C,JPM Global Natural Resources A Acc USD,LU0266512127,11.71,11.42,-0.024765,0.05,-0.001238
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil C,JPM Global Natural Resources A Acc USD,LU0266512127,11.42,14.01,0.226795,0.05,0.01134
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,21.88,23.29,0.064442,0.1,0.006444
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,23.29,18.92,-0.187634,0.1,-0.018763
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil C,Guinness Global Equity Income C Acc USD,IE00BVYPNW00,17.35,17.82,0.027089,0.1,0.002709
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil C,Guinness Global Equity Income C Acc USD,IE00BVYPNW00,17.82,17.41,-0.023008,0.1,-0.002301
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil C,RobecoSAM Smart Energy Equities D Acc USD,LU2145461914,60.08,62.19,0.03512,0.1,0.003512
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil C,RobecoSAM Smart Energy Equities D Acc USD,LU2145461914,62.19,51.99,-0.164014,0.1,-0.016401
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil C,HSBC GIF Global Equity Climate Change AC Acc USD,LU0323239441,14.94,15.46,0.034806,0.1,0.003481
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil C,HSBC GIF Global Equity Climate Change AC Acc USD,LU0323239441,15.46,13.59,-0.120957,0.1,-0.012096
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil D,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,1.99,2.04,0.025126,0.15,0.003769
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil D,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986738,2.04,1.82,-0.107843,0.15,-0.016176
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil D,Schroder ISF Emerging Markets A Acc USD,LU0106252389,21.97,20.91,-0.048248,0.15,-0.007237
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil D,Schroder ISF Emerging Markets A Acc USD,LU0106252389,20.91,16.61,-0.205643,0.15,-0.030846
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil D,BGF World Gold A2 Acc USD,LU0055631609,45.77,41,-0.104217,0.1,-0.010422
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil D,DWS Noor Precious Metals Securities A Acc USD,IE00BMF77083,0.78,0.74,-0.051282,0.1,-0.005128
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil D,JPM Global Natural Resources A Acc USD,LU0266512127,11.71,11.42,-0.024765,0.1,-0.002476
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil D,JPM Global Natural Resources A Acc USD,LU0266512127,11.42,14.01,0.226795,0.1,0.02268
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,21.88,23.29,0.064442,0.13,0.008377
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,23.29,18.92,-0.187634,0.13,-0.024392
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil D,Guinness Global Equity Income C Acc USD,IE00BVYPNW00,17.35,17.82,0.027089,0.13,0.003522
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil D,Guinness Global Equity Income C Acc USD,IE00BVYPNW00,17.82,17.41,-0.023008,0.13,-0.002991
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil D,RobecoSAM Smart Energy Equities D Acc USD,LU2145461914,60.08,62.19,0.03512,0.12,0.004214
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil D,RobecoSAM Smart Energy Equities D Acc USD,LU2145461914,62.19,51.99,-0.164014,0.12,-0.019682
+RL360,Portafolio Modelo Abril 2021 - Jun 2021,Perfil D,HSBC GIF Global Equity Climate Change AC Acc USD,LU0323239441,14.94,15.46,0.034806,0.12,0.004177
+RL360,Portafolio Modelo Junio 2021 - Marzo 2022,Perfil D,HSBC GIF Global Equity Climate Change AC Acc USD,LU0323239441,15.46,13.59,-0.120957,0.12,-0.014515
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil A,Fidelity Funds Global Multi Asset Income A Acc USD,LU0905233846,13.19,12.59,-0.045489,0.3,-0.013647
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3410.23,3575.72,0.048528,0.5,0.024264
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil A,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.42,2.51,0.03719,0.7,0.026033
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,1892.64,1983.4,0.047954,0.5,0.023977
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,Fidelity Funds Global Multi Asset Income A Acc USD,LU0905233846,13.19,12.59,-0.045489,0.1,-0.004549
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.51,2.8,0.115538,0.6,0.069323
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.42,2.51,0.03719,0.45,0.016736
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,32.34,34.81,0.076376,0.2,0.015275
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,Janus Henderson Horizon Global Technology Leaders A2 Acc USD,LU0070992663,162.25,157.95,-0.026502,0.15,-0.003975
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil B,BNY Mellon Global Bond,IE0003924739,1.98,1.92,-0.030303,0.2,-0.006061
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,JPM Emerging Markets Equity A Acc USD,LU0210529656,29.76,29.82,0.002016,0.05,0.000101
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,Guinness Global Energy C Acc USD,IE00B2Q91V27,7.55,8.44,0.117881,0.1,0.011788
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,DWS Noor Precious Metals Securities A Acc USD,IE00BMF77083,0.74,0.62,-0.162162,0.05,-0.008108
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.51,2.8,0.115538,0.55,0.063546
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,JPM Global Natural Resources A Acc USD,LU0266512127,14.01,13.84,-0.012134,0.1,-0.001213
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,22.08,27.33,0.237772,0.15,0.035666
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil C,AB Sustainable Global Thematic Portfolio,LU0069063385,39.09,41.44,0.060118,0.1,0.006012
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,32.34,34.81,0.076376,0.1,0.007638
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.42,2.51,0.03719,0.3,0.011157
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil C,BNY Mellon Global Bond,IE0003924739,1.98,1.92,-0.030303,0.1,-0.00303
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,Janus Henderson Horizon Global Technology Leaders A2 Acc USD,LU0070992663,162.25,157.95,-0.026502,0.2,-0.0053
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,JPM Emerging Markets Equity A Acc USD,LU0210529656,29.76,29.82,0.002016,0.05,0.000101
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,Guinness Global Energy C Acc USD,IE00B2Q91V27,7.55,8.44,0.117881,0.15,0.017682
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.51,2.8,0.115538,0.55,0.063546
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,DWS Noor Precious Metals Securities A Acc USD,IE00BMF77083,0.74,0.62,-0.162162,0.05,-0.008108
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,22.08,27.33,0.237772,0.15,0.035666
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,JPM Global Natural Resources A Acc USD,LU0266512127,14.01,13.84,-0.012134,0.1,-0.001213
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil D,AB Sustainable Global Thematic Portfolio,LU0069063385,39.09,41.44,0.060118,0.1,0.006012
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,Guinness Global Equity Income C Acc USD,IE00BVYPNW00,16.87,18.95,0.123296,0.1,0.01233
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil D,Guinness Global Energy C Acc USD,IE00B2Q91V27,8.44,9.24,0.094787,0.1,0.009479
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,HSBC GIF Global Equity Climate Change AC Acc USD,LU0323239441,12.53,12.54,0.000798,0.05,4e-05
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,36.94,44.94,0.216567,0.1,0.021657
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.42,2.51,0.03719,0.15,0.005579
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,Janus Henderson Horizon Global Technology Leaders A2 Acc USD,LU0070992663,162.25,157.95,-0.026502,0.25,-0.006626
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,JPM Emerging Markets Equity A Acc USD,LU0210529656,29.76,29.82,0.002016,0.1,0.000202
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,Guinness Global Energy C Acc USD,IE00B2Q91V27,7.55,8.44,0.117881,0.2,0.023576
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,DWS Noor Precious Metals Securities A Acc USD,IE00BMF77083,0.74,0.62,-0.162162,0.1,-0.016216
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,JPM Global Natural Resources A Acc USD,LU0266512127,14.01,13.84,-0.012134,0.1,-0.001213
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,HSBC GIF Global Equity Climate Change AC Acc USD,LU0323239441,12.53,12.54,0.000798,0.1,8e-05
+RL360,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil A Historico,Julio 2020,Marzo 2021,Abril 2021,Junio 2021,,Junio 2023,
+RL360,Portafolio Modelo Junio 2023 - Julio 2024,Perfil D,6  meses (30/06/2024),12 meses (30/06/2024),3 meses / total,6  meses / total,,,
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3575.72,3590.83,0.004226,0.5,0.002113
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3590.83,3607.48,0.004637,0.5,0.002318
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,1983.4,1991.9,0.004286,0.5,0.002143
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,1991.9,2000.8,0.004468,0.5,0.002234
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.8,2.83,0.010714,0.6,0.006428
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.83,2.87,0.014134,0.6,0.00848
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,34.81,35.39,0.016662,0.2,0.003332
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,35.39,35.91,0.014693,0.2,0.002939
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil B,BNY Mellon Global Bond,IE0003924739,1.92,1.98,0.03125,0.2,0.00625
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil B,BNY Mellon Global Bond,IE0003924739,1.98,2.03,0.025253,0.2,0.005051
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.8,2.83,0.010714,0.55,0.005893
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.83,2.87,0.014134,0.55,0.007774
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,27.33,26.83,-0.018295,0.15,-0.002744
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,26.83,27.52,0.025717,0.15,0.003858
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,AB Sustainable Global Thematic Portfolio,LU0069063385,41.44,42.78,0.032336,0.1,0.003234
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,AB Sustainable Global Thematic Portfolio,LU0069063385,42.78,44.17,0.032492,0.1,0.003249
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,34.81,35.39,0.016662,0.1,0.001666
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,35.39,35.91,0.014693,0.1,0.001469
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,BNY Mellon Global Bond,IE0003924739,1.92,1.98,0.03125,0.1,0.003125
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,BNY Mellon Global Bond,IE0003924739,1.98,2.03,0.025253,0.1,0.002525
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.8,2.83,0.010714,0.55,0.005893
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.83,2.87,0.014134,0.55,0.007774
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,27.33,26.83,-0.018295,0.15,-0.002744
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,26.83,27.52,0.025717,0.15,0.003858
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,AB Sustainable Global Thematic Portfolio,LU0069063385,41.44,42.78,0.032336,0.1,0.003234
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,AB Sustainable Global Thematic Portfolio,LU0069063385,42.78,44.17,0.032492,0.1,0.003249
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,Guinness Global Energy C Acc USD,IE00B2Q91V27,9.24,9.28,0.004329,0.1,0.000433
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,Guinness Global Energy C Acc USD,IE00B2Q91V27,9.28,9.15,-0.014009,0.1,-0.001401
+RL360,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,44.94,47.6,0.05919,0.1,0.005919
+RL360,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,47.6,47.97,0.007773,0.1,0.000777
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3607.48,3621.58,0.003909,0.5,0.001955
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3621.58,3634.87,0.00367,0.5,0.001835
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,2000.8,2009.97,0.004583,0.5,0.002292
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,2009.97,2016.5,0.003249,0.5,0.001625
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.87,2.92,0.017422,0.6,0.010453
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.92,2.88,-0.013699,0.6,-0.008219
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,35.91,36.32,0.011417,0.2,0.002283
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,36.32,36.04,-0.007709,0.2,-0.001542
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.74,13.84,0.007278,0.2,0.001456
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.84,13.45,-0.028179,0.2,-0.005636
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.87,2.92,0.017422,0.55,0.009582
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.92,2.88,-0.013699,0.55,-0.007534
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,27.52,27.58,0.00218,0.15,0.000327
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,27.58,27.19,-0.014141,0.15,-0.002121
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,CT (Lux) Global Select,LU1864957219,5.26,5.3,0.007605,0.1,0.00076
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,CT (Lux) Global Select,LU1864957219,5.3,5.32,0.003774,0.1,0.000377
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,35.91,36.32,0.011417,0.1,0.001142
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,36.32,36.04,-0.007709,0.1,-0.000771
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.74,13.84,0.007278,0.1,0.000728
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.84,13.45,-0.028179,0.1,-0.002818
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.87,2.92,0.017422,0.55,0.009582
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.92,2.88,-0.013699,0.55,-0.007534
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,27.52,27.58,0.00218,0.15,0.000327
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,27.58,27.19,-0.014141,0.15,-0.002121
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,CT (Lux) Global Select,LU1864957219,5.26,5.3,0.007605,0.1,0.00076
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,CT (Lux) Global Select,LU1864957219,5.3,5.32,0.003774,0.1,0.000377
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,BGF Sustainable Energy,LU0124384867,17.07,17.46,0.022847,0.1,0.002285
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,BGF Sustainable Energy,LU0124384867,17.46,16.41,-0.060137,0.1,-0.006014
+RL360,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,47.97,45.3,-0.05566,0.1,-0.005566
+RL360,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,45.3,46,0.015453,0.1,0.001545
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3634.87,3648.18,0.003662,0.5,0.001831
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3648.18,3652.36,0.001146,0.5,0.000573
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,2016.5,2023.07,0.003258,0.5,0.001629
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,2023.07,2024.56,0.000737,0.5,0.000369
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.88,2.94,0.020833,0.6,0.0125
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.94,2.89,-0.017007,0.6,-0.010204
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,36.04,36.34,0.008324,0.2,0.001665
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,36.34,36.24,-0.002752,0.2,-0.00055
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.45,13.53,0.005948,0.2,0.00119
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.53,13.35,-0.013304,0.2,-0.002661
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.88,2.94,0.020833,0.55,0.011458
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.94,2.89,-0.017007,0.55,-0.009354
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,27.19,28.04,0.031261,0.15,0.004689
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,28.04,27.44,-0.021398,0.15,-0.00321
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,CT (Lux) Global Select,LU1864957219,5.32,5.39,0.013158,0.1,0.001316
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,CT (Lux) Global Select,LU1864957219,5.39,5.26,-0.024119,0.1,-0.002412
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,36.04,36.34,0.008324,0.1,0.000832
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,36.34,36.24,-0.002752,0.1,-0.000275
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.45,13.53,0.005948,0.1,0.000595
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.53,13.35,-0.013304,0.1,-0.00133
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.88,2.94,0.020833,0.55,0.011458
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.94,2.89,-0.017007,0.55,-0.009354
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,27.19,28.04,0.031261,0.15,0.004689
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,28.04,27.44,-0.021398,0.15,-0.00321
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,CT (Lux) Global Select,LU1864957219,5.32,5.39,0.013158,0.1,0.001316
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,CT (Lux) Global Select,LU1864957219,5.39,5.26,-0.024119,0.1,-0.002412
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,BGF Sustainable Energy,LU0124384867,16.41,16.53,0.007313,0.1,0.000731
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,BGF Sustainable Energy,LU0124384867,16.53,15.59,-0.056866,0.1,-0.005687
+RL360,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,46,48.14,0.046522,0.1,0.004652
+RL360,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,48.14,45.35,-0.057956,0.1,-0.005796
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3652.36,3675.91,0.006448,0.5,0.003224
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3675.91,3687.44,0.003137,0.5,0.001569
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,2024.56,2037.98,0.006629,0.5,0.003315
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,2037.98,2044.44,0.00317,0.5,0.001585
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.89,2.96,0.024221,0.6,0.014533
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.96,2.94,-0.006757,0.6,-0.004054
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,36.24,36.7,0.012693,0.2,0.002539
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,36.7,36.91,0.005722,0.2,0.001144
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.35,13.45,0.007491,0.2,0.001498
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.45,13.7,0.018587,0.2,0.003717
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.89,2.96,0.024221,0.55,0.013322
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.96,2.94,-0.006757,0.55,-0.003716
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,27.44,28.74,0.047376,0.15,0.007106
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,28.74,28.12,-0.021573,0.15,-0.003236
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,CT (Lux) Global Select,LU1864957219,5.26,5.45,0.036122,0.1,0.003612
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,CT (Lux) Global Select,LU1864957219,5.45,5.38,-0.012844,0.1,-0.001284
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,36.24,36.7,0.012693,0.1,0.001269
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,36.7,36.91,0.005722,0.1,0.000572
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.35,13.45,0.007491,0.1,0.000749
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.45,13.7,0.018587,0.1,0.001859
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.89,2.96,0.024221,0.55,0.013322
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.96,2.94,-0.006757,0.55,-0.003716
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,27.44,28.74,0.047376,0.15,0.007106
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,28.74,28.12,-0.021573,0.15,-0.003236
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,CT (Lux) Global Select,LU1864957219,5.26,5.45,0.036122,0.1,0.003612
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,CT (Lux) Global Select,LU1864957219,5.45,5.38,-0.012844,0.1,-0.001284
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,BGF Sustainable Energy,LU0124384867,15.59,15.85,0.016677,0.1,0.001668
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,BGF Sustainable Energy,LU0124384867,15.85,14.95,-0.056782,0.1,-0.005678
+RL360,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,45.35,46.63,0.028225,0.1,0.002823
+RL360,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,46.63,45.24,-0.029809,0.1,-0.002981
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3687.44,3699.74,0.003336,0.5,0.001668
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3699.74,3711.87,0.003279,0.5,0.001639
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,2044.44,2051.07,0.003243,0.5,0.001621
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,2051.07,2057.17,0.002974,0.5,0.001487
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.94,2.88,-0.020408,0.6,-0.012245
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.88,2.88,0.0,0.6,0.0
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,36.91,36.37,-0.01463,0.2,-0.002926
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,36.37,36.51,0.003849,0.2,0.00077
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.7,13.6,-0.007299,0.2,-0.00146
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.6,13.74,0.010294,0.2,0.002059
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.94,2.88,-0.020408,0.55,-0.011224
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.88,2.88,0.0,0.55,0.0
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,28.12,26.33,-0.063656,0.15,-0.009548
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,26.33,26.68,0.013293,0.15,0.001994
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil C,CT (Lux) Global Select,LU1864957219,5.38,5.07,-0.057621,0.1,-0.005762
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,CT (Lux) Global Select,LU1864957219,5.07,5.1,0.005917,0.1,0.000592
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,36.91,36.37,-0.01463,0.1,-0.001463
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,36.37,36.51,0.003849,0.1,0.000385
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.7,13.6,-0.007299,0.1,-0.00073
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.6,13.74,0.010294,0.1,0.001029
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.94,2.88,-0.020408,0.55,-0.011224
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.88,2.88,0.0,0.55,0.0
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,28.12,26.33,-0.063656,0.15,-0.009548
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,26.33,26.68,0.013293,0.15,0.001994
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil D,CT (Lux) Global Select,LU1864957219,5.38,5.07,-0.057621,0.1,-0.005762
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,CT (Lux) Global Select,LU1864957219,5.07,5.1,0.005917,0.1,0.000592
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil D,BGF Sustainable Energy,LU0124384867,14.95,14.25,-0.046823,0.1,-0.004682
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,BGF Sustainable Energy,LU0124384867,14.25,14.61,0.025263,0.1,0.002526
+RL360,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,45.24,41.73,-0.077586,0.1,-0.007759
+RL360,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,41.73,43.01,0.030673,0.1,0.003067
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3711.87,3725.11,0.003567,0.5,0.001783
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3725.11,3737.29,0.00327,0.5,0.001635
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,2057.17,2063.17,0.002917,0.5,0.001458
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,2063.17,2071.12,0.003853,0.5,0.001927
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.88,2.99,0.038194,0.6,0.022916
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.99,3.08,0.0301,0.6,0.01806
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,36.51,37.23,0.019721,0.2,0.003944
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,37.23,37.86,0.016922,0.2,0.003384
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.74,13.7,-0.002911,0.2,-0.000582
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.7,13.92,0.016058,0.2,0.003212
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.88,2.99,0.038194,0.55,0.021007
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.99,3.08,0.0301,0.55,0.016555
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,26.68,28.5,0.068216,0.15,0.010232
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,28.5,30.06,0.054737,0.15,0.008211
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,CT (Lux) Global Select,LU1864957219,5.1,5.41,0.060784,0.1,0.006078
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,CT (Lux) Global Select,LU1864957219,5.41,5.65,0.044362,0.1,0.004436
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,36.51,37.23,0.019721,0.1,0.001972
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,37.23,37.86,0.016922,0.1,0.001692
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.74,13.7,-0.002911,0.1,-0.000291
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.7,13.92,0.016058,0.1,0.001606
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.88,2.99,0.038194,0.55,0.021007
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,2.99,3.08,0.0301,0.55,0.016555
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,26.68,28.5,0.068216,0.15,0.010232
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,28.5,30.06,0.054737,0.15,0.008211
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,CT (Lux) Global Select,LU1864957219,5.1,5.41,0.060784,0.1,0.006078
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,CT (Lux) Global Select,LU1864957219,5.41,5.65,0.044362,0.1,0.004436
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,BGF Sustainable Energy,LU0124384867,14.61,16.26,0.112936,0.1,0.011294
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,BGF Sustainable Energy,LU0124384867,16.26,16.99,0.044895,0.1,0.004489
+RL360,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,43.01,40.94,-0.048128,0.1,-0.004813
+RL360,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,40.94,43.32,0.058134,0.1,0.005813
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3737.29,3749.75,0.003334,0.5,0.001667
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3749.75,3763.16,0.003576,0.5,0.001788
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,2071.12,2077.23,0.00295,0.5,0.001475
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,2077.23,2084.04,0.003278,0.5,0.001639
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,3.11,3.11,0.0,0.6,0.0
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,3.11,,,0.6,
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,37.86,38,0.003698,0.2,0.00074
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,38,,,0.2,
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.92,13.94,0.001437,0.2,0.000287
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.94,,,0.2,
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,3.08,3.11,0.00974,0.55,0.005357
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,3.11,,,0.55,
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,30.06,30.04,-0.000665,0.15,-0.0001
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,30.04,,,0.15,
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,CT (Lux) Global Select,LU1864957219,5.65,5.79,0.024779,0.1,0.002478
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil C,CT (Lux) Global Select,LU1864957219,5.79,,,0.1,
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,37.67,38,0.00876,0.1,0.000876
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,38,,,0.1,
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.92,13.94,0.001437,0.1,0.000144
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.94,,,0.1,
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,3.08,3.11,0.00974,0.55,0.005357
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,3.11,,,0.55,
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,30.06,30.4,0.011311,0.15,0.001697
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,30.4,,,0.15,
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,CT (Lux) Global Select,LU1864957219,5.65,5.79,0.024779,0.1,0.002478
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil D,CT (Lux) Global Select,LU1864957219,5.79,,,0.1,
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,BGF Sustainable Energy,LU0124384867,16.99,18.14,0.067687,0.1,0.006769
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil D,BGF Sustainable Energy,LU0124384867,18.14,,,0.1,
+RL360,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,43.32,46.73,0.078717,0.1,0.007872
+RL360,Portafolio Modelo Julio 2025 - Agosto 2025,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,46.73,,,0.1,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil A,Aberdeen Standard Liquidity (Lux),LU0049014870,3749.75,,,0.5,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil A,UBS (Lux) Money Market USD Sustainable,LU0006277684,2077.23,,,0.5,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil B,Canaccord Opportunity A Acc USD,IE00B3BRDK12,3.11,,,0.6,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil B,T. Rowe Price Global High Yield Bond,LU0133082254,38,,,0.2,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.94,,,0.2,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil C,Canaccord Opportunity A Acc USD,IE00B3BRDK12,3.11,,,0.55,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,30.04,,,0.15,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil C,CT (Lux) Global Select,LU1864957219,5.79,,,0.1,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil C,T. Rowe Price Global High Yield Bond,LU0133082254,38,,,0.1,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.94,,,0.1,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil D,Canaccord Opportunity A Acc USD,IE00B3BRDK12,3.11,,,0.55,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,30.4,,,0.15,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil D,CT (Lux) Global Select,LU1864957219,5.79,,,0.1,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil D,BGF Sustainable Energy,LU0124384867,18.14,,,0.1,
+RL360,Portafolio Modelo Agosto 2025 - Septiembre 2025,Perfil D,Polar Capital Biotechnology,IE00B3XLHR60,46.73,,,0.1,
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil A,Harmony Portfolios US Dollar Balanced,S234 LU0651986225,1.29,1.64,0.271318,0.5,0.135659
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil A,Harmony Portfolios US Dollar Balanced,S234 LU0651986225,1.6,1.49,-0.06875,0.25,-0.017188
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil A,Franklin US Government,M84 LU0889564273,11.45,11.4,-0.004367,0.2,-0.000873
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil A,Franklin US Government,M84 LU0889564273,11.4,10.49,-0.079825,0.25,-0.019956
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil A,Invesco Bond,J01 LU1775948224,31.67,31.58,-0.002842,0.15,-0.000426
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil A,Invesco Bond,J01 LU1775948224,31.58,25.32,-0.198227,0.25,-0.049557
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil A,Fidelity Global Dividend,L46 LU0772969993,19.55,19.93,0.019437,0.15,0.002916
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil A,Fidelity Global Dividend,L46 LU0772969993,22.7,21.91,-0.034802,0.25,-0.0087
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil B,Franklin US Government,M84 LU0889564273,11.45,11.4,-0.004367,0.1,-0.000437
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil B,Franklin US Government,M84 LU0889564273,11.4,10.49,-0.079825,0.15,-0.011974
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil B,Invesco Bond,J01 LU1775948224,31.67,31.58,-0.002842,0.1,-0.000284
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil B,Invesco Bond,J01 LU1775948224,31.58,25.32,-0.198227,0.15,-0.029734
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil B,Fidelity Global Dividend,L46 LU0772969993,19.55,19.93,0.019437,0.2,0.003887
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil B,Fidelity Global Dividend,L46 LU0772969993,22.7,21.91,-0.034802,0.15,-0.00522
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil B,Harmony Portfolios US Dollar Growth,S235 LU0651986738,1.65,1.97,0.193939,0.5,0.09697
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil B,Harmony Portfolios US Dollar Growth,S235 LU0651986738,1.97,1.82,-0.076142,0.35,-0.02665
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil B,Aberdeen Standard SICAV I - Technology Equity,J96 LU0107464264,9.26,13.22,0.427646,0.05,0.021382
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil B,Templeton Emerging Markets,J60 LU0128522744,56.62,39.75,-0.297951,0.1,-0.029795
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil B,Invesco Global Health Care,J57 LU1775952176,191.97,221.34,0.152993,0.05,0.00765
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil B,DWS Noor Precious Metals Securities,R69 IE00BMF77083,0.78,0.74,-0.051282,0.05,-0.002564
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil B,JPM Global Natural Resources,L19 LU0266512127,11.32,14.01,0.237633,0.05,0.011882
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,Fidelity Global Dividend,L46 LU0772969993,19.55,19.93,0.019437,0.15,0.002916
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,Harmony Portfolios US Dollar Growth,S235 LU0651986738,1.65,1.97,0.193939,0.5,0.09697
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil C,Fidelity Global Dividend,L46 LU0772969993,22.7,21.91,-0.034802,0.06,-0.002088
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,Templeton Emerging Markets,J60 LU0128522744,44.47,52.83,0.187992,0.1,0.018799
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil C,Harmony Portfolios US Dollar Growth,S235 LU0651986738,1.97,1.82,-0.076142,0.35,-0.02665
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,Franklin Biotechnology Discovery,L39 LU0109394709,34.91,40.91,0.171871,0.04,0.006875
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil C,Templeton Emerging Markets,J60 LU0128522744,56.62,39.75,-0.297951,0.15,-0.044693
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,Aberdeen Standard SICAV I - Technology Equity,J96 LU0107464264,9.26,13.22,0.427646,0.06,0.025659
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil C,Franklin Biotechnology Discovery,L39 LU0109394709,43.17,31.04,-0.280982,0.07,-0.019669
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,Invesco Global Health Care,J57 LU1775952176,191.97,221.34,0.152993,0.07,0.01071
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil C,JPMorgan Pacific Technology USD,j95 GB0003210027,2.01,1.26,-0.373134,0.07,-0.026119
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,DWS Noor Precious Metals Securities,R69 IE00BMF77083,0.72,0.78,0.083333,0.04,0.003333
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil C,DWS Noor Precious Metals Securities,R69 IE00BMF77083,0.78,0.74,-0.051282,0.05,-0.002564
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil C,JPM Global Natural Resources,L19 LU0266512127,7.55,11.42,0.512583,0.04,0.020503
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil C,JPM Global Natural Resources,L19 LU0266512127,11.32,14.01,0.237633,0.05,0.011882
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil C,BlackRock Sustainable Energy USD,P69 LU0124384867,17.08,15.29,-0.104801,0.1,-0.01048
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil C,Schroder Global Climate Change Equity USD,R34 LU0302445910,26.58,22.3,-0.161023,0.1,-0.016102
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,Fidelity Global Dividend,L46 LU0772969993,19.55,19.93,0.019437,0.1,0.001944
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,Harmony Portfolios US Dollar Growth,S235 LU0651986738,1.65,1.97,0.193939,0.4,0.077576
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil D,Harmony Portfolios US Dollar Growth,S235 LU0651986738,1.97,1.82,-0.076142,0.15,-0.011421
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,Templeton Emerging Markets,J60 LU0128522744,44.47,52.83,0.187992,0.15,0.028199
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil D,Templeton Emerging Markets,J60 LU0128522744,56.62,39.75,-0.297951,0.15,-0.044693
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,34.91,40.91,0.171871,0.05,0.008594
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,43.17,31.04,-0.280982,0.1,-0.028098
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,Aberdeen Standard SICAV I - Technology Equity,J96 LU0107464264,9.26,13.22,0.427646,0.1,0.042765
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil D,JPMorgan Pacific Technology USD,j95 GB0003210027,2.01,1.26,-0.373134,0.1,-0.037313
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,Invesco Global Health Care,J57 LU1775952176,191.97,221.34,0.152993,0.1,0.015299
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil D,DWS Noor Precious Metals Securities,R69 IE00BMF77083,0.78,0.74,-0.051282,0.1,-0.005128
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,DWS Noor Precious Metals Securities,R69 IE00BMF77083,0.72,0.78,0.083333,0.05,0.004167
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil D,JPM Global Natural Resources,L19 LU0266512127,11.32,14.01,0.237633,0.1,0.023763
+FPI,Portafolio Modelo Junio 2020 - Marzo 2021,Perfil D,JPM Global Natural Resources,L19 LU0266512127,7.55,11.42,0.512583,0.05,0.025629
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil D,BlackRock Sustainable Energy USD,P69 LU0124384867,17.08,15.29,-0.104801,0.15,-0.01572
+FPI,Portafolio Modelo Marzo 2021 - marzo 2022,Perfil D,Schroder Global Climate Change Equity USD,R34 LU0302445910,26.58,22.3,-0.161023,0.15,-0.024153
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil A,Fidelity Global Dividend USD,L46 LU0772969993,21.91,22.3,0.0178,0.3,0.00534
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,11.8,12.42,0.052542,0.5,0.026271
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil A,CGWM Opportunity USD,P18 IE00B3BRDK12,2.42,2.51,0.03719,0.7,0.026033
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,109.9,115.47,0.050682,0.5,0.025341
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,Fidelity Global Dividend USD,L46 LU0772969993,21.91,22.3,0.0178,0.1,0.00178
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.51,2.8,0.115538,0.6,0.069323
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.42,2.51,0.03719,0.45,0.016736
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,16.54,17.21,0.040508,0.2,0.008102
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,JPMorgan Asian Smaller Companies USD,P66 GB00B1FH3G96,2.28,2.09,-0.083333,0.05,-0.004167
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil B,Mellon Global Bond,P67 IE0003924739,1.98,1.97,-0.005051,0.2,-0.00101
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,JPMorgan Pacific Technology USD,j95 GB0003210027,1.26,1.2,-0.047619,0.15,-0.007143
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,DWS Noor Precious Metals Securities,R69 IE00BMF77083,0.74,0.62,-0.162162,0.05,-0.008108
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,JPM Global Natural Resources,L19 LU0266512127,14.01,13.84,-0.012134,0.1,-0.001213
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.51,2.8,0.115538,0.55,0.063546
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,BlackRock Sustainable Energy USD,P69 LU0124384867,15.29,17.63,0.153041,0.1,0.015304
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil C,JPM Global Growth,L18 LU0210533765,24.04,31.63,0.315724,0.15,0.047359
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil C,AB Sustainable Global Thematic,L93 LU0069063385,39.09,42.56,0.08877,0.1,0.008877
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,16.54,17.21,0.040508,0.1,0.004051
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.42,2.51,0.03719,0.3,0.011157
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil C,Mellon Global Bond,P67 IE0003924739,1.98,1.97,-0.005051,0.1,-0.000505
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,JPMorgan Asian Smaller Companies USD,P66 GB00B1FH3G96,2.28,2.09,-0.083333,0.05,-0.004167
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,JPMorgan Pacific Technology USD,j95 GB0003210027,1.26,1.2,-0.047619,0.2,-0.009524
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,Invesco Global Health Care Innovation USD,J57 LU1775952176,205.62,208.95,0.016195,0.1,0.00162
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.51,2.8,0.115538,0.55,0.063546
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,DWS Noor Precious Metals Securities,R69 IE00BMF77083,0.74,0.62,-0.162162,0.05,-0.008108
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil D,JPM Global Growth,L18 LU0210533765,24.04,31.63,0.315724,0.15,0.047359
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,JPM Global Natural Resources,L19 LU0266512127,14.01,13.84,-0.012134,0.15,-0.00182
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil D,AB Sustainable Global Thematic,L93 LU0069063385,39.09,42.56,0.08877,0.1,0.008877
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,BlackRock Sustainable Energy USD,P69 LU0124384867,15.29,17.63,0.153041,0.15,0.022956
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil D,JPM Global Natural Resources,L19 LU0266512127,13.84,14.76,0.066474,0.1,0.006647
+FPI,Portafolio Modelo Junio 2023 - Junio 2024,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,34.17,44.76,0.309921,0.1,0.030992
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.42,2.51,0.03719,0.15,0.005579
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,JPMorgan Asian Smaller Companies USD,P66 GB00B1FH3G96,2.28,2.09,-0.083333,0.1,-0.008333
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,JPMorgan Pacific Technology USD,j95 GB0003210027,1.26,1.2,-0.047619,0.25,-0.011905
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,Invesco Global Health Care Innovation USD,J57 LU1775952176,205.62,208.95,0.016195,0.1,0.00162
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,DWS Noor Precious Metals Securities,R69 IE00BMF77083,0.74,0.62,-0.162162,0.1,-0.016216
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,JPM Global Natural Resources,L19 LU0266512127,14.01,13.84,-0.012134,0.1,-0.001213
+FPI,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,BlackRock Sustainable Energy USD,P69 LU0124384867,15.29,17.63,0.153041,0.2,0.030608
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,12.42,12.44,0.00161,0.5,0.000805
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,12.44,12.5,0.004823,0.5,0.002412
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,115.47,115.69,0.001905,0.5,0.000953
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,115.69,116.18,0.004235,0.5,0.002118
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.8,2.83,0.010714,0.6,0.006428
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.83,2.87,0.014134,0.6,0.00848
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,17.21,17.3,0.00523,0.2,0.001046
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,17.3,17.62,0.018497,0.2,0.003699
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil B,Mellon Global Bond,P67 IE0003924739,1.97,1.98,0.005076,0.2,0.001015
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil B,Mellon Global Bond,P67 IE0003924739,1.98,2.02,0.020202,0.2,0.00404
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.8,2.83,0.010714,0.55,0.005893
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.83,2.87,0.014134,0.55,0.007774
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,JPM Global Growth,L18 LU0210533765,31.63,30.81,-0.025925,0.15,-0.003889
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,JPM Global Growth,L18 LU0210533765,30.81,31.59,0.025316,0.15,0.003797
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,AB Sustainable Global Thematic,L93 LU0069063385,42.56,42.78,0.005169,0.1,0.000517
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,AB Sustainable Global Thematic,L93 LU0069063385,42.78,43.04,0.006078,0.1,0.000608
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,17.21,17.3,0.00523,0.1,0.000523
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,17.3,17.62,0.018497,0.1,0.00185
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,Mellon Global Bond,P67 IE0003924739,1.97,1.98,0.005076,0.1,0.000508
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,Mellon Global Bond,P67 IE0003924739,1.98,2.02,0.020202,0.1,0.00202
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.8,2.83,0.010714,0.55,0.005893
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.83,2.87,0.014134,0.55,0.007774
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,JPM Global Growth,L18 LU0210533765,31.63,30.81,-0.025925,0.15,-0.003889
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,JPM Global Growth,L18 LU0210533765,30.81,31.59,0.025316,0.15,0.003797
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,AB Sustainable Global Thematic,L93 LU0069063385,42.56,42.78,0.005169,0.1,0.000517
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,AB Sustainable Global Thematic,L93 LU0069063385,42.78,43.04,0.006078,0.1,0.000608
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,JPM Global Natural Resources,L19 LU0266512127,14.76,14.29,-0.031843,0.1,-0.003184
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,JPM Global Natural Resources,L19 LU0266512127,14.29,14.26,-0.002099,0.1,-0.00021
+FPI,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,44.76,43.96,-0.017873,0.1,-0.001787
+FPI,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,43.96,44,0.00091,0.1,9.1e-05
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,12.5,12.55,0.004,0.5,0.002
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,12.55,12.6,0.003984,0.5,0.001992
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,116.18,116.69,0.00439,0.5,0.002195
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,116.69,117.11,0.003599,0.5,0.0018
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.87,2.92,0.017422,0.6,0.010453
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.92,2.88,-0.013699,0.6,-0.008219
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,17.62,17.87,0.014188,0.2,0.002838
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,17.87,17.3,-0.031897,0.2,-0.006379
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,Schroder Strategic Bond,P92 LU0201322137,157.45,159.13,0.01067,0.2,0.002134
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil B,Schroder Strategic Bond,P92 LU0201322137,159.13,157.03,-0.013197,0.2,-0.002639
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.87,2.92,0.017422,0.55,0.009582
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.92,2.88,-0.013699,0.55,-0.007534
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,JPM Global Growth,L18 LU0210533765,31.59,31.99,0.012662,0.15,0.001899
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,JPM Global Growth,L18 LU0210533765,31.99,31.7,-0.009065,0.15,-0.00136
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Invesco Global Founders & Owners,M85 LU1762220934,17.37,17.48,0.006333,0.1,0.000633
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Invesco Global Founders & Owners,M85 LU1762220934,17.48,17.21,-0.015446,0.1,-0.001545
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,17.62,17.87,0.014188,0.1,0.001419
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,17.87,17.3,-0.031897,0.1,-0.00319
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Schroder Strategic Bond,P92 LU0201322137,157.45,159.13,0.01067,0.1,0.001067
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Schroder Strategic Bond,P92 LU0201322137,159.13,157.03,-0.013197,0.1,-0.00132
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.87,2.92,0.017422,0.55,0.009582
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.92,2.88,-0.013699,0.55,-0.007534
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,JPM Global Growth,L18 LU0210533765,31.59,31.99,0.012662,0.15,0.001899
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,JPM Global Growth,L18 LU0210533765,31.99,31.7,-0.009065,0.15,-0.00136
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Invesco Global Founders & Owners,M85 LU1762220934,17.37,17.48,0.006333,0.1,0.000633
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,Invesco Global Founders & Owners,M85 LU1762220934,17.48,17.21,-0.015446,0.1,-0.001545
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,BlackRock Sustainable Energy,P69 LU0124384867,17.07,17.62,0.03222,0.1,0.003222
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,BlackRock Sustainable Energy,P69 LU0124384867,17.62,16.41,-0.068672,0.1,-0.006867
+FPI,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,44,44.08,0.001818,0.1,0.000182
+FPI,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,44.08,43.19,-0.020191,0.1,-0.002019
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,12.6,12.64,0.003175,0.5,0.001587
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,12.64,12.68,0.003165,0.5,0.001582
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,117.11,117.53,0.003586,0.5,0.001793
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,117.53,117.97,0.003744,0.5,0.001872
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.88,2.95,0.024306,0.6,0.014584
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.95,2.89,-0.020339,0.6,-0.012203
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,17.3,17.44,0.008092,0.2,0.001618
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,17.44,17.12,-0.018349,0.2,-0.00367
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,Schroder Strategic Bond,P92 LU0201322137,157.03,158.32,0.008215,0.2,0.001643
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil B,Schroder Strategic Bond,P92 LU0201322137,158.32,157.81,-0.003221,0.2,-0.000644
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.88,2.95,0.024306,0.55,0.013368
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.95,2.89,-0.020339,0.55,-0.011186
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,JPM Global Growth,L18 LU0210533765,31.7,32.58,0.02776,0.15,0.004164
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,JPM Global Growth,L18 LU0210533765,32.58,32.47,-0.003376,0.15,-0.000506
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Invesco Global Founders & Owners,M85 LU1762220934,17.21,17.71,0.029053,0.1,0.002905
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Invesco Global Founders & Owners,M85 LU1762220934,17.71,17.28,-0.02428,0.1,-0.002428
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,17.3,17.44,0.008092,0.1,0.000809
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,17.44,17.12,-0.018349,0.1,-0.001835
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Schroder Strategic Bond,P92 LU0201322137,157.03,158.32,0.008215,0.1,0.000822
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Schroder Strategic Bond,P92 LU0201322137,158.32,157.81,-0.003221,0.1,-0.000322
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.88,2.95,0.024306,0.55,0.013368
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.95,2.89,-0.020339,0.55,-0.011186
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,JPM Global Growth,L18 LU0210533765,31.7,32.58,0.02776,0.15,0.004164
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,JPM Global Growth,L18 LU0210533765,32.58,32.47,-0.003376,0.15,-0.000506
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Invesco Global Founders & Owners,M85 LU1762220934,17.21,17.71,0.029053,0.1,0.002905
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,Invesco Global Founders & Owners,M85 LU1762220934,17.71,17.28,-0.02428,0.1,-0.002428
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,BlackRock Sustainable Energy,P69 LU0124384867,16.41,16.53,0.007313,0.1,0.000731
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,BlackRock Sustainable Energy,P69 LU0124384867,16.53,15.59,-0.056866,0.1,-0.005687
+FPI,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,43.19,42.01,-0.027321,0.1,-0.002732
+FPI,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,42.01,39.25,-0.065699,0.1,-0.00657
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,12.68,12.74,0.004732,0.5,0.002366
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,12.74,12.78,0.00314,0.5,0.00157
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,117.97,118.39,0.00356,0.5,0.00178
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,118.39,118.76,0.003125,0.5,0.001563
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.89,2.96,0.024221,0.6,0.014533
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.96,2.94,-0.006757,0.6,-0.004054
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,17.12,17.23,0.006425,0.2,0.001285
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,17.23,17.54,0.017992,0.2,0.003598
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,Schroder Strategic Bond,P92 LU0201322137,157.81,158.88,0.00678,0.2,0.001356
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil B,Schroder Strategic Bond,P92 LU0201322137,158.88,161.23,0.014791,0.2,0.002958
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.89,2.96,0.024221,0.55,0.013322
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.96,2.94,-0.006757,0.55,-0.003716
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,JPM Global Growth,L18 LU0210533765,32.47,33.39,0.028334,0.15,0.00425
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,JPM Global Growth,L18 LU0210533765,33.39,31.76,-0.048817,0.15,-0.007323
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Invesco Global Founders & Owners,M85 LU1762220934,17.28,18.19,0.052662,0.1,0.005266
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,Invesco Global Founders & Owners,M85 LU1762220934,18.19,17.78,-0.02254,0.1,-0.002254
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,17.12,17.23,0.006425,0.1,0.000643
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,17.23,17.54,0.017992,0.1,0.001799
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Schroder Strategic Bond,P92 LU0201322137,157.81,158.88,0.00678,0.1,0.000678
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,Schroder Strategic Bond,P92 LU0201322137,158.88,161.23,0.014791,0.1,0.001479
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.89,2.96,0.024221,0.55,0.013322
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.96,2.94,-0.006757,0.55,-0.003716
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,JPM Global Growth,L18 LU0210533765,32.47,33.39,0.028334,0.15,0.00425
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,JPM Global Growth,L18 LU0210533765,33.39,31.76,-0.048817,0.15,-0.007323
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Invesco Global Founders & Owners,M85 LU1762220934,17.28,18.19,0.052662,0.1,0.005266
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,Invesco Global Founders & Owners,M85 LU1762220934,18.19,17.78,-0.02254,0.1,-0.002254
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,BlackRock Sustainable Energy,P69 LU0124384867,15.59,15.85,0.016677,0.1,0.001668
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,BlackRock Sustainable Energy,P69 LU0124384867,15.85,14.95,-0.056782,0.1,-0.005678
+FPI,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,39.25,40.38,0.02879,0.1,0.002879
+FPI,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,40.38,39.86,-0.012878,0.1,-0.001288
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,12.78,12.82,0.00313,0.5,0.001565
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,12.82,12.87,0.0039,0.5,0.00195
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,118.76,119.15,0.003284,0.5,0.001642
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,119.15,119.55,0.003357,0.5,0.001679
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.94,2.88,-0.020408,0.6,-0.012245
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.88,2.88,0.0,0.6,0.0
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,17.54,17.58,0.002281,0.2,0.000456
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,17.58,17.7,0.006826,0.2,0.001365
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil B,Schroder Strategic Bond,P92 LU0201322137,161.23,161.21,-0.000124,0.2,-2.5e-05
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil B,Schroder Strategic Bond,P92 LU0201322137,161.21,161.82,0.003784,0.2,0.000757
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.94,2.88,-0.020408,0.55,-0.011224
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.88,2.88,0.0,0.55,0.0
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil C,JPM Global Growth,L18 LU0210533765,31.76,29.32,-0.076826,0.15,-0.011524
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,JPM Global Growth,L18 LU0210533765,29.32,30.7,0.047067,0.15,0.00706
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil C,Invesco Global Founders & Owners,M85 LU1762220934,17.78,17.31,-0.026434,0.1,-0.002643
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,Invesco Global Founders & Owners,M85 LU1762220934,17.31,17.94,0.036395,0.1,0.003639
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,17.54,17.58,0.002281,0.1,0.000228
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,17.58,17.7,0.006826,0.1,0.000683
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil C,Schroder Strategic Bond,P92 LU0201322137,161.23,161.21,-0.000124,0.1,-1.2e-05
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,Schroder Strategic Bond,P92 LU0201322137,161.21,161.82,0.003784,0.1,0.000378
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.94,2.88,-0.020408,0.55,-0.011224
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.88,2.88,0.0,0.55,0.0
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil D,JPM Global Growth,L18 LU0210533765,31.76,29.32,-0.076826,0.15,-0.011524
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,JPM Global Growth,L18 LU0210533765,29.32,30.7,0.047067,0.15,0.00706
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil D,Invesco Global Founders & Owners,M85 LU1762220934,17.78,17.31,-0.026434,0.1,-0.002643
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,Invesco Global Founders & Owners,M85 LU1762220934,17.31,17.94,0.036395,0.1,0.003639
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil D,BlackRock Sustainable Energy,P69 LU0124384867,14.95,14.25,-0.046823,0.1,-0.004682
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,BlackRock Sustainable Energy,P69 LU0124384867,14.25,14.61,0.025263,0.1,0.002526
+FPI,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,39.86,37.45,-0.060462,0.1,-0.006046
+FPI,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,37.45,37.78,0.008812,0.1,0.000881
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,12.87,12.91,0.003108,0.5,0.001554
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,12.91,12.96,0.003873,0.5,0.001937
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,119.55,119.95,0.003346,0.5,0.001673
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,119.95,120.36,0.003418,0.5,0.001709
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.88,2.99,0.038194,0.6,0.022916
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,2.99,3.08,0.0301,0.6,0.01806
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,17.7,17.56,-0.00791,0.2,-0.001582
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,17.56,17.81,0.014237,0.2,0.002847
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil B,Schroder Strategic Bond,P92 LU0201322137,161.82,162.59,0.004758,0.2,0.000952
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil B,Schroder Strategic Bond,P92 LU0201322137,162.59,165.27,0.016483,0.2,0.003297
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.88,2.99,0.038194,0.55,0.021007
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,2.99,3.08,0.0301,0.55,0.016555
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,JPM Global Growth,L18 LU0210533765,30.7,32.84,0.069707,0.15,0.010456
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,JPM Global Growth,L18 LU0210533765,32.84,34.07,0.037454,0.15,0.005618
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,Invesco Global Founders & Owners,M85 LU1762220934,17.94,18.98,0.057971,0.1,0.005797
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,Invesco Global Founders & Owners,M85 LU1762220934,18.98,20.13,0.06059,0.1,0.006059
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,17.7,17.56,-0.00791,0.1,-0.000791
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,17.56,17.81,0.014237,0.1,0.001424
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,Schroder Strategic Bond,P92 LU0201322137,161.82,162.59,0.004758,0.1,0.000476
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,Schroder Strategic Bond,P92 LU0201322137,162.59,165.27,0.016483,0.1,0.001648
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.88,2.99,0.038194,0.55,0.021007
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,2.99,3.08,0.0301,0.55,0.016555
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,JPM Global Growth,L18 LU0210533765,30.7,32.84,0.069707,0.15,0.010456
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,JPM Global Growth,L18 LU0210533765,32.84,34.07,0.037454,0.15,0.005618
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,Invesco Global Founders & Owners,M85 LU1762220934,17.94,18.98,0.057971,0.1,0.005797
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,Invesco Global Founders & Owners,M85 LU1762220934,18.98,20.13,0.06059,0.1,0.006059
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,BlackRock Sustainable Energy,P69 LU0124384867,14.61,16.26,0.112936,0.1,0.011294
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,BlackRock Sustainable Energy,P69 LU0124384867,16.26,16.99,0.044895,0.1,0.004489
+FPI,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,37.78,36.58,-0.031763,0.1,-0.003176
+FPI,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,36.58,37.34,0.020776,0.1,0.002078
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil A,Fidelity Funds US Dollar Cash,L60 LU0261952922,12.96,13.01,0.003858,0.5,0.001929
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil A,JPM USD Money Market VNAV,J42 LU0945454980,120.36,120.77,0.003406,0.5,0.001703
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil B,CGWM Opportunity USD,P18 IE00B3BRDK12,3.08,3.11,0.00974,0.6,0.005844
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil B,Fidelity US Dollar Bond,L85 LU0261947682,17.81,17.78,-0.001684,0.2,-0.000337
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil B,Schroder Strategic Bond,P92 LU0201322137,165.27,166.37,0.006656,0.2,0.001331
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,CGWM Opportunity USD,P18 IE00B3BRDK12,3.08,3.11,0.00974,0.55,0.005357
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,JPM Global Growth,L18 LU0210533765,34.07,35.37,0.038157,0.15,0.005724
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,Invesco Global Founders & Owners,M85 LU1762220934,20.13,20.46,0.016393,0.1,0.001639
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,Fidelity US Dollar Bond,L85 LU0261947682,17.81,17.78,-0.001684,0.1,-0.000168
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,Schroder Strategic Bond,P92 LU0201322137,165.27,166.37,0.006656,0.1,0.000666
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,CGWM Opportunity USD,P18 IE00B3BRDK12,3.08,3.11,0.00974,0.55,0.005357
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,JPM Global Growth,L18 LU0210533765,34.07,35.37,0.038157,0.15,0.005724
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,Invesco Global Founders & Owners,M85 LU1762220934,20.13,20.46,0.016393,0.1,0.001639
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,BlackRock Sustainable Energy,P69 LU0124384867,16.99,18.14,0.067687,0.1,0.006769
+FPI,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,Franklin Biotechnology Discovery,L39 LU0109394709,37.34,40.66,0.088913,0.1,0.008891
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil A,Fidelity Funds Global Multi Asset Income A Acc USD,LU0905233846,13.2,14.36,0.087879,0.5,0.043939
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil A,Fidelity Funds Global Multi Asset Income A Acc USD,LU0905233846,14.36,13.19,-0.081476,0.25,-0.020369
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil A,JPM US Bond A Acc USD,LU0070215933,262.71,258.78,-0.014959,0.15,-0.002244
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil A,JPM US Bond A Acc USD,LU0070215933,258.78,237.13,-0.083662,0.25,-0.020916
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil A,PIMCO Global Investment Grade Credit E Acc USD,IE00B3KYRN47,20.48,20.58,0.004883,0.1,0.000488
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil A,PIMCO Global Investment Grade Credit E Acc USD,IE00B3KYRN47,20.58,18.21,-0.11516,0.25,-0.02879
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil A,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986654,1.34,1.68,0.253731,0.25,0.063433
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil A,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986654,1.68,1.55,-0.077381,0.25,-0.019345
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil B,PIMCO Global Investment Grade Credit E Acc USD,IE00B3KYRN47,20.48,20.58,0.004883,0.2,0.000977
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,Fidelity Funds Global Multi Asset Income A Acc USD,LU0905233846,14.36,13.19,-0.081476,0.1,-0.008148
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil B,Fidelity Funds - Global Dividend Fund A Acc USD,GB00B7FQHJ97,254.2,285.3,0.122345,0.2,0.024469
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,JPM US Bond A Acc USD,LU0070215933,258.78,237.13,-0.083662,0.1,-0.008366
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil B,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986654,1.34,1.68,0.253731,0.5,0.126865
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,PIMCO Global Investment Grade Credit E Acc USD,IE00B3KYRN47,20.58,18.21,-0.11516,0.1,-0.011516
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil B,Polar Capital Global Technology Fund R Income,IE00B433M743,69.39,89.11,0.284191,0.05,0.01421
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,Fidelity Funds - Global Dividend Fund A Acc USD,LU0772969993,22.7,21.91,-0.034802,0.1,-0.00348
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil B,Invesco Global Health Care,LU1775952176,191.97,231.67,0.206803,0.05,0.01034
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986654,1.68,1.55,-0.077381,0.35,-0.027083
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,Templeton Emerging Markets Fund A Acc USD,LU0128522744,56.62,39.75,-0.297951,0.1,-0.029795
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,BlackRock Global Funds - World Gold Fund A2 USD,LU0055631609,40.98,38.79,-0.053441,0.05,-0.002672
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil C,Fidelity Funds - Global Dividend Fund A Acc USD,GB00B7FQHJ97,254.2,285.3,0.122345,0.15,0.018352
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,JPM Global Natural Resources A Acc USD,LU0266512127,11.32,14.01,0.237633,0.05,0.011882
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil C,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986654,1.34,1.68,0.253731,0.5,0.126865
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,Guinness Global Innovators C Acc USD,IE00BQXX3F31,21.93,18.92,-0.137255,0.05,-0.006863
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil C,Templeton Emerging Markets Fund A Acc USD,LU0128522744,44.47,56.62,0.273218,0.1,0.027322
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil C,Polar Capital Global Technology Fund R Income,IE00B433M743,69.39,89.11,0.284191,0.1,0.028419
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil C,Invesco Global Health Care,LU1775952176,191.97,231.67,0.206803,0.07,0.014476
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986654,1.68,1.55,-0.077381,0.35,-0.027083
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil C,BlackRock Global Funds - World Gold Fund A2,LU0055631609,49.67,40.98,-0.174955,0.04,-0.006998
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,Templeton Emerging Markets Fund A Acc USD,LU0128522744,56.62,39.75,-0.297951,0.15,-0.044693
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil C,JPM Global Natural Resources A Acc USD,LU0266512127,8.38,11.32,0.350835,0.04,0.014033
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,BlackRock Global Funds - World Gold Fund A2 USD,LU0055631609,40.98,38.79,-0.053441,0.05,-0.002672
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,JPM Global Natural Resources A Acc USD,LU0266512127,11.32,14.01,0.237633,0.05,0.011882
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,Guinness Global Innovators C Acc USD,IE00BQXX3F31,21.93,18.92,-0.137255,0.1,-0.013725
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil D,Fidelity Funds - Global Dividend Fund A Acc USD,GB00B7FQHJ97,254.2,285.3,0.122345,0.1,0.012235
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,Guinness Global Equity Income C Acc USD,IE00BVYPNW00,16.87,17.41,0.032009,0.1,0.003201
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil D,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986654,1.34,1.68,0.253731,0.4,0.101492
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,BGF Sustainable Energy A2 USD,LU0124384867,17.08,15.29,-0.104801,0.1,-0.01048
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil D,Templeton Emerging Markets Fund A Acc USD,LU0128522744,44.47,56.62,0.273218,0.15,0.040983
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,Schroder ISF Glb Clmt Chg Eq A Acc USD,LU0302445910,26.58,22.3,-0.161023,0.1,-0.016102
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil D,Polar Capital Global Technology Fund R Income,IE00B433M743,69.39,89.11,0.284191,0.15,0.042629
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil D,Invesco Global Health Care,LU1775952176,191.97,231.67,0.206803,0.1,0.02068
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil D,BlackRock Global Funds - World Gold Fund A2,LU0055631609,49.67,40.98,-0.174955,0.05,-0.008748
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,Harmony Portfolios US Dollar Growth C Acc USD,LU0651986654,1.68,1.55,-0.077381,0.15,-0.011607
+UTMOST,Portafolio Modelo JUNIO 2020 - Marzo 2021,Perfil D,JPM Global Natural Resources A Acc USD,LU0266512127,8.38,11.32,0.350835,0.05,0.017542
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,Templeton Emerging Markets Fund A Acc USD,LU0128522744,56.62,39.75,-0.297951,0.15,-0.044693
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,BlackRock Global Funds - World Gold Fund A2 USD,LU0055631609,40.98,38.79,-0.053441,0.1,-0.005344
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,JPM Global Natural Resources A Acc USD,LU0266512127,11.32,14.01,0.237633,0.1,0.023763
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,Guinness Global Innovators C Acc USD,IE00BQXX3F31,21.93,18.92,-0.137255,0.13,-0.017843
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,Guinness Global Equity Income C Acc USD,IE00BVYPNW00,16.87,17.41,0.032009,0.13,0.004161
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,BGF Sustainable Energy A2 USD,LU0124384867,17.08,15.29,-0.104801,0.12,-0.012576
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil A,Fidelity Global Multi Asset Income FD A Acc USD,LU0905233846,13.19,13.08,-0.00834,0.3,-0.002502
+UTMOST,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,Schroder ISF Glb Clmt Chg Eq A Acc USD,LU0302445910,26.58,22.3,-0.161023,0.12,-0.019323
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil A,CGWM Opportunity Fund A Acc USD,IE00B3BRDK12,2.42,2.41,-0.004132,0.7,-0.002892
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil B,Fidelity Global Multi Asset Income FD A Acc USD,LU0905233846,13.19,13.08,-0.00834,0.1,-0.000834
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil B,CGWM Opportunity Fund A Acc USD,IE00B3BRDK12,2.42,2.41,-0.004132,0.45,-0.001859
+"UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil B,""Aberdeen Standard SICAV I-Asian Smaller Cos Fund"
+"A Acc USD"",LU0231459107,51.16,49.76,-0.027365,0.05,-0.001368"
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil A,Fidelity Global Multi Asset Income FD A Acc USD,LU0905233846,13.08,12.59,-0.037462,0.3,-0.011239
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil B,Guinness Global Energy Class C Acc USD,IE00B2Q91V27,5.35,8.54,0.596262,0.1,0.059626
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil A,CGWM Opportunity Fund A Acc USD,IE00B3BRDK12,2.41,2.51,0.041494,0.7,0.029046
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil B,JPM America Equity A Dis USD,LU0053666078,318.11,309.22,-0.027946,0.15,-0.004192
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil B,BGF World Gold A2 USD,LU0055631609,38.79,35.2,-0.09255,0.05,-0.004627
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil B,JPM Global Natural Resources A Acc USD,LU0266512127,14.01,14.99,0.06995,0.1,0.006995
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil B,Fidelity Global Multi Asset Income FD A Acc USD,LU0905233846,13.08,12.59,-0.037462,0.2,-0.007492
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil B,CGWM Opportunity Fund A Acc USD,IE00B3BRDK12,2.41,2.51,0.041494,0.4,0.016598
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil B,JPM America Equity A Dis USD,LU0053666078,309.22,343.19,0.109857,0.2,0.021971
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil C,CGWM Opportunity Fund A Acc USD,IE00B3BRDK12,2.42,2.41,-0.004132,0.3,-0.00124
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil B,JPM Global Natural Resources A Acc USD,LU0266512127,14.99,13.84,-0.076718,0.2,-0.015344
+"UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil C,""Aberdeen Standard SICAV I-Asian Smaller Cos Fund"
+"A Acc USD"",LU0231459107,51.16,49.76,-0.027365,0.05,-0.001368"
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil C,Guinness Global Energy Class C Acc USD,IE00B2Q91V27,7.55,8.54,0.131126,0.15,0.019669
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil C,JPM America Equity A Dis USD,LU0053666078,318.11,309.22,-0.027946,0.2,-0.005589
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil C,CGWM Opportunity Fund A Acc USD,IE00B3BRDK12,2.41,2.51,0.041494,0.3,0.012448
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil C,BGF World Gold A2 USD,LU0055631609,38.79,35.2,-0.09255,0.05,-0.004627
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil C,Guinness Global Energy Class C Acc USD,IE00B2Q91V27,8.54,8.44,-0.01171,0.2,-0.002342
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil C,JPM Global Natural Resources A Acc USD,LU0266512127,14.01,14.99,0.06995,0.1,0.006995
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil C,JPM America Equity A Dis USD,LU0053666078,309.22,343.19,0.109857,0.25,0.027464
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil C,Guinness Global Equity Income C Acc USD,IE00BVYPNW00,17.41,17.34,-0.004021,0.1,-0.000402
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil C,JPM Global Natural Resources A Acc USD,LU0266512127,14.99,13.84,-0.076718,0.25,-0.019179
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil C,BGF Sustainable Energy A2 Acc USD,LU0124384867,15.29,15.34,0.00327,0.05,0.000164
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil D,CGWM Opportunity Fund A Acc USD,IE00B3BRDK12,2.41,2.51,0.041494,0.2,0.008299
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil D,CGWM Opportunity Fund A Acc USD,IE00B3BRDK12,2.42,2.41,-0.004132,0.15,-0.00062
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil D,Guinness Global Energy Class C Acc USD,IE00B2Q91V27,8.54,8.44,-0.01171,0.2,-0.002342
+"UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil D,""Aberdeen Standard SICAV I-Asian Smaller Cos Fund"
+"A Acc USD"",LU0231459107,51.16,49.76,-0.027365,0.1,-0.002737"
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil D,JPM America Equity A Dis USD,LU0053666078,309.22,343.19,0.109857,0.3,0.032957
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil D,Guinness Global Energy Class C Acc USD,IE00B2Q91V27,7.55,8.54,0.131126,0.2,0.026225
+UTMOST,Portafolio Modelo Abril 2022 - Junio 2023,Perfil D,JPM Global Natural Resources A Acc USD,LU0266512127,14.99,13.84,-0.076718,0.3,-0.023015
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil D,JPM America Equity A Dis USD,LU0053666078,318.11,309.22,-0.027946,0.25,-0.006986
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil D,BGF World Gold A2 USD,LU0055631609,38.79,35.2,-0.09255,0.1,-0.009255
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil D,JPM Global Natural Resources A Acc USD,LU0266512127,14.01,14.99,0.06995,0.1,0.006995
+UTMOST,Portafolio Modelo Marzo 2022 - abril 2022,Perfil D,BGF Sustainable Energy A2 Acc USD,LU0124384867,15.29,15.34,0.00327,0.1,0.000327
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,114.04,119.57,0.048492,0.5,0.024246
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,19.99,19.93,-0.003002,0.5,-0.001501
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.51,2.8,0.115538,0.6,0.069323
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil B,JPMorgan US Bond,LU0070215933,229.71,235.06,0.02329,0.2,0.004658
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil B,Invesco Bond Fund,LU1775948141,10.25,10.38,0.012683,0.2,0.002537
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.51,2.8,0.115538,0.55,0.063546
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil C,Guinness Global Innovators,IE00BQXX3F31,22.08,27.33,0.237772,0.15,0.035666
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,208.95,238.37,0.140799,0.1,0.01408
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil C,JPMorgan US Bond,LU0070215933,229.71,235.06,0.02329,0.1,0.002329
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil C,Invesco Bond Fund,LU1775948141,10.25,10.38,0.012683,0.1,0.001268
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.51,2.8,0.115538,0.55,0.063546
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil D,Guinness Global Innovators,IE00BQXX3F31,22.08,27.33,0.237772,0.2,0.047554
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil D,Guinness Global Energy,IE00B2Q91V27,8.44,9.24,0.094787,0.1,0.009479
+UTMOST,Portafolio Modelo Jun 2023 - Junio 2024,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,208.95,238.37,0.140799,0.15,0.02112
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,119.57,120.12,0.0046,0.5,0.0023
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,120.12,120.66,0.004496,0.5,0.002248
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,19.93,20.01,0.004014,0.5,0.002007
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.01,20.09,0.003998,0.5,0.001999
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.8,2.83,0.010714,0.6,0.006428
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.83,2.87,0.014134,0.6,0.00848
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil B,JPMorgan US Bond,LU0070215933,235.06,240.11,0.021484,0.2,0.004297
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil B,JPMorgan US Bond,LU0070215933,240.11,245.01,0.020407,0.2,0.004081
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil B,Invesco Bond Fund,LU1775948141,10.38,10.76,0.036609,0.2,0.007322
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil B,Invesco Bond Fund,LU1775948141,10.76,11.07,0.02881,0.2,0.005762
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.8,2.83,0.010714,0.55,0.005893
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.83,2.87,0.014134,0.55,0.007774
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,Guinness Global Innovators,IE00BQXX3F31,27.33,26.83,-0.018295,0.15,-0.002744
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,Guinness Global Innovators,IE00BQXX3F31,26.83,27.52,0.025717,0.15,0.003858
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,238.37,240.02,0.006922,0.1,0.000692
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,240.02,250.51,0.043705,0.1,0.004371
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,JPMorgan US Bond,LU0070215933,235.06,240.11,0.021484,0.1,0.002148
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,JPMorgan US Bond,LU0070215933,240.11,245.01,0.020407,0.1,0.002041
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,Invesco Bond Fund,LU1775948141,10.38,10.76,0.036609,0.1,0.003661
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,Invesco Bond Fund,LU1775948141,10.76,11.07,0.02881,0.1,0.002881
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.8,2.83,0.010714,0.55,0.005893
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.83,2.87,0.014134,0.55,0.007774
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,Guinness Global Innovators,IE00BQXX3F31,27.33,26.83,-0.018295,0.2,-0.003659
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,Guinness Global Innovators,IE00BQXX3F31,26.83,27.52,0.025717,0.2,0.005143
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,Guinness Global Energy,IE00B2Q91V27,9.24,9.09,-0.016234,0.1,-0.001623
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,Guinness Global Energy,IE00B2Q91V27,9.09,9.15,0.006601,0.1,0.00066
+UTMOST,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,238.37,240.02,0.006922,0.15,0.001038
+UTMOST,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,240.02,250.51,0.043705,0.15,0.006556
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,120.66,121.21,0.004558,0.5,0.002279
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,121.21,121.62,0.003383,0.5,0.001692
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.09,20.17,0.003982,0.5,0.001991
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.17,20.24,0.003471,0.5,0.001736
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.87,2.92,0.017422,0.6,0.010453
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.92,2.88,-0.013699,0.6,-0.008219
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,JPMorgan US Bond,LU0070215933,245.01,248.09,0.012571,0.2,0.002514
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil B,JPMorgan US Bond,LU0070215933,248.09,240.88,-0.029062,0.2,-0.005812
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.74,13.84,0.007278,0.2,0.001456
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.84,13.45,-0.028179,0.2,-0.005636
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.87,2.92,0.017422,0.55,0.009582
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.92,2.88,-0.013699,0.55,-0.007534
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Guinness Global Innovators,IE00BQXX3F31,27.52,27.58,0.00218,0.15,0.000327
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Guinness Global Innovators,IE00BQXX3F31,27.58,27.19,-0.014141,0.15,-0.002121
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,250.51,243.11,-0.02954,0.1,-0.002954
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,243.11,233.88,-0.037966,0.1,-0.003797
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,JPMorgan US Bond,LU0070215933,245.01,248.09,0.012571,0.1,0.001257
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,JPMorgan US Bond,LU0070215933,248.09,240.88,-0.029062,0.1,-0.002906
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.74,13.84,0.007278,0.1,0.000728
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.84,13.45,-0.028179,0.1,-0.002818
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.87,2.92,0.017422,0.55,0.009582
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.92,2.88,-0.013699,0.55,-0.007534
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Guinness Global Innovators,IE00BQXX3F31,27.52,27.58,0.00218,0.2,0.000436
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,Guinness Global Innovators,IE00BQXX3F31,27.58,27.19,-0.014141,0.2,-0.002828
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,BlackRock Sustainable Energy,LU0124384867,17.07,17.62,0.03222,0.1,0.003222
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,BlackRock Sustainable Energy,LU0124384867,17.62,16.41,-0.068672,0.1,-0.006867
+UTMOST,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,250.51,243.11,-0.02954,0.15,-0.004431
+UTMOST,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,243.11,233.88,-0.037966,0.15,-0.005695
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,121.62,122.05,0.003536,0.5,0.001768
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,122.05,122.51,0.003769,0.5,0.001885
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.24,20.31,0.003458,0.5,0.001729
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.31,20.38,0.003447,0.5,0.001723
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.95,0.024306,0.6,0.014584
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.95,2.89,-0.020339,0.6,-0.012203
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,JPMorgan US Bond,LU0070215933,240.88,243.38,0.010379,0.2,0.002076
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil B,JPMorgan US Bond,LU0070215933,243.38,239.94,-0.014134,0.2,-0.002827
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.45,13.53,0.005948,0.2,0.00119
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.53,13.35,-0.013304,0.2,-0.002661
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.95,0.024306,0.55,0.013368
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.95,2.89,-0.020339,0.55,-0.011186
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Guinness Global Innovators,IE00BQXX3F31,27.19,28.04,0.031261,0.15,0.004689
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Guinness Global Innovators,IE00BQXX3F31,28.04,27.44,-0.021398,0.15,-0.00321
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,233.88,234.32,0.001881,0.1,0.000188
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,234.32,219.55,-0.063033,0.1,-0.006303
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,JPMorgan US Bond,LU0070215933,240.88,243.38,0.010379,0.1,0.001038
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,JPMorgan US Bond,LU0070215933,243.88,239.94,-0.016155,0.1,-0.001615
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.45,13.53,0.005948,0.1,0.000595
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.53,13.35,-0.013304,0.1,-0.00133
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.95,0.024306,0.55,0.013368
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.95,2.89,-0.020339,0.55,-0.011186
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Guinness Global Innovators,IE00BQXX3F31,27.19,28.04,0.031261,0.2,0.006252
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,Guinness Global Innovators,IE00BQXX3F31,28.04,27.44,-0.021398,0.2,-0.00428
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,BlackRock Sustainable Energy,LU0124384867,16.41,16.53,0.007313,0.1,0.000731
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,BlackRock Sustainable Energy,LU0124384867,16.53,15.59,-0.056866,0.1,-0.005687
+UTMOST,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,233.88,234.32,0.001881,0.15,0.000282
+UTMOST,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,234.32,219.55,-0.063033,0.15,-0.009455
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,122.51,122.93,0.003428,0.5,0.001714
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,122.93,123.32,0.003173,0.5,0.001587
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.38,19.99,-0.019136,0.5,-0.009568
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,19.99,20.05,0.003002,0.5,0.001501
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.89,2.96,0.024221,0.6,0.014533
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.96,2.94,-0.006757,0.6,-0.004054
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,JPMorgan US Bond,LU0070215933,239.94,241.27,0.005543,0.2,0.001109
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil B,JPMorgan US Bond,LU0070215933,241.27,245.13,0.015999,0.2,0.0032
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.35,13.45,0.007491,0.2,0.001498
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.45,13.7,0.018587,0.2,0.003717
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.89,2.96,0.024221,0.55,0.013322
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.96,2.94,-0.006757,0.55,-0.003716
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Guinness Global Innovators,IE00BQXX3F31,27.44,28.74,0.047376,0.15,0.007106
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,Guinness Global Innovators,IE00BQXX3F31,28.74,28.12,-0.021573,0.15,-0.003236
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,219.55,237.74,0.082851,0.1,0.008285
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,237.74,231.67,-0.025532,0.1,-0.002553
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,JPMorgan US Bond,LU0070215933,239.94,241.27,0.005543,0.1,0.000554
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,JPMorgan US Bond,LU0070215933,241.27,245.13,0.015999,0.1,0.0016
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.35,13.45,0.007491,0.1,0.000749
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.45,13.7,0.018587,0.1,0.001859
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.89,2.96,0.024221,0.55,0.013322
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.96,2.94,-0.006757,0.55,-0.003716
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Guinness Global Innovators,IE00BQXX3F31,27.44,28.74,0.047376,0.2,0.009475
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,Guinness Global Innovators,IE00BQXX3F31,28.74,28.12,-0.021573,0.2,-0.004315
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,BlackRock Sustainable Energy,LU0124384867,15.59,15.85,0.016677,0.1,0.001668
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,BlackRock Sustainable Energy,LU0124384867,15.85,14.95,-0.056782,0.1,-0.005678
+UTMOST,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,219.55,237.74,0.082851,0.15,0.012428
+UTMOST,Portafolio Modelo Enero 2025 - Febrero 2025,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,237.74,231.67,-0.025532,0.15,-0.00383
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,123.32,123.73,0.003325,0.5,0.001662
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,123.73,124.12,0.003152,0.5,0.001576
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.05,20.11,0.002993,0.5,0.001497
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.11,20.17,0.002984,0.5,0.001492
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.94,2.88,-0.020408,0.6,-0.012245
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.88,0.0,0.6,0.0
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil B,JPMorgan US Bond,LU0070215933,245.13,245.42,0.001183,0.2,0.000237
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil B,JPMorgan US Bond,LU0070215933,245.42,246.14,0.002934,0.2,0.000587
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.7,13.6,-0.007299,0.2,-0.00146
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.6,13.74,0.010294,0.2,0.002059
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.94,2.88,-0.020408,0.55,-0.011224
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.88,0.0,0.55,0.0
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil C,Guinness Global Innovators,IE00BQXX3F31,28.12,26.33,-0.063656,0.15,-0.009548
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil C,Guinness Global Innovators,IE00BQXX3F31,26.33,26.68,0.013293,0.15,0.001994
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,231.67,224.85,-0.029438,0.1,-0.002944
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,224.85,225.22,0.001646,0.1,0.000165
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil C,JPMorgan US Bond,LU0070215933,245.13,245.42,0.001183,0.1,0.000118
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil C,JPMorgan US Bond,LU0070215933,245.42,246.14,0.002934,0.1,0.000293
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.7,13.6,-0.007299,0.1,-0.00073
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.6,13.74,0.010294,0.1,0.001029
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.94,2.88,-0.020408,0.55,-0.011224
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.88,0.0,0.55,0.0
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil D,Guinness Global Innovators,IE00BQXX3F31,28.12,26.33,-0.063656,0.2,-0.012731
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil D,Guinness Global Innovators,IE00BQXX3F31,26.33,26.68,0.013293,0.2,0.002659
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil D,BlackRock Sustainable Energy,LU0124384867,14.95,14.25,-0.046823,0.1,-0.004682
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil D,BlackRock Sustainable Energy,LU0124384867,14.25,14.61,0.025263,0.1,0.002526
+UTMOST,Portafolio Modelo Febrero 2025 - Marzo2025,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,231.67,224.85,-0.029438,0.15,-0.004416
+UTMOST,Portafolio Modelo  Marzo 2025 - Abril 2025,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,224.85,225.22,0.001646,0.15,0.000247
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,124.12,124.5,0.003062,0.5,0.001531
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,124.5,124.94,0.003534,0.5,0.001767
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.17,20.24,0.003471,0.5,0.001736
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.24,19.92,-0.01581,0.5,-0.007905
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.99,0.038194,0.6,0.022916
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.99,3.08,0.0301,0.6,0.01806
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil B,JPMorgan US Bond,LU0070215933,246.14,243.98,-0.008775,0.2,-0.001755
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil B,JPMorgan US Bond,LU0070215933,243.98,247.69,0.015206,0.2,0.003041
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.74,13.7,-0.002911,0.2,-0.000582
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.7,13.92,0.016058,0.2,0.003212
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.99,0.038194,0.55,0.021007
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.99,3.08,0.0301,0.55,0.016555
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil C,Guinness Global Innovators,IE00BQXX3F31,26.68,28.5,0.068216,0.15,0.010232
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil C,Guinness Global Innovators,IE00BQXX3F31,28.5,30.06,0.054737,0.15,0.008211
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,225.22,217.86,-0.032679,0.1,-0.003268
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,217.86,223.86,0.027541,0.1,0.002754
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil C,JPMorgan US Bond,LU0070215933,246.14,243.98,-0.008775,0.1,-0.000878
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil C,JPMorgan US Bond,LU0070215933,243.98,247.69,0.015206,0.1,0.001521
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.74,13.7,-0.002911,0.1,-0.000291
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.7,13.92,0.016058,0.1,0.001606
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.99,0.038194,0.55,0.021007
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.99,3.08,0.0301,0.55,0.016555
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil D,Guinness Global Innovators,IE00BQXX3F31,26.68,28.5,0.068216,0.2,0.013643
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil D,Guinness Global Innovators,IE00BQXX3F31,28.5,30.06,0.054737,0.2,0.010947
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil D,BlackRock Sustainable Energy,LU0124384867,14.61,16.26,0.112936,0.1,0.011294
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil D,BlackRock Sustainable Energy,LU0124384867,16.26,16.99,0.044895,0.1,0.004489
+UTMOST,Portafolio Modelo  Abril 2025 - Mayo 2025,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,225.22,217.86,-0.032679,0.15,-0.004902
+UTMOST,Portafolio Modelo  Mayo 2025 - Junio 2025,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,217.86,223.86,0.027541,0.15,0.004131
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,124.94,125.34,0.003202,0.5,0.001601
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,19.92,19.99,0.003514,0.5,0.001757
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,3.08,3.11,0.00974,0.6,0.005844
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil B,JPMorgan US Bond,LU0070215933,247.69,247.66,-0.000121,0.2,-2.4e-05
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.92,13.94,0.001437,0.2,0.000287
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,3.08,3.11,0.00974,0.55,0.005357
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil C,Guinness Global Innovators,IE00BQXX3F31,30.06,30.04,-0.000665,0.15,-0.0001
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil C,Invesco Global Healthcare Innovation,LU1775952176,223.86,222.21,-0.007371,0.1,-0.000737
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil C,JPMorgan US Bond,LU0070215933,247.69,247.66,-0.000121,0.1,-1.2e-05
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil C,Jupiter Dynamic Bond,LU0853555463,13.92,13.94,0.001437,0.1,0.000144
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,3.08,3.11,0.00974,0.55,0.005357
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil D,Guinness Global Innovators,IE00BQXX3F31,30.06,30.04,-0.000665,0.2,-0.000133
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil D,BlackRock Sustainable Energy,LU0124384867,16.99,18.14,0.067687,0.1,0.006769
+UTMOST,Portafolio Modelo  Junio 2025 - Julio 2025,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,223.86,222.21,-0.007371,0.15,-0.001106
+Utmost Below,Portafolio Modelo Jun 2023 - Junio 2024,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,114.04,119.57,0.048492,0.5,0.024246
+Utmost Below,Portafolio Modelo Jun 2023 - Junio 2024,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,19.99,19.93,-0.003002,0.5,-0.001501
+Utmost Below,Portafolio Modelo Jun 2023 - Junio 2024,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.51,2.83,0.12749,0.6,0.076494
+Utmost Below,Portafolio Modelo Jun 2023 - Junio 2024,Perfil B,JPMorgan US Bond,LU0070215933,229.71,235.06,0.02329,0.2,0.004658
+Utmost Below,Portafolio Modelo Jun 2023 - Junio 2024,Perfil B,Invesco Bond Fund,LU1775948141,10.25,10.38,0.012683,0.2,0.002537
+Utmost Below,Portafolio Modelo Jun 2023 - Junio 2024,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.51,2.83,0.12749,0.6,0.076494
+Utmost Below,Portafolio Modelo Jun 2023 - Junio 2024,Perfil C,Guinness Global Innovators,IE00BQXX3F31,22.08,27.33,0.237772,0.2,0.047554
+Utmost Below,Portafolio Modelo Jun 2023 - Junio 2024,Perfil C,Invesco Bond Fund,LU1775948141,10.25,10.38,0.012683,0.2,0.002537
+Utmost Below,Portafolio Modelo Jun 2023 - Junio 2024,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.51,2.83,0.12749,0.6,0.076494
+Utmost Below,Portafolio Modelo Jun 2023 - Junio 2024,Perfil D,Guinness Global Innovators,IE00BQXX3F31,22.08,27.33,0.237772,0.2,0.047554
+Utmost Below,Portafolio Modelo Jun 2023 - Junio 2024,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,208.95,238.37,0.140799,0.2,0.02816
+Utmost Below,Portafolio Modelo Jun 2024 - Julio 2024,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,119.57,120.12,0.0046,0.5,0.0023
+Utmost Below,Portafolio Modelo Jun 2024 - Julio 2024,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,19.93,19.99,0.003011,0.5,0.001505
+Utmost Below,Portafolio Modelo Jun 2024 - Julio 2024,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.83,2.82,-0.003534,0.6,-0.00212
+Utmost Below,Portafolio Modelo Jun 2024 - Julio 2024,Perfil B,JPMorgan US Bond,LU0070215933,235.06,241.18,0.026036,0.2,0.005207
+Utmost Below,Portafolio Modelo Jun 2024 - Julio 2024,Perfil B,Invesco Bond Fund,LU1775948141,10.38,10.76,0.036609,0.2,0.007322
+Utmost Below,Portafolio Modelo Jun 2024 - Julio 2024,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.83,2.82,-0.003534,0.6,-0.00212
+Utmost Below,Portafolio Modelo Jun 2024 - Julio 2024,Perfil C,Guinness Global Innovators,IE00BQXX3F31,27.33,26.34,-0.036224,0.2,-0.007245
+Utmost Below,Portafolio Modelo Jun 2024 - Julio 2024,Perfil C,Invesco Bond Fund,LU1775948141,10.38,10.76,0.036609,0.2,0.007322
+Utmost Below,Portafolio Modelo Jun 2024 - Julio 2024,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.83,2.82,-0.003534,0.6,-0.00212
+Utmost Below,Portafolio Modelo Jun 2024 - Julio 2024,Perfil D,Guinness Global Innovators,IE00BQXX3F31,27.33,26.34,-0.036224,0.2,-0.007245
+Utmost Below,Portafolio Modelo Jun 2024 - Julio 2024,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,238.37,240.02,0.006922,0.2,0.001384
+Utmost Below,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,120.66,121.21,0.004558,0.5,0.002279
+Utmost Below,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.09,20.17,0.003982,0.5,0.001991
+Utmost Below,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.87,2.92,0.017422,0.6,0.010453
+Utmost Below,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,JPMorgan US Bond,LU0070215933,245.01,248.09,0.012571,0.2,0.002514
+Utmost Below,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.74,13.84,0.007278,0.2,0.001456
+Utmost Below,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.87,2.92,0.017422,0.6,0.010453
+Utmost Below,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Guinness Global Innovators,IE00BQXX3F31,27.52,27.58,0.00218,0.2,0.000436
+Utmost Below,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,JPMorgan US Bond,LU0070215933,245.01,248.09,0.012571,0.2,0.002514
+Utmost Below,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.87,2.92,0.017422,0.6,0.010453
+Utmost Below,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Guinness Global Innovators,IE00BQXX3F31,27.52,27.58,0.00218,0.2,0.000436
+Utmost Below,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,250.51,243.11,-0.02954,0.2,-0.005908
+Utmost Below,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,121.62,122.05,0.003536,0.5,0.001768
+Utmost Below,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.24,20.31,0.003458,0.5,0.001729
+Utmost Below,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.95,0.024306,0.6,0.014584
+Utmost Below,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,JPMorgan US Bond,LU0070215933,240.88,243.38,0.010379,0.2,0.002076
+Utmost Below,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.45,13.53,0.005948,0.2,0.00119
+Utmost Below,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.95,0.024306,0.6,0.014584
+Utmost Below,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Guinness Global Innovators,IE00BQXX3F31,27.19,28.04,0.031261,0.2,0.006252
+Utmost Below,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,JPMorgan US Bond,LU0070215933,240.88,243.38,0.010379,0.2,0.002076
+Utmost Below,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.95,0.024306,0.6,0.014584
+Utmost Below,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Guinness Global Innovators,IE00BQXX3F31,27.19,28.04,0.031261,0.2,0.006252
+Utmost Below,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,233.88,234.32,0.001881,0.2,0.000376
+Utmost Below,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,122.51,122.93,0.003428,0.5,0.001714
+Utmost Below,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.38,19.99,-0.019136,0.5,-0.009568
+Utmost Below,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.89,2.96,0.024221,0.6,0.014533
+Utmost Below,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,JPMorgan US Bond,LU0070215933,239.94,241.27,0.005543,0.2,0.001109
+Utmost Below,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.35,13.45,0.007491,0.2,0.001498
+Utmost Below,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.89,2.96,0.024221,0.6,0.014533
+Utmost Below,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Guinness Global Innovators,IE00BQXX3F31,27.44,28.74,0.047376,0.2,0.009475
+Utmost Below,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,JPMorgan US Bond,LU0070215933,239.94,241.27,0.005543,0.2,0.001109
+Utmost Below,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.89,2.96,0.024221,0.6,0.014533
+Utmost Below,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Guinness Global Innovators,IE00BQXX3F31,27.44,28.74,0.047376,0.2,0.009475
+Utmost Below,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,219.55,237.74,0.082851,0.2,0.01657
+Utmost Below,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,123.32,123.73,0.003325,0.5,0.001662
+Utmost Below,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.05,20.11,0.002993,0.5,0.001497
+Utmost Below,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.94,2.88,-0.020408,0.6,-0.012245
+Utmost Below,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil B,JPMorgan US Bond,LU0070215933,245.13,245.42,0.001183,0.2,0.000237
+Utmost Below,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.7,13.6,-0.007299,0.2,-0.00146
+Utmost Below,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.94,2.88,-0.020408,0.6,-0.012245
+Utmost Below,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil C,Guinness Global Innovators,IE00BQXX3F31,28.12,26.33,-0.063656,0.2,-0.012731
+Utmost Below,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil C,JPMorgan US Bond,LU0070215933,245.13,245.42,0.001183,0.2,0.000237
+Utmost Below,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.94,2.88,-0.020408,0.6,-0.012245
+Utmost Below,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil D,Guinness Global Innovators,IE00BQXX3F31,28.12,26.33,-0.063656,0.2,-0.012731
+Utmost Below,Portafolio Modelo Febrero 2025 - Marzo 2025,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,231.67,224.85,-0.029438,0.2,-0.005888
+Utmost Below,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,124.12,124.5,0.003062,0.5,0.001531
+Utmost Below,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,20.17,20.24,0.003471,0.5,0.001736
+Utmost Below,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.99,0.038194,0.6,0.022916
+Utmost Below,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil B,JPMorgan US Bond,LU0070215933,246.14,243.98,-0.008775,0.2,-0.001755
+Utmost Below,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.74,13.7,-0.002911,0.2,-0.000582
+Utmost Below,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.99,0.038194,0.6,0.022916
+Utmost Below,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,Guinness Global Innovators,IE00BQXX3F31,26.68,28.5,0.068216,0.2,0.013643
+Utmost Below,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,JPMorgan US Bond,LU0070215933,246.14,243.98,-0.008775,0.2,-0.001755
+Utmost Below,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,2.88,2.99,0.038194,0.6,0.022916
+Utmost Below,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,Guinness Global Innovators,IE00BQXX3F31,26.68,28.5,0.068216,0.2,0.013643
+Utmost Below,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,225.22,217.86,-0.032679,0.2,-0.006536
+Utmost Below,Portafolio Modelo junio 2025 - July 2025,Perfil A,Schroder ISF US Dollar Liquidity,LU0136043808,124.94,125.34,0.003202,0.5,0.001601
+Utmost Below,Portafolio Modelo junio 2025 - July 2025,Perfil A,Ninety One GSF US Dollar Money,LU0345758782,19.92,19.99,0.003514,0.5,0.001757
+Utmost Below,Portafolio Modelo junio 2025 - July 2025,Perfil B,Canaccord Genuity Opportunity,IE00B3BRDK12,3.08,3.11,0.00974,0.6,0.005844
+Utmost Below,Portafolio Modelo junio 2025 - July 2025,Perfil B,JPMorgan US Bond,LU0070215933,247.09,247.66,0.002307,0.2,0.000461
+Utmost Below,Portafolio Modelo junio 2025 - July 2025,Perfil B,Jupiter Dynamic Bond,LU0853555463,13.92,13.94,0.001437,0.2,0.000287
+Utmost Below,Portafolio Modelo junio 2025 - July 2025,Perfil C,Canaccord Genuity Opportunity,IE00B3BRDK12,3.08,3.11,0.00974,0.6,0.005844
+Utmost Below,Portafolio Modelo junio 2025 - July 2025,Perfil C,Guinness Global Innovators,IE00BQXX3F31,30.06,30.04,-0.000665,0.2,-0.000133
+Utmost Below,Portafolio Modelo junio 2025 - July 2025,Perfil C,JPMorgan US Bond,LU0070215933,247.09,247.66,0.002307,0.2,0.000461
+Utmost Below,Portafolio Modelo junio 2025 - July 2025,Perfil D,Canaccord Genuity Opportunity,IE00B3BRDK12,3.08,3.11,0.00974,0.6,0.005844
+Utmost Below,Portafolio Modelo junio 2025 - July 2025,Perfil D,Guinness Global Innovators,IE00BQXX3F31,30.06,30.04,-0.000665,0.2,-0.000133
+Utmost Below,Portafolio Modelo junio 2025 - July 2025,Perfil D,Invesco Global Healthcare Innovation,LU1775952176,223.86,222.21,-0.007371,0.2,-0.001474
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil A,Harmony Portfolios US Dollar Balanced,MC144S2 LU0651986225,1.44,1.6,0.111111,0.5,0.055556
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil A,Harmony Portfolios US Dollar Balanced,MC144S2 LU0651986225,1.6,1.49,-0.06875,0.25,-0.017188
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil A,Pimco Global Investment Grade Credit USD,MC247S2 IE00B3K7XK29,19.51,19.58,0.003588,0.2,0.000718
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil A,Pimco Global Investment Grade Credit USD,MC247S2 IE00B3K7XK29,19.58,17.26,-0.118488,0.25,-0.029622
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil A,Invesco Bond,MC21S2 LU1775947762,30.19,30.26,0.002319,0.2,0.000464
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil A,Invesco Bond,MC21S2 LU1775947762,30.26,24.26,-0.198282,0.25,-0.049571
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil A,Ninety One GSF Global Franchise A Acc USD,MC186S2 LU0426412945,68.39,77.51,0.133353,0.1,0.013335
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil A,Ninety One GSF Global Franchise A Acc USD,MC186S2 LU0426412945,77.51,71.83,-0.073281,0.25,-0.01832
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil B,Pimco Global Investment Grade Credit USD,MC247S2 IE00B3K7XK29,19.51,19.58,0.003588,0.2,0.000718
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,Pimco Global Investment Grade Credit USD,MC247S2 IE00B3K7XK29,19.58,17.26,-0.118488,0.15,-0.017773
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil B,Ninety One GSF Global Franchise A Acc USD,MC186S2 LU0426412945,68.39,77.51,0.133353,0.2,0.026671
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,Invesco Bond,MC21S2 LU1775947762,30.26,24.26,-0.198282,0.15,-0.029742
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil B,Harmony USD Growth,MC145S2 LU0651986738,1.7,1.97,0.158824,0.5,0.079412
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,Ninety One GSF Global Franchise A Acc USD,MC186S2 LU0426412945,77.51,71.83,-0.073281,0.1,-0.007328
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil B,Fidelity Global Technology USD,MC243S2 LU1046421795,32.81,43.84,0.336178,0.05,0.016809
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,Harmony USD Growth,MC145S2 LU0651986738,1.97,1.82,-0.076142,0.35,-0.02665
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil B,Invesco Global Healthcare,MC22S2 LU1775982595,166.59,190.92,0.146047,0.05,0.007302
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,Fidelity Emerging Markets USD,MC229S2 LU0261950470,27.17,19.51,-0.281929,0.1,-0.028193
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,BlackRock World Gold,MC147S2 LU0055631609,40.98,38.79,-0.053441,0.05,-0.002672
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,JP Morgan Natural Resources,MB28S2 LU0900828681,102.73,140.55,0.36815,0.05,0.018408
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil C,Ninety One GSF Global Franchise A Acc USD,MC186S2 LU0426412945,68.39,77.51,0.133353,0.15,0.020003
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil B,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,21.93,18.92,-0.137255,0.05,-0.006863
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil C,Harmony USD Growth,MC145S2 LU0651986738,1.7,1.97,0.158824,0.5,0.079412
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil C,Fidelity Emerging Markets USD,MC229S2 LU0261950470,21.01,27.17,0.293194,0.1,0.029319
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil C,Fidelity Global Technology USD,MC243S2 LU1046421795,32.81,43.84,0.336178,0.1,0.033618
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,Harmony USD Growth,MC145S2 LU0651986738,1.97,1.82,-0.076142,0.35,-0.02665
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil C,Invesco Global Healthcare,MC22S2 LU1775982595,166.59,190.92,0.146047,0.07,0.010223
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,Fidelity Emerging Markets USD,MC229S2 LU0261950470,27.17,19.51,-0.281929,0.15,-0.042289
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil C,BlackRock World Gold,MC147S2 LU0055631609,49.67,39.98,-0.195088,0.04,-0.007804
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,BlackRock World Gold,MC147S2 LU0055631609,40.98,38.79,-0.053441,0.05,-0.002672
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil C,JP Morgan Natural Resources,MB28S2 LU0900828681,82.04,102.73,0.252194,0.04,0.010088
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,JP Morgan Natural Resources,MB28S2 LU0900828681,102.73,140.55,0.36815,0.05,0.018408
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,21.93,18.92,-0.137255,0.1,-0.013725
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,Guinness Global Equity Income USD,MC216S2 IE00BVYPNW00,16.87,17.41,0.032009,0.1,0.003201
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil D,Ninety One GSF Global Franchise A Acc USD,MC186S2 LU0426412945,68.39,77.51,0.133353,0.1,0.013335
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,BlackRock Sustainable Energy Fund USD,MC201S2 LU0124384867,17.08,15.29,-0.104801,0.1,-0.01048
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil D,Harmony USD Growth,MC145S2 LU0651986738,1.7,1.97,0.158824,0.4,0.06353
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil C,Jupiter Global Ecology Growth USD,MC118S2 LU0300038618,16.2,14.29,-0.117901,0.1,-0.01179
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil D,Fidelity Emerging Markets USD,MC229S2 LU0261950470,21.01,27.17,0.293194,0.15,0.043979
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil D,Fidelity Global Technology USD,MC243S2 LU1046421795,32.81,43.84,0.336178,0.15,0.050427
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil D,Invesco Global Healthcare,MC22S2 LU1775982595,166.59,190.92,0.146047,0.1,0.014605
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,Harmony USD Growth,MC145S2 LU0651986738,1.97,1.82,-0.076142,0.15,-0.011421
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil D,BlackRock World Gold,MC147S2 LU0055631609,49.67,39.98,-0.195088,0.05,-0.009754
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,Fidelity Emerging Markets USD,MC229S2 LU0261950470,27.17,19.51,-0.281929,0.15,-0.042289
+Hansard,Portafolio Modelo Julio 2020 - Marzo 2021,Perfil D,JP Morgan Natural Resources,MB28S2 LU0900828681,82.04,102.73,0.252194,0.05,0.01261
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,BlackRock World Gold,MC147S2 LU0055631609,40.98,38.79,-0.053441,0.1,-0.005344
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,JP Morgan Natural Resources,MB28S2 LU0900828681,102.73,140.55,0.36815,0.1,0.036815
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,21.93,18.92,-0.137255,0.13,-0.017843
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,Guinness Global Equity Income USD,MC216S2 IE00BVYPNW00,16.87,17.41,0.032009,0.13,0.004161
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,BlackRock Sustainable Energy Fund USD,MC201S2 LU0124384867,17.08,15.29,-0.104801,0.12,-0.012576
+Hansard,Portafolio Modelo Marzo 2021 - Marzo 2022,Perfil D,Jupiter Global Ecology Growth USD,MC118S2 LU0300038618,16.2,14.29,-0.117901,0.12,-0.014148
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil A,Harmony Portfolios US Dollar Balanced,MC144S2 LU0651986225,1.49,1.45,-0.026846,0.3,-0.008054
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil A,CGWM Diversity USD,MC220S2 IE00B3BRDM36,1.66,1.67,0.006024,0.7,0.004217
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,Harmony Portfolios US Dollar Balanced,MC144S2 LU0651986225,1.49,1.45,-0.026846,0.1,-0.002685
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,CGWM Diversity USD,MC220S2 IE00B3BRDM36,1.66,1.67,0.006024,0.45,0.002711
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil A,US Dollar Deposit USD,C04S2,1.5,1.55,0.033333,1,0.033333
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,JPMorgan Asian Smaller Companies USD,MC41S2 GB00B1FH3G96,2.28,2.09,-0.083333,0.05,-0.004167
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,Janus Henderson Global Sustainable Equity GBP,MB48S2 GB0005027221,481.1,495.3,0.029516,0.1,0.002952
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,JP Morgan US Select Equity Fund USD,MC202S2 LU0070214290,585.62,626.97,0.070609,0.15,0.010591
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil B,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.51,2.85,0.135458,0.6,0.081275
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,BlackRock World Gold,MC147S2 LU0055631609,38.79,34.85,-0.101573,0.05,-0.005079
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil B,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,10.5,11.18,0.064762,0.2,0.012952
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil B,JP Morgan Natural Resources GBP,MB28S2 LU0900828681,140.55,135.59,-0.03529,0.1,-0.003529
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil B,Invesco Bond USD,MC21S2 LU1775947762,23.12,23.28,0.00692,0.2,0.001384
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,CGWM Diversity USD,MC220S2 IE00B3BRDM36,1.66,1.67,0.006024,0.3,0.001807
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.51,2.85,0.135458,0.55,0.074502
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,JPMorgan Asian Smaller Companies USD,MC41S2 GB00B1FH3G96,2.28,2.09,-0.083333,0.05,-0.004167
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,22.08,26.87,0.216938,0.15,0.032541
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,Janus Henderson Global Sustainable Equity GBP,MB48S2 GB0005027221,481.1,495.3,0.029516,0.15,0.004427
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil C,Jupiter Global Ecology Growth USD,MC118S2 LU0300038618,15.65,17.08,0.091374,0.1,0.009137
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,JP Morgan US Select Equity Fund USD,MC202S2 LU0070214290,585.62,626.97,0.070609,0.2,0.014122
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,10.5,11.18,0.064762,0.1,0.006476
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,BlackRock World Gold,MC147S2 LU0055631609,38.79,34.85,-0.101573,0.05,-0.005079
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,23.12,23.28,0.00692,0.1,0.000692
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,JP Morgan Natural Resources GBP,MB28S2 LU0900828681,140.55,135.59,-0.03529,0.1,-0.003529
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,Guinness Global Equity Income USD,MC216S2 IE00BVYPNW00,17.41,18.95,0.088455,0.1,0.008846
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil C,Jupiter Global Ecology Growth USD,MC118S2 LU0300038618,14.29,15.65,0.095171,0.05,0.004759
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.51,2.85,0.135458,0.55,0.074502
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,22.08,26.87,0.216938,0.15,0.032541
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil D,Jupiter Global Ecology Growth USD,MC118S2 LU0300038618,15.65,17.08,0.091374,0.1,0.009137
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,CGWM Diversity USD,MC220S2 IE00B3BRDM36,1.66,1.67,0.006024,0.15,0.000904
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil D,JPM Global Natural Resources USD,MB28S2 LU0900828681,135.59,141.38,0.042702,0.1,0.00427
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,JPMorgan Asian Smaller Companies USD,MC41S2 GB00B1FH3G96,2.28,2.09,-0.083333,0.1,-0.008333
+Hansard,Portafolio Modelo Junio 2023 - Junio 2024,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,177.82,205.4,0.155101,0.1,0.01551
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,Janus Henderson Global Sustainable Equity GBP,MB48S2 GB0005027221,481.1,495.3,0.029516,0.2,0.005903
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,JP Morgan US Select Equity Fund USD,MC202S2 LU0070214290,585.62,626.97,0.070609,0.25,0.017652
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,BlackRock World Gold,MC147S2 LU0055631609,38.79,34.85,-0.101573,0.1,-0.010157
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,JP Morgan Natural Resources GBP,MB28S2 LU0900828681,140.55,135.59,-0.03529,0.1,-0.003529
+Hansard,Portafolio Modelo Marzo 2022 - Jun 2023,Perfil D,Jupiter Global Ecology Growth USD,MC118S2 LU0300038618,14.29,15.65,0.095171,0.1,0.009517
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil A,US Dollar Deposit USD,C04S2,1.55,1.55,0.0,1,0.0
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil A,US Dollar Deposit USD,C04S2,1.55,1.55,0.0,1,0.0
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil B,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.85,2.82,-0.010526,0.6,-0.006316
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil B,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.82,2.87,0.01773,0.6,0.010638
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil B,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.18,11.28,0.008945,0.2,0.001789
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil B,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.28,11.34,0.005319,0.2,0.001064
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil B,Invesco Bond USD,MC21S2 LU1775947762,23.28,23.49,0.009021,0.2,0.001804
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil B,Invesco Bond USD,MC21S2 LU1775947762,23.49,24.17,0.028948,0.2,0.00579
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.85,2.82,-0.010526,0.55,-0.005789
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.82,2.87,0.01773,0.55,0.009751
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,26.87,26.34,-0.019725,0.15,-0.002959
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,26.34,27.52,0.044799,0.15,0.00672
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,Jupiter Global Ecology Growth USD,MC118S2 LU0300038618,17.08,17.37,0.016979,0.1,0.001698
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,Jupiter Global Ecology Growth USD,MC118S2 LU0300038618,17.37,17.74,0.021301,0.1,0.00213
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.18,11.28,0.008945,0.1,0.000895
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.28,11.34,0.005319,0.1,0.000532
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,23.28,23.49,0.009021,0.1,0.000902
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,23.49,24.17,0.028948,0.1,0.002895
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.85,2.82,-0.010526,0.55,-0.005789
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.82,2.87,0.01773,0.55,0.009751
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,26.87,26.34,-0.019725,0.15,-0.002959
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,26.34,27.52,0.044799,0.15,0.00672
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,Jupiter Global Ecology Growth USD,MC118S2 LU0300038618,17.08,17.37,0.016979,0.1,0.001698
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,Jupiter Global Ecology Growth USD,MC118S2 LU0300038618,17.37,17.74,0.021301,0.1,0.00213
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,JPM Global Natural Resources USD,MB28S2 LU0900828681,141.38,140.38,-0.007073,0.1,-0.000707
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,JPM Global Natural Resources USD,MB28S2 LU0900828681,140.38,136.57,-0.027141,0.1,-0.002714
+Hansard,Portafolio Modelo Junio 2024 - Julio 2024,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,205.4,203.04,-0.01149,0.1,-0.001149
+Hansard,Portafolio Modelo Julio 2024 - Agosto 2024,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,203.04,211.81,0.043193,0.1,0.004319
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil A,US Dollar Deposit USD,C04S2,1.55,1.55,0.0,1,0.0
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil A,US Dollar Deposit USD,C04S2,1.55,1.55,0.0,1,0.0
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.87,2.92,0.017422,0.6,0.010453
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil B,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.92,2.88,-0.013699,0.6,-0.008219
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.34,11.44,0.008818,0.2,0.001764
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil B,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.44,11.31,-0.011364,0.2,-0.002273
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil B,Invesco Bond USD,MC21S2 LU1775947762,24.17,24.23,0.002482,0.2,0.000496
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil B,Invesco Bond USD,MC21S2 LU1775947762,24.23,23.16,-0.04416,0.2,-0.008832
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.87,2.92,0.017422,0.55,0.009582
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.92,2.88,-0.013699,0.55,-0.007534
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,27.52,27.58,0.00218,0.15,0.000327
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,27.58,27.19,-0.014141,0.15,-0.002121
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,CT Global Select USD,MC248S2 LU1864957219,5.26,5.3,0.007605,0.1,0.00076
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,CT Global Select USD,MC248S2 LU1864957219,5.3,5.32,0.003774,0.1,0.000377
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.34,11.44,0.008818,0.1,0.000882
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.44,11.31,-0.011364,0.1,-0.001136
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,24.17,24.23,0.002482,0.1,0.000248
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,24.23,23.16,-0.04416,0.1,-0.004416
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.87,2.92,0.017422,0.55,0.009582
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.92,2.88,-0.013699,0.55,-0.007534
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,27.52,27.58,0.00218,0.15,0.000327
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,27.58,27.19,-0.014141,0.15,-0.002121
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,CT Global Select USD,MC248S2 LU1864957219,5.26,5.3,0.007605,0.1,0.00076
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,CT Global Select USD,MC248S2 LU1864957219,5.3,5.32,0.003774,0.1,0.000377
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,BlackRock Sustainable Energy USD,MC201S2 LU0124384867,17.07,17.46,0.022847,0.1,0.002285
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,BlackRock Sustainable Energy USD,MC201S2 LU0124384867,17.46,16.41,-0.060137,0.1,-0.006014
+Hansard,Portafolio Modelo Agosto 2024 - Septiembre 2024,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,211.81,205.44,-0.030074,0.1,-0.003007
+Hansard,Portafolio Modelo Septiembre 2024 - Octubre 2024,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,205.44,197.54,-0.038454,0.1,-0.003845
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil A,US Dollar Deposit USD,C04S2,1.55,1.55,0.0,1,0.0
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil A,US Dollar Deposit USD,C04S2,1.55,1.55,0.0,1,0.0
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.88,2.94,0.020833,0.6,0.0125
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil B,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.94,2.89,-0.017007,0.6,-0.010204
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.31,11.42,0.009726,0.2,0.001945
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil B,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.42,11.31,-0.009632,0.2,-0.001926
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil B,Invesco Bond USD,MC21S2 LU1775947762,23.16,23.25,0.003886,0.2,0.000777
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil B,Invesco Bond USD,MC21S2 LU1775947762,23.25,22.69,-0.024086,0.2,-0.004817
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.88,2.94,0.020833,0.55,0.011458
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.94,2.89,-0.017007,0.55,-0.009354
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,27.19,28.04,0.031261,0.15,0.004689
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,28.04,27.44,-0.021398,0.15,-0.00321
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,CT Global Select USD,MC248S2 LU1864957219,5.32,5.39,0.013158,0.1,0.001316
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,CT Global Select USD,MC248S2 LU1864957219,5.39,5.26,-0.024119,0.1,-0.002412
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.31,11.42,0.009726,0.1,0.000973
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.42,11.31,-0.009632,0.1,-0.000963
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,23.16,23.25,0.003886,0.1,0.000389
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,23.25,22.69,-0.024086,0.1,-0.002409
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.88,2.94,0.020833,0.55,0.011458
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.94,2.89,-0.017007,0.55,-0.009354
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,27.19,28.04,0.031261,0.15,0.004689
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,28.04,27.44,-0.021398,0.15,-0.00321
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,CT Global Select USD,MC248S2 LU1864957219,5.32,5.39,0.013158,0.1,0.001316
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,CT Global Select USD,MC248S2 LU1864957219,5.39,5.26,-0.024119,0.1,-0.002412
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,BlackRock Sustainable Energy USD,MC201S2 LU0124384867,16.41,16.53,0.007313,0.1,0.000731
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,BlackRock Sustainable Energy USD,MC201S2 LU0124384867,16.53,15.59,-0.056866,0.1,-0.005687
+Hansard,Portafolio Modelo Octubre 2024 - Noviembre 2024,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,197.54,197.82,0.001417,0.1,0.000142
+Hansard,Portafolio Modelo Noviembre 2024 - Diciembre 2024,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,197.82,185.25,-0.063543,0.1,-0.006354
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil A,US Dollar Deposit USD,C04S2,1.55,1.55,0.0,1,0.0
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil A,US Dollar Deposit USD,C04S2,1.55,1.55,0.0,1,0.0
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.89,2.96,0.024221,0.6,0.014533
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil A,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.96,2.94,-0.006757,0.6,-0.004054
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.31,11.37,0.005305,0.2,0.001061
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil A,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.37,11.48,0.009675,0.2,0.001935
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil B,Invesco Bond USD,MC21S2 LU1775947762,22.69,22.8,0.004848,0.2,0.00097
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil A,Invesco Bond USD,MC21S2 LU1775947762,22.8,23.1,0.013158,0.2,0.002632
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.89,2.96,0.024221,0.55,0.013322
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.96,2.94,-0.006757,0.55,-0.003716
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,27.44,28.74,0.047376,0.15,0.007106
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,28.74,28.12,-0.021573,0.15,-0.003236
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,CT Global Select USD,MC248S2 LU1864957219,5.26,5.45,0.036122,0.1,0.003612
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil C,CT Global Select USD,MC248S2 LU1864957219,5.45,5.38,-0.012844,0.1,-0.001284
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.31,11.37,0.005305,0.1,0.000531
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.37,11.48,0.009675,0.1,0.000968
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,22.69,22.8,0.004848,0.1,0.000485
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,22.8,23.1,0.013158,0.1,0.001316
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.89,2.96,0.024221,0.55,0.013322
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.96,2.94,-0.006757,0.55,-0.003716
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,27.44,28.74,0.047376,0.15,0.007106
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,28.74,28.12,-0.021573,0.15,-0.003236
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,CT Global Select USD,MC248S2 LU1864957219,5.26,5.45,0.036122,0.1,0.003612
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil D,CT Global Select USD,MC248S2 LU1864957219,5.45,5.38,-0.012844,0.1,-0.001284
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,BlackRock Sustainable Energy USD,MC201S2 LU0124384867,15.59,15.85,0.016677,0.1,0.001668
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil D,BlackRock Sustainable Energy USD,MC201S2 LU0124384867,15.85,14.95,-0.056782,0.1,-0.005678
+Hansard,Portafolio Modelo Diciembre 2024 - Enero 2025,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,185.25,200.5,0.082321,0.1,0.008232
+Hansard,Portafolio Modelo Enero 2025- Febrero 2025,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,200.5,195.29,-0.025985,0.1,-0.002599
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil A,US Dollar Deposit USD,C04S2,1.55,1.55,0.0,1,0.0
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil A,US Dollar Deposit USD,C04S2,1.55,1.55,0.0,1,0.0
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil A,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.94,2.88,-0.020408,0.6,-0.012245
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil A,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.88,2.88,0.0,0.6,0.0
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil A,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.48,11.39,-0.00784,0.2,-0.001568
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil A,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.39,11.57,0.015803,0.2,0.003161
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil A,Invesco Bond USD,MC21S2 LU1775947762,23.1,22.93,-0.007359,0.2,-0.001472
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil A,Invesco Bond USD,MC21S2 LU1775947762,22.93,23.69,0.033144,0.2,0.006629
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.94,2.88,-0.020408,0.55,-0.011224
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.88,2.88,0.0,0.55,0.0
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,28.12,26.33,-0.063656,0.15,-0.009548
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,26.33,26.68,0.013293,0.15,0.001994
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil C,CT Global Select USD,MC248S2 LU1864957219,5.38,5.07,-0.057621,0.1,-0.005762
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,CT Global Select USD,MC248S2 LU1864957219,5.07,5.1,0.005917,0.1,0.000592
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.48,11.39,-0.00784,0.1,-0.000784
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.39,11.57,0.015803,0.1,0.00158
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,23.1,22.93,-0.007359,0.1,-0.000736
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,22.93,23.69,0.033144,0.1,0.003314
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.94,2.88,-0.020408,0.55,-0.011224
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.88,2.88,0.0,0.55,0.0
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,28.12,26.33,-0.063656,0.15,-0.009548
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,26.33,26.68,0.013293,0.15,0.001994
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil D,CT Global Select USD,MC248S2 LU1864957219,5.38,5.07,-0.057621,0.1,-0.005762
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,CT Global Select USD,MC248S2 LU1864957219,5.07,5.1,0.005917,0.1,0.000592
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil D,BlackRock Sustainable Energy USD,MC201S2 LU0124384867,14.95,14.25,-0.046823,0.1,-0.004682
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,BlackRock Sustainable Energy USD,MC201S2 LU0124384867,14.25,14.61,0.025263,0.1,0.002526
+Hansard,Portafolio Modelo Febrero 2025- Marzo 2025,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,195.29,189.45,-0.029904,0.1,-0.00299
+Hansard,Portafolio Modelo Marzo 2025 - Abril 2025,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,189.45,189.66,0.001108,0.1,0.000111
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil A,US Dollar Deposit USD,C04S2,1.55,1.55,0.0,1,0.0
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil A,US Dollar Deposit USD,C04S2,1.55,1.55,0.0,1,0.0
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil A,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.88,2.99,0.038194,0.6,0.022916
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil A,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.99,3.08,0.0301,0.6,0.01806
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil A,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.57,11.48,-0.007779,0.2,-0.001556
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil A,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.48,11.65,0.014808,0.2,0.002962
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil A,Invesco Bond USD,MC21S2 LU1775947762,23.69,23.46,-0.009709,0.2,-0.001942
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil A,Invesco Bond USD,MC21S2 LU1775947762,23.46,24.04,0.024723,0.2,0.004945
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.88,2.99,0.038194,0.55,0.021007
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.99,3.08,0.0301,0.55,0.016555
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,26.68,28.5,0.068216,0.15,0.010232
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,28.5,30.06,0.054737,0.15,0.008211
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,CT Global Select USD,MC248S2 LU1864957219,5.1,5.41,0.060784,0.1,0.006078
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,CT Global Select USD,MC248S2 LU1864957219,5.41,5.65,0.044362,0.1,0.004436
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.57,11.48,-0.007779,0.1,-0.000778
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.48,11.65,0.014808,0.1,0.001481
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,23.69,23.46,-0.009709,0.1,-0.000971
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,23.46,24.04,0.024723,0.1,0.002472
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.88,2.99,0.038194,0.55,0.021007
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.99,3.08,0.0301,0.55,0.016555
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,26.68,28.5,0.068216,0.15,0.010232
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,28.5,30.06,0.054737,0.15,0.008211
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,CT Global Select USD,MC248S2 LU1864957219,5.1,5.41,0.060784,0.1,0.006078
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,CT Global Select USD,MC248S2 LU1864957219,5.41,5.65,0.044362,0.1,0.004436
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,BlackRock Sustainable Energy USD,MC201S2 LU0124384867,14.61,16.26,0.112936,0.1,0.011294
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,BlackRock Sustainable Energy USD,MC201S2 LU0124384867,16.26,16.99,0.044895,0.1,0.004489
+Hansard,Portafolio Modelo Abril 2025 - Mayo 2025,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,189.66,183.38,-0.033112,0.1,-0.003311
+Hansard,Portafolio Modelo Mayo 2025 - Junio 2025,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,183.38,188.33,0.026993,0.1,0.002699
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil A,US Dollar Deposit USD,C04S2,1.55,,,1,
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil A,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.99,3.11,0.040134,0.6,0.02408
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil A,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.48,11.65,0.014808,0.2,0.002962
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil A,Invesco Bond USD,MC21S2 LU1775947762,23.46,23.53,0.002984,0.2,0.000597
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.99,3.11,0.040134,0.55,0.022074
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,28.5,30.04,0.054035,0.15,0.008105
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,CT Global Select USD,MC248S2 LU1864957219,5.41,5.79,0.07024,0.1,0.007024
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,Fidelity Sustainable Strategic Bond USD,MC221S2 LU0594300849,11.48,11.65,0.014808,0.1,0.001481
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil C,Invesco Bond USD,MC21S2 LU1775947762,23.46,23.53,0.002984,0.1,0.000298
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,Canaccord Genuity Opportunity USD,MC156S2 IE00B3BRDK12,2.99,3.11,0.040134,0.55,0.022074
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,Guinness Global Innovators USD,MC217S2 IE00BQXX3F31,28.5,30.04,0.054035,0.15,0.008105
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,CT Global Select USD,MC248S2 LU1864957219,5.41,5.79,0.07024,0.1,0.007024
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,BlackRock Sustainable Energy USD,MC201S2 LU0124384867,16.26,18.14,0.115621,0.1,0.011562
+Hansard,Portafolio Modelo Junio 2025 - Julio 2025,Perfil D,Invesco Global Healthcare Innovation USD,MC22S2 LU1775982595,183.38,186.84,0.018868,0.1,0.001887

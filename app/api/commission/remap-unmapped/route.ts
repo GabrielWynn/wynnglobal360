@@ -46,7 +46,10 @@ export async function POST(request: Request) {
     // 2. Deduplicate by policy_number — keep first occurrence for platform + holder name
     const policyMeta = new Map<string, { platform_id: string | null; holder_name: string }>()
     for (const r of unmappedCR) {
-      if (r.policy_number && !policyMeta.has(r.policy_number)) {
+      // Skip the [NO POLICY] placeholder — it represents lump-sum adjustments
+      // that have no real policy number and will never resolve in Azure.
+      if (!r.policy_number || r.policy_number === '[NO POLICY]') continue
+      if (!policyMeta.has(r.policy_number)) {
         policyMeta.set(r.policy_number, {
           platform_id: r.platform_id ?? null,
           holder_name: r.policy_holder_name ?? '',

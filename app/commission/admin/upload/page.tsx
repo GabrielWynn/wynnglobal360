@@ -88,13 +88,11 @@ export default function UploadPage() {
   // ── Load platforms ──────────────────────────────────────────────────────────
   useEffect(() => {
     if (!authChecked) return
-    supabase
-      .from('platforms')
-      .select('id, code, name')
-      .order('name')
-      .then(({ data }) => {
-        if (data) setPlatforms(data)
-      })
+    getAuthHeaders().then(headers =>
+      fetch('/api/commission/platforms', { headers })
+        .then(r => r.json())
+        .then(({ platforms }) => { if (platforms) setPlatforms(platforms) })
+    )
   }, [authChecked])
 
   // ── When platform changes, fetch saved mapping ──────────────────────────────

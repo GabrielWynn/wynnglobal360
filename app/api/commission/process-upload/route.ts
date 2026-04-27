@@ -63,8 +63,10 @@ function normalizeDate(raw: string): string | null {
     return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`
   }
 
-  // Pass through unrecognised formats — Postgres will report a meaningful error
-  return s
+  // Unrecognised format — return null so the upload-date fallback fires and
+  // the row is flagged with a date_warning rather than sending an invalid
+  // string to the Postgres DATE column (which would error the whole chunk).
+  return null
 }
 
 const CHUNK = 200 // rows per batch insert
@@ -86,7 +88,8 @@ function normalizeCommissionType(raw: string): string | null {
 
   // Return raw (truncated) for unrecognised values — keeps data visible rather than silently discarding.
   // KPI queries group by this column so unrecognised values will surface as their own bucket.
-  return raw.slice(0, 255)
+  // `|| null` converts a whitespace-only input to null rather than storing an empty string.
+  return raw.slice(0, 255) || null
 }
 
 export async function POST(request: Request) {
@@ -99,7 +102,6 @@ export async function POST(request: Request) {
     mapped: 0,
     unmapped: 0,
     new_ifas: 0,
-    skipped: 0,
     date_warnings: 0,
     errors: [] as string[],
   }
@@ -229,24 +231,48 @@ export async function POST(request: Request) {
           : null
 
         // ── Rows with no policy number ──────────────────────────────────
+        // These are saved as commission_records with a '[NO POLICY]' placeholder
+        // so they appear in the master file for review (e.g. lump-sum adjustments).
         if (!policyNumber) {
-          stats.skipped++
+          const noPolId = randomUUID()
           rawBatch.push({
-            id: randomUUID(),
+            id:                    noPolId,
             upload_batch_id:       batch.id,
             platform_id,
-            policy_number:         '[MISSING]',
+            policy_number:         '[NO POLICY]',
             transaction_date:      transactionDate,
             commission_type_code:  commissionTypeCode || null,
             gross_amount:          grossAmount,
             calculated_commission: grossAmount,
             currency,
             raw_data:              row,
-            mapping_status:        'error',
+            mapping_status:        'unmapped',
           })
-          stats.errors.push(
-            `Row skipped: missing policy number (amount: ${grossAmount} ${currency}) — saved to raw data for review`
-          )
+          crBatch.push({
+            upload_batch_id:      batch.id,
+            raw_data_id:          noPolId,
+            transaction_date:     transactionDate,
+            policy_number:        '[NO POLICY]',
+            policy_holder_name:   holderName || null,
+            ifa_id:               null,
+            ifa_code:             null,
+            ifa_name:             null,
+            platform_id,
+            commission_type:      rawCommissionType || null,
+            commission_type_code: commissionTypeCode || null,
+            amount:               grossAmount,
+            currency,
+            platform_payment_pct: platformPaymentPct,
+            commencement_date:    commencementDate,
+            ifa_percentage:       null,
+            suspense_percentage:  null,
+            wgi_percentage:       null,
+            paid:                 0.00,
+            status:               'pending',
+            created_by:           userId,
+            notes:                'No policy number in source file',
+          })
+          stats.unmapped++
           continue
         }
 
@@ -348,9 +374,9 @@ export async function POST(request: Request) {
           currency,
           platform_payment_pct: platformPaymentPct,
           commencement_date:   commencementDate,
-          ifa_percentage:      0.1250,
-          suspense_percentage: 0.0000,
-          wgi_percentage:      0.1250,
+          ifa_percentage:      null,
+          suspense_percentage: null,
+          wgi_percentage:      null,
           paid:                0.00,
           status:              'pending',
           created_by:          userId,

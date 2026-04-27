@@ -12,16 +12,25 @@ export default async function AdvisorsPage() {
   let role: "admin" | "ifa" = "ifa";
 
   if (user) {
-    // Fetch the IFA profile via service role (bypasses RLS — reliable for all cases)
-    const { data } = await supabaseAdmin
+    // Try user_id first, fall back to email for rows not yet linked —
+    // mirrors the same dual-lookup used in auth-guard and all IFA API routes.
+    const { data: byUserId } = await supabaseAdmin
       .from("ifas")
       .select("name, role")
       .eq("user_id", user.id)
       .maybeSingle();
 
+    const { data } = byUserId
+      ? { data: byUserId }
+      : await supabaseAdmin
+          .from("ifas")
+          .select("name, role")
+          .ilike("email", user.email ?? "")
+          .maybeSingle();
+
     if (data) {
       name = data.name ?? "";
-      role = data.role ?? "ifa";
+      role = (data.role as "admin" | "ifa") ?? "ifa";
     }
   }
 

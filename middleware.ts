@@ -29,6 +29,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Cron routes handle their own Bearer-token auth
+  if (pathname.startsWith("/api/model-portfolio/cron/")) {
+    return NextResponse.next();
+  }
+
   // Build a mutable response so cookie refreshes are forwarded to the browser
   let response = NextResponse.next({
     request: { headers: request.headers },

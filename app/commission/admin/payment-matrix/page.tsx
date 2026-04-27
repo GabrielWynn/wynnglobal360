@@ -137,8 +137,10 @@ export default function PaymentMatrixPage() {
   }
 
   async function loadPlatforms() {
-    const { data } = await supabase.from('platforms').select('id, code, name').order('name')
-    setPlatforms(data || [])
+    const headers = await getAuthHeaders()
+    const res = await fetch('/api/commission/platforms', { headers })
+    const { platforms } = await res.json()
+    setPlatforms(platforms || [])
   }
 
   async function loadIFAs() {
