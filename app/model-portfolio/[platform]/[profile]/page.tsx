@@ -11,6 +11,7 @@ import {
 import PerformanceSummaryCards from "@/components/model-portfolio/PerformanceSummaryCards";
 import PerformanceChart from "@/components/model-portfolio/PerformanceChart";
 import HoldingsTable from "@/components/model-portfolio/HoldingsTable";
+import ExportButton from "@/components/model-portfolio/ExportButton";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -139,6 +140,7 @@ export default async function ProfileDetailPage({ params }: PageProps) {
   const {
     platform,
     profile,
+    periods,
     standardReturns,
     chartSeries,
     currentHoldings,
@@ -199,6 +201,18 @@ export default async function ProfileDetailPage({ params }: PageProps) {
           </div>
         </div>
 
+        {/* Right side: export + profile tab switcher */}
+        <div className="flex items-center gap-3">
+          <ExportButton
+            platformName={platform.name}
+            profileLabel={profile.label}
+            profileName={profile.name}
+            standardReturns={standardReturns}
+            holdings={currentHoldings}
+            periods={periods}
+            latestPeriodLabel={latestPeriodLabel}
+          />
+
         {/* Profile tab switcher */}
         <div
           className="flex rounded-xl border overflow-hidden"
@@ -223,6 +237,7 @@ export default async function ProfileDetailPage({ params }: PageProps) {
             );
           })}
         </div>
+        </div> {/* end right-side flex */}
       </div>
 
       {/* Performance Summary Cards */}

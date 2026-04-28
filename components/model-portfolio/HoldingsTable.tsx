@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { formatReturn, returnColor, type HoldingRow } from "@/lib/model-portfolio";
 
 interface Props {
@@ -68,14 +69,15 @@ export default function HoldingsTable({ holdings, periodLabel }: Props) {
                   background: idx % 2 === 0 ? "white" : "#fafafa",
                 }}
               >
-                {/* Fund name */}
+                {/* Fund name — links to drill-down */}
                 <td className="px-4 py-3">
-                  <p
-                    className="font-medium text-sm leading-tight"
+                  <Link
+                    href={`/model-portfolio/funds/${h.isin}`}
+                    className="font-medium text-sm leading-tight hover:underline"
                     style={{ color: "var(--wgi-text)" }}
                   >
                     {h.fundName}
-                  </p>
+                  </Link>
                 </td>
 
                 {/* ISIN */}
