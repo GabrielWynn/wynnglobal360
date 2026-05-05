@@ -30,6 +30,14 @@ export async function PATCH(request: Request) {
   if (!userId) return unauthorised()
 
   try {
+    let actorEmail = `${userId}@local`
+    try {
+      const { data } = await supabaseAdmin.auth.admin.getUserById(userId)
+      actorEmail = data.user?.email ?? actorEmail
+    } catch {
+      // keep fallback if auth lookup fails
+    }
+
     const { key, value } = await request.json()
 
     if (!key || value === undefined) {
@@ -47,14 +55,14 @@ export async function PATCH(request: Request) {
 
     // Audit log (best-effort)
     try {
-      await supabaseAdmin.from('audit_log').insert({
-        table_name: 'kpi_config',
-        record_id: '00000000-0000-0000-0000-000000000000', // no UUID PK — use zero UUID
-        action: 'config_update',
-        new_value: { key, value },
-        performed_by: userId,
+      await supabaseAdmin.from('admin_audit_log').insert({
+        actor_id: userId,
+        actor_email: actorEmail,
+        action: 'commission.config_update',
+        target_id: null,
+        after_data: { table_name: 'kpi_config', key, value },
       })
-    } catch { /* audit_log may not exist */ }
+    } catch { /* admin_audit_log may not exist */ }
 
     return NextResponse.json({ config: data })
   } catch (err: any) {

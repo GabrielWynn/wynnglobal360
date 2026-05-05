@@ -20,6 +20,14 @@ export async function POST(request: Request) {
   const userId = await requireAdmin(request)
   if (!userId) return unauthorised()
 
+  let actorEmail = `${userId}@local`
+  try {
+    const { data } = await supabaseAdmin.auth.admin.getUserById(userId)
+    actorEmail = data.user?.email ?? actorEmail
+  } catch {
+    // keep fallback if auth lookup fails
+  }
+
   const { advance_id, statement_id } = await request.json()
   if (!advance_id || !statement_id) {
     return NextResponse.json({ error: 'advance_id and statement_id are required' }, { status: 400 })
@@ -85,15 +93,14 @@ export async function POST(request: Request) {
 
   // Audit log (best-effort)
   try {
-    await supabaseAdmin.from('audit_log').insert({
-      table_name: 'commission_records',
-      record_id:  statement_id,
-      action:     'reconcile',
-      changes:    { advance_id, statement_id },
-      changed_by: userId,
-      created_at: now,
+    await supabaseAdmin.from('admin_audit_log').insert({
+      actor_id: userId,
+      actor_email: actorEmail,
+      action: 'commission.reconcile',
+      target_id: statement_id,
+      after_data: { table_name: 'commission_records', advance_id, statement_id },
     })
-  } catch { /* audit_log may not exist yet */ }
+  } catch { /* admin_audit_log may not exist yet */ }
 
   return NextResponse.json({ reconciled: true, advance_id, statement_id })
 }

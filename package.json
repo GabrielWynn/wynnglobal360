@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test:commission-e2e": "node scripts/commission-e2e-regression.mjs",
     "db:push": "supabase db push",
     "db:pull": "supabase db pull",
     "db:new": "supabase migration new",
@@ -14,6 +15,7 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.4",
+    "@sentry/nextjs": "^10.50.0",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.103.3",
     "@tabler/icons-react": "^3.41.1",
@@ -32,6 +34,7 @@
     "react": "^18",
     "react-dom": "^18",
     "recharts": "^3.8.1",
+    "redis": "^5.12.1",
     "tailwind-merge": "^3.5.0",
     "tailwindcss-animate": "^1.0.7",
     "xlsx": "^0.18.5"

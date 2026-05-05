@@ -55,6 +55,16 @@ const EMPTY_MAPPING: Omit<ColumnMapping, 'platform_id' | 'id'> = {
   default_currency: 'USD',
 }
 
+const RESULT_CARD_STYLES: Record<string, { bg: string; text: string }> = {
+  blue: { bg: 'bg-blue-50', text: 'text-blue-600' },
+  green: { bg: 'bg-green-50', text: 'text-green-600' },
+  purple: { bg: 'bg-purple-50', text: 'text-purple-600' },
+  yellow: { bg: 'bg-yellow-50', text: 'text-yellow-600' },
+  indigo: { bg: 'bg-indigo-50', text: 'text-indigo-600' },
+  red: { bg: 'bg-red-50', text: 'text-red-600' },
+  gray: { bg: 'bg-gray-50', text: 'text-gray-600' },
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function UploadPage() {
@@ -574,12 +584,15 @@ export default function UploadPage() {
                 { label: 'Unmapped', value: result.unmapped, color: 'yellow' },
                 { label: 'New IFAs Created', value: result.new_ifas, color: 'indigo' },
                 { label: 'Errors', value: result.errors.length, color: result.errors.length > 0 ? 'red' : 'gray' },
-              ].map(({ label, value, color }) => (
-                <div key={label} className={`bg-${color}-50 p-4 rounded-lg`}>
-                  <div className={`text-2xl font-bold text-${color}-600`}>{value}</div>
-                  <div className="text-sm text-gray-600">{label}</div>
-                </div>
-              ))}
+              ].map(({ label, value, color }) => {
+                const style = RESULT_CARD_STYLES[color] ?? RESULT_CARD_STYLES.gray
+                return (
+                  <div key={label} className={`${style.bg} p-4 rounded-lg`}>
+                    <div className={`text-2xl font-bold ${style.text}`}>{value}</div>
+                    <div className="text-sm text-gray-600">{label}</div>
+                  </div>
+                )
+              })}
             </div>
 
             {result.unmapped > 0 && (

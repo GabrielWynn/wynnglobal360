@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import { createServerClient, supabaseAdmin } from "@/lib/supabase";
 import Link from "next/link";
 import { IconChevronLeft } from "@tabler/icons-react";
-import AdminPanelClient from "@/components/model-portfolio/AdminPanelClient";
+import AdminHistorySection from "@/components/model-portfolio/AdminHistorySection";
+import FundDatabase        from "@/components/model-portfolio/FundDatabase";
 
 // ---------------------------------------------------------------------------
 // Admin role guard
@@ -34,49 +35,6 @@ async function getAdminUser() {
 }
 
 // ---------------------------------------------------------------------------
-// Data
-// ---------------------------------------------------------------------------
-
-async function getAdminData() {
-  const [
-    { data: funds },
-    { data: benchmarks },
-    { data: periods },
-    { data: benchmarkPriceCount },
-    { data: fundPriceCount },
-  ] = await Promise.all([
-    supabaseAdmin
-      .from("mp_funds")
-      .select("id, isin, display_name, eodhd_ticker, eodhd_exchange")
-      .order("display_name"),
-    supabaseAdmin.from("mp_benchmarks").select("id, name, ticker"),
-    supabaseAdmin
-      .from("mp_portfolio_periods")
-      .select("id, label, start_date, end_date, is_open, mp_platforms(name, slug)")
-      .order("start_date", { ascending: false }),
-    supabaseAdmin
-      .from("mp_benchmark_prices")
-      .select("*", { count: "exact", head: true }),
-    supabaseAdmin
-      .from("mp_fund_prices")
-      .select("*", { count: "exact", head: true }),
-  ]);
-
-  const resolvedFunds   = (funds ?? []).filter((f) => f.eodhd_ticker).length;
-  const unresolvedFunds = (funds ?? []).filter((f) => !f.eodhd_ticker).length;
-
-  return {
-    funds:              funds ?? [],
-    benchmarks:         benchmarks ?? [],
-    periods:            periods ?? [],
-    resolvedFunds,
-    unresolvedFunds,
-    benchmarkPriceRows: (benchmarkPriceCount as unknown as { count: number } | null)?.count ?? 0,
-    fundPriceRows:      (fundPriceCount as unknown as { count: number } | null)?.count ?? 0,
-  };
-}
-
-// ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 
@@ -84,10 +42,19 @@ export default async function ModelPortfolioAdminPage() {
   const adminUser = await getAdminUser();
   if (!adminUser) redirect("/model-portfolio");
 
-  const data = await getAdminData();
+  // Only what the history section actually needs
+  const [{ data: platforms }, { data: profiles }, { data: funds }] =
+    await Promise.all([
+      supabaseAdmin.from("mp_platforms").select("id, name, slug").order("name"),
+      supabaseAdmin.from("mp_risk_profiles").select("id, label, name").order("risk_level"),
+      supabaseAdmin
+        .from("mp_funds")
+        .select("id, isin, display_name")
+        .order("display_name"),
+    ]);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 space-y-8">
+    <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-10 space-y-6">
       {/* Breadcrumb */}
       <Link
         href="/model-portfolio"
@@ -102,10 +69,11 @@ export default async function ModelPortfolioAdminPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold" style={{ color: "var(--wgi-text)" }}>
-            Admin Panel
+            Portfolio History
           </h1>
           <p className="text-sm mt-1" style={{ color: "var(--wgi-text-muted)" }}>
-            Manage market data, benchmarks, and portfolio structure
+            Review, add and edit portfolio compositions across all platforms.
+            The IFA chart always reflects the correct holdings for the selected date.
           </p>
         </div>
         <span
@@ -116,38 +84,33 @@ export default async function ModelPortfolioAdminPage() {
         </span>
       </div>
 
-      {/* Stats overview */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {[
-          { label: "Total Funds",          value: data.funds.length,              color: "var(--wgi-navy)" },
-          { label: "Tickers Resolved",      value: data.resolvedFunds,             color: "#10b981"         },
-          { label: "Tickers Missing",       value: data.unresolvedFunds,           color: data.unresolvedFunds > 0 ? "#f59e0b" : "#10b981" },
-          { label: "Benchmark Price Rows",  value: data.benchmarkPriceRows,        color: "var(--wgi-navy)" },
-        ].map(({ label, value, color }) => (
-          <div
-            key={label}
-            className="rounded-xl border p-4"
-            style={{ background: "white", borderColor: "var(--wgi-border)" }}
-          >
-            <p className="text-[10px] font-semibold uppercase tracking-wider mb-1"
-               style={{ color: "var(--wgi-text-muted)" }}>
-              {label}
-            </p>
-            <p className="text-2xl font-bold" style={{ color }}>
-              {value.toLocaleString()}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Interactive client panel */}
-      <AdminPanelClient
-        funds={data.funds}
-        benchmarks={data.benchmarks}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        periods={data.periods as any}
-        benchmarkPriceRows={data.benchmarkPriceRows}
+      {/* Portfolio history + composition management */}
+      <AdminHistorySection
+        profiles={platforms ? profiles ?? [] : []}
+        platforms={platforms ?? []}
+        funds={(funds ?? []).map((f) => ({
+          id:           f.id,
+          isin:         f.isin,
+          display_name: f.display_name,
+        }))}
       />
+
+      {/* Divider */}
+      <div className="h-px" style={{ background: "var(--wgi-border)" }} />
+
+      {/* Fund database */}
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-xl font-bold" style={{ color: "var(--wgi-text)" }}>
+            Fund Database
+          </h2>
+          <p className="text-sm mt-1" style={{ color: "var(--wgi-text-muted)" }}>
+            Every fund we have ever used across all portfolios — with activity status,
+            ticker resolution, and price coverage at a glance.
+          </p>
+        </div>
+        <FundDatabase />
+      </div>
     </div>
   );
 }

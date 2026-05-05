@@ -448,17 +448,24 @@ export default function MasterFilePage() {
     const yellowCell = { backgroundColor: '#fef3c7' }
 
     return [
-      // Row number
+      // Row number — clean row header, click to select (Excel-style)
       {
         colId: 'rowNum',
         headerName: '#',
-        width: 72, minWidth: 72, maxWidth: 72,
+        width: 48, minWidth: 48, maxWidth: 48,
         pinned: 'left',
         sortable: false, filter: false, editable: false,
         suppressMovable: true, resizable: false,
-        cellStyle: { background: '#f8fafc', color: '#64748b', textAlign: 'center', fontWeight: 500 },
+        cellStyle: (p: any): any => ({
+          background: p.node?.isSelected?.() ? '#dbeafe' : '#f1f5f9',
+          color: p.node?.isSelected?.() ? '#1d4ed8' : '#94a3b8',
+          fontSize: '11px',
+          fontWeight: 500,
+          textAlign: 'center',
+          cursor: 'pointer',
+          borderRight: '1px solid #e2e8f0',
+        }),
         valueGetter: (p: any) => p.node?.rowPinned ? '' : (p.node?.rowIndex ?? 0) + 1,
-        onCellClicked: (p: any) => { if (!p.node?.rowPinned) p.node?.setSelected(!p.node?.isSelected()) },
       },
       // Date
       {
@@ -1059,57 +1066,50 @@ export default function MasterFilePage() {
 
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
-    <div className={`bg-gray-100 flex flex-col ${fullScreen ? 'fixed inset-0 z-50' : 'h-screen'}`}>
+    <div className={`bg-gray-50 flex flex-col ${fullScreen ? 'fixed inset-0 z-50' : 'h-[calc(100vh-4rem)] overflow-hidden'}`}>
 
-      {/* Header strip — hidden in full-screen */}
-      <header className={`bg-white shadow flex-shrink-0 ${fullScreen ? 'hidden' : ''}`}>
-        <div className="px-4 sm:px-6 lg:px-8 py-2 flex items-center gap-4">
+      {/* ── Single merged toolbar strip ── */}
+      {!fullScreen && (
+        <div className="bg-white border-b border-gray-200 flex-shrink-0 flex items-stretch h-12 overflow-hidden">
 
-          {/* Title */}
-          <h1 className="text-base font-bold text-gray-900 whitespace-nowrap">Master Commission File</h1>
+          {/* LEFT — always visible: back link + title */}
+          <div className="flex items-center gap-2.5 px-4 flex-shrink-0 border-r border-gray-200 bg-slate-50">
+            <button
+              onClick={() => router.push('/commission/admin')}
+              className="flex items-center gap-1 text-[11px] text-slate-500 hover:text-blue-600 font-medium whitespace-nowrap transition-colors"
+            >
+              <span className="text-slate-400">‹</span> Admin
+            </button>
+            <span className="h-4 w-px bg-slate-200" />
+            <h1 className="text-[13px] font-semibold text-slate-800 whitespace-nowrap tracking-tight">
+              Master Commission File
+            </h1>
+          </div>
 
-          <span className="w-px h-5 bg-gray-200" />
+          {/* MIDDLE — horizontally scrollable: KPIs → filters → actions → view */}
+          <div className="toolbar-scroll flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 px-3 h-12 min-w-max">
 
-          {/* KPI chips */}
-          <div className="flex items-center gap-3 flex-1 min-w-0 overflow-x-auto">
-            {[
-              { label: 'Amt',    value: totalAmount, color: 'text-gray-800' },
-              { label: 'IFA',    value: totalIFA,    color: 'text-blue-700' },
-              { label: 'Paid',   value: totalPaid,   color: 'text-green-700' },
-              { label: 'Unpaid', value: totalUnpaid, color: 'text-red-600' },
-            ].map(({ label, value, color }, i, arr) => (
-              <div key={label} className="flex items-center gap-3 whitespace-nowrap">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-xs text-gray-400">{label}</span>
-                  <span className={`text-sm font-bold ${color}`}>${fmtMoney(value)}</span>
+              {/* KPI chips */}
+              {([
+                { label: 'Amt',    value: totalAmount, color: 'text-gray-800' },
+                { label: 'IFA',    value: totalIFA,    color: 'text-blue-600' },
+                { label: 'Paid',   value: totalPaid,   color: 'text-green-700' },
+                { label: 'Unpaid', value: totalUnpaid, color: 'text-red-600' },
+              ] as const).map(({ label, value, color }) => (
+                <div key={label} className="flex items-baseline gap-0.5 whitespace-nowrap">
+                  <span className="text-[10px] text-gray-400">{label}</span>
+                  <span className={`text-xs font-bold ${color}`}>${fmtMoney(value)}</span>
                 </div>
-                {i < arr.length - 1 && <span className="text-gray-200 select-none">·</span>}
-              </div>
-            ))}
-            <span className="text-gray-200 select-none">·</span>
-            <span className="text-xs text-gray-400 whitespace-nowrap">{rowData.length} records</span>
-          </div>
+              ))}
+              <span className="text-[10px] text-gray-400 whitespace-nowrap">
+                · {rowData.length}{selectedRows.length > 0 ? ` · ${selectedRows.length} sel.` : ''} recs
+              </span>
+              {loading && <span className="text-[10px] text-amber-500 animate-pulse whitespace-nowrap">↻</span>}
 
+              <span className="w-px h-4 bg-gray-200 mx-0.5" />
 
-        </div>
-      </header>
-
-      <main className="flex flex-col flex-1 px-4 sm:px-6 lg:px-8 py-4 gap-3 overflow-hidden">
-
-        {/* Feedback */}
-        {feedback && (
-          <div className="flex-shrink-0 bg-green-50 border border-green-200 text-green-800 px-4 py-2 rounded-md text-sm font-medium">
-            {feedback}
-          </div>
-        )}
-
-        {/* Combined Filter + Toolbar */}
-        <div className="flex-shrink-0 bg-white rounded-lg shadow flex flex-col">
-          <div className="flex items-stretch">
-            <div className="overflow-x-auto flex-1 min-w-0">
-            <div className="flex items-center gap-x-2 px-3 py-2 min-w-max">
-
-              {/* ── Dropdown filters ── */}
+              {/* Dropdown filters */}
               {([
                 { label: 'Status',   value: statusFilter,   setter: setStatusFilter,   field: 'status',        options: ['pending','approved','paid','cancelled','advance','reconciled'] },
                 { label: 'CCY',      value: currencyFilter, setter: setCurrencyFilter,  field: 'currency',      options: uniqueCurrencies },
@@ -1117,12 +1117,14 @@ export default function MasterFilePage() {
                 { label: 'Platform', value: platformFilter, setter: setPlatformFilter,  field: 'platform.name', options: uniquePlatforms },
               ] as const).map(({ label, value, setter, field, options }) => (
                 <div key={label} className="flex items-center gap-1">
-                  <span className="text-xs font-medium text-gray-500 whitespace-nowrap">{label}</span>
+                  <span className="text-[11px] font-medium text-slate-500 whitespace-nowrap">{label}</span>
                   <select
                     value={value}
                     onChange={e => applyDropdownFilter(field, e.target.value, setter as (v: string) => void)}
-                    className={`text-xs border rounded px-1.5 py-1 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                      value ? 'border-blue-400 text-blue-700 font-medium' : 'border-gray-300 text-gray-600'
+                    className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-blue-400 focus:outline-none transition-colors ${
+                      value
+                        ? 'border-blue-400 bg-blue-50 text-blue-700 font-semibold'
+                        : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'
                     }`}
                   >
                     <option value="">All</option>
@@ -1131,352 +1133,310 @@ export default function MasterFilePage() {
                 </div>
               ))}
 
-              <span className="w-px h-5 bg-gray-200 mx-0.5" />
+              <span className="w-px h-4 bg-gray-200 mx-0.5" />
 
-              {/* ── Date — transaction date ── */}
+              {/* Transaction date range */}
               <div className="flex items-center gap-1">
-                <span className="text-xs font-medium text-gray-500 whitespace-nowrap">Date</span>
-                <input
-                  type="date" value={dateFrom}
+                <span className="text-[11px] font-medium text-slate-500">Date</span>
+                <input type="date" value={dateFrom}
                   onChange={e => applyDateRangeFilter('transaction_date', dateFrom, setDateFrom, dateTo, setDateTo, e.target.value, undefined)}
-                  className={`text-xs border rounded px-1.5 py-1 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none ${dateFrom ? 'border-blue-400 text-blue-700 font-medium' : 'border-gray-300 text-gray-600'}`}
+                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-blue-400 focus:outline-none transition-colors ${dateFrom ? 'border-blue-400 bg-blue-50 text-blue-700 font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
                 />
-                <span className="text-xs text-gray-400">–</span>
-                <input
-                  type="date" value={dateTo}
+                <span className="text-[11px] text-slate-400">–</span>
+                <input type="date" value={dateTo}
                   onChange={e => applyDateRangeFilter('transaction_date', dateFrom, setDateFrom, dateTo, setDateTo, undefined, e.target.value)}
-                  className={`text-xs border rounded px-1.5 py-1 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none ${dateTo ? 'border-blue-400 text-blue-700 font-medium' : 'border-gray-300 text-gray-600'}`}
+                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-blue-400 focus:outline-none transition-colors ${dateTo ? 'border-blue-400 bg-blue-50 text-blue-700 font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
                 />
                 {(dateFrom || dateTo) && (
                   <button onClick={() => applyDateRangeFilter('transaction_date', dateFrom, setDateFrom, dateTo, setDateTo, '', '')}
-                    className="text-xs text-gray-400 hover:text-gray-600">✕</button>
+                    className="text-[11px] text-slate-400 hover:text-slate-600 font-medium">✕</button>
                 )}
               </div>
 
-              {/* ── Date — commencement date ── */}
+              {/* Commencement date range */}
               <div className="flex items-center gap-1">
-                <span className="text-xs font-medium text-gray-500 whitespace-nowrap">Comm.</span>
-                <input
-                  type="date" value={commDateFrom}
+                <span className="text-[11px] font-medium text-slate-500">Comm.</span>
+                <input type="date" value={commDateFrom}
                   onChange={e => applyDateRangeFilter('commencement_date', commDateFrom, setCommDateFrom, commDateTo, setCommDateTo, e.target.value, undefined)}
-                  className={`text-xs border rounded px-1.5 py-1 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none ${commDateFrom ? 'border-blue-400 text-blue-700 font-medium' : 'border-gray-300 text-gray-600'}`}
+                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-blue-400 focus:outline-none transition-colors ${commDateFrom ? 'border-blue-400 bg-blue-50 text-blue-700 font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
                 />
-                <span className="text-xs text-gray-400">–</span>
-                <input
-                  type="date" value={commDateTo}
+                <span className="text-[11px] text-slate-400">–</span>
+                <input type="date" value={commDateTo}
                   onChange={e => applyDateRangeFilter('commencement_date', commDateFrom, setCommDateFrom, commDateTo, setCommDateTo, undefined, e.target.value)}
-                  className={`text-xs border rounded px-1.5 py-1 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none ${commDateTo ? 'border-blue-400 text-blue-700 font-medium' : 'border-gray-300 text-gray-600'}`}
+                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-blue-400 focus:outline-none transition-colors ${commDateTo ? 'border-blue-400 bg-blue-50 text-blue-700 font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
                 />
                 {(commDateFrom || commDateTo) && (
                   <button onClick={() => applyDateRangeFilter('commencement_date', commDateFrom, setCommDateFrom, commDateTo, setCommDateTo, '', '')}
-                    className="text-xs text-gray-400 hover:text-gray-600">✕</button>
+                    className="text-[11px] text-slate-400 hover:text-slate-600 font-medium">✕</button>
                 )}
               </div>
 
-              <span className="w-px h-5 bg-gray-200 mx-0.5" />
+              <span className="w-px h-4 bg-gray-200 mx-0.5" />
 
-              {/* ── Quick pills ── */}
-              <span className="text-xs font-medium text-gray-500">Quick:</span>
+              {/* Quick pills */}
               {QUICK_FILTERS.map(qf => (
-                <button
-                  key={qf.label}
-                  onClick={() => toggleQuickFilter(qf)}
-                  className={`px-2.5 py-1 text-xs rounded-full font-medium transition-colors whitespace-nowrap ${
-                    activeQuickFilters.has(qf.label)
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                <button key={qf.label} onClick={() => toggleQuickFilter(qf)}
+                  className={`h-6 px-2 text-xs rounded-full font-medium transition-colors whitespace-nowrap ${
+                    activeQuickFilters.has(qf.label) ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                 >
                   {qf.label}
                 </button>
               ))}
-
               {activeFilterCount > 0 && (
                 <>
-                  <span className="text-xs text-amber-600 font-medium whitespace-nowrap">⚡ {activeFilterCount}</span>
+                  <span className="text-[10px] text-amber-600 font-semibold whitespace-nowrap">⚡{activeFilterCount}</span>
                   <button onClick={clearAllFilters}
-                    className="px-2.5 py-1 text-xs rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200 font-medium whitespace-nowrap">
+                    className="h-6 px-2 text-xs rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200 font-medium whitespace-nowrap">
                     ✕ Clear
                   </button>
                 </>
               )}
 
-              <span className="w-px h-5 bg-gray-300 mx-0.5" />
+              <span className="w-px h-4 bg-gray-200 mx-0.5" />
 
-              {/* ── Record count ── */}
-              <span className="text-xs text-gray-600 font-medium whitespace-nowrap">{rowData.length} records</span>
-              {selectedRows.length > 0 && (
-                <span className="text-xs text-blue-600 font-medium whitespace-nowrap">({selectedRows.length} selected)</span>
-              )}
-              {loading && <span className="text-xs text-gray-400 whitespace-nowrap">Refreshing…</span>}
-
-              <span className="w-px h-5 bg-gray-300 mx-0.5" />
-
-              {/* ── Primary actions ── */}
+              {/* Primary actions */}
               <button onClick={openAddModal}
-                className="px-3 py-1.5 bg-emerald-600 text-white text-xs rounded hover:bg-emerald-700 font-medium whitespace-nowrap">
-                ＋ New Record
+                className="h-6 px-2.5 bg-emerald-600 text-white text-xs rounded hover:bg-emerald-700 font-medium whitespace-nowrap transition-colors">
+                + New
               </button>
               {selectedRows.length > 0 && (
                 <button onClick={() => { setDeleteModal(true); setDeleteConfirm(false); setDeleteTyped('') }}
-                  className="px-3 py-1.5 bg-red-100 text-red-700 text-xs rounded border border-red-300 hover:bg-red-200 font-medium whitespace-nowrap">
-                  🗑 Delete ({selectedRows.length})
+                  className="h-6 px-2.5 bg-red-50 text-red-700 text-xs rounded border border-red-200 hover:bg-red-100 font-medium whitespace-nowrap">
+                  🗑 ({selectedRows.length})
                 </button>
               )}
               {canReconcile && (
                 <button onClick={() => setReconcileModal(true)}
-                  className="px-3 py-1.5 bg-amber-100 text-amber-800 text-xs rounded border border-amber-400 hover:bg-amber-200 font-medium whitespace-nowrap">
+                  className="h-6 px-2.5 bg-amber-50 text-amber-800 text-xs rounded border border-amber-300 hover:bg-amber-100 font-medium whitespace-nowrap">
                   🔗 Reconcile
                 </button>
               )}
 
-              <span className="w-px h-5 bg-gray-300 mx-0.5" />
+              <span className="w-px h-4 bg-gray-200 mx-0.5" />
 
-              {/* ── Selection ── */}
+              {/* Selection */}
               <button onClick={selectAllFiltered}
-                className="px-3 py-1.5 text-xs border border-gray-300 text-gray-700 rounded hover:bg-gray-50 whitespace-nowrap">
-                Select Filtered
+                className="h-6 px-2.5 text-xs border border-gray-300 text-gray-600 rounded hover:bg-gray-50 whitespace-nowrap">
+                Sel. Filtered
               </button>
               {selectedRows.length > 0 && (
                 <button onClick={selectNone}
-                  className="px-3 py-1.5 text-xs border border-gray-300 text-gray-700 rounded hover:bg-gray-50 whitespace-nowrap">
-                  Select None
+                  className="h-6 px-2.5 text-xs border border-gray-300 text-gray-600 rounded hover:bg-gray-50 whitespace-nowrap">
+                  Sel. None
                 </button>
               )}
 
-              {/* ── Bulk status (selection-only) ── */}
+              {/* Bulk status */}
               {selectedRows.length > 0 && (
                 <>
-                  <span className="w-px h-5 bg-gray-300 mx-0.5" />
+                  <span className="w-px h-4 bg-gray-200 mx-0.5" />
                   <button onClick={() => bulkUpdateStatus('approved')}
-                    className="px-3 py-1.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 whitespace-nowrap">
-                    Approve
-                  </button>
+                    className="h-6 px-2.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 whitespace-nowrap">Approve</button>
                   <button onClick={bulkMarkAsPaid}
-                    className="px-3 py-1.5 bg-green-600 text-white text-xs rounded hover:bg-green-700 whitespace-nowrap">
-                    Mark Paid
-                  </button>
+                    className="h-6 px-2.5 bg-green-600 text-white text-xs rounded hover:bg-green-700 whitespace-nowrap">Mark Paid</button>
                   <button onClick={() => bulkUpdateStatus('cancelled')}
-                    className="px-3 py-1.5 bg-red-600 text-white text-xs rounded hover:bg-red-700 whitespace-nowrap">
-                    Cancel
-                  </button>
+                    className="h-6 px-2.5 bg-red-600 text-white text-xs rounded hover:bg-red-700 whitespace-nowrap">Cancel</button>
                 </>
               )}
 
-              <span className="w-px h-5 bg-gray-300 mx-0.5" />
+              <span className="w-px h-4 bg-gray-200 mx-0.5" />
 
-              {/* ── Utility actions ── */}
+              {/* Utility */}
               <button onClick={exportToExcel}
-                className="px-3 py-1.5 bg-gray-700 text-white text-xs rounded hover:bg-gray-800 whitespace-nowrap">
-                Export Excel
-              </button>
+                className="h-6 px-2.5 bg-gray-700 text-white text-xs rounded hover:bg-gray-800 whitespace-nowrap">Export</button>
               <button onClick={() => loadData()} disabled={loading}
-                className="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300 disabled:opacity-50 whitespace-nowrap">
-                {loading ? '…' : 'Refresh'}
+                className="h-6 px-2 bg-gray-100 text-gray-600 text-xs rounded border border-gray-300 hover:bg-gray-200 disabled:opacity-50">
+                {loading ? '…' : '↻'}
               </button>
+              <button onClick={() => setFullScreen(f => !f)}
+                title="Full screen"
+                className="h-6 px-2 bg-gray-100 text-gray-600 text-xs rounded border border-gray-300 hover:bg-gray-200">⛶</button>
               <button
-                onClick={() => setFullScreen(f => !f)}
-                title={fullScreen ? 'Exit full screen (Esc)' : 'Full screen'}
-                className="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300 whitespace-nowrap"
-              >
-                {fullScreen ? '⊡ Exit Full Screen' : '⛶ Full Screen'}
-              </button>
-              <button
-                onClick={() => {
-                  const next = !showDeleted
-                  setShowDeleted(next)
-                  filtersRestoredRef.current = false
-                  loadData(next)
-                }}
-                className={`px-3 py-1.5 text-xs rounded border whitespace-nowrap ${
-                  showDeleted
-                    ? 'bg-red-100 text-red-700 border-red-300'
-                    : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200'
+                onClick={() => { const next = !showDeleted; setShowDeleted(next); filtersRestoredRef.current = false; loadData(next) }}
+                className={`h-6 px-2.5 text-xs rounded border whitespace-nowrap ${
+                  showDeleted ? 'bg-red-50 text-red-700 border-red-200' : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200'
                 }`}
               >
-                {showDeleted ? '👁 Hide Deleted' : '👁 Show Deleted'}
+                {showDeleted ? '👁 Hide Del.' : '👁 Deleted'}
               </button>
 
-              <span className="w-px h-5 bg-gray-300 mx-0.5" />
+              <span className="w-px h-4 bg-gray-200 mx-0.5" />
 
-              {/* ── Zoom / density ── */}
-              <span className="text-xs text-gray-500 font-medium whitespace-nowrap">Zoom:</span>
+              {/* Density */}
               {(['compact', 'normal', 'cozy'] as const).map(d => (
-                <button
-                  key={d}
-                  onClick={() => setDensity(d)}
-                  title={{ compact: 'Compact — see more rows', normal: 'Normal', cozy: 'Cozy — larger rows' }[d]}
-                  className={`px-2 py-1.5 text-xs rounded border font-medium ${
-                    density === d
-                      ? 'bg-indigo-600 text-white border-indigo-600'
-                      : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200'
+                <button key={d} onClick={() => setDensity(d)}
+                  title={{ compact: 'Compact', normal: 'Normal', cozy: 'Cozy' }[d]}
+                  className={`h-6 w-6 text-xs rounded border font-bold ${
+                    density === d ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200'
                   }`}
                 >
                   {d === 'compact' ? '−' : d === 'normal' ? '○' : '+'}
                 </button>
               ))}
 
-              <span className="w-px h-5 bg-gray-300 mx-0.5" />
+              <span className="w-px h-4 bg-gray-200 mx-0.5" />
 
-              {/* ── Column sizing ── */}
-              <button
-                onClick={() => gridRef.current?.api.autoSizeAllColumns()}
-                title="Auto-size all columns to fit content"
-                className="px-3 py-1.5 bg-gray-100 text-gray-600 text-xs rounded border border-gray-300 hover:bg-gray-200 whitespace-nowrap"
-              >
+              {/* Column sizing */}
+              <button onClick={() => gridRef.current?.api.autoSizeAllColumns()}
+                className="h-6 px-2 bg-gray-100 text-gray-600 text-xs rounded border border-gray-300 hover:bg-gray-200 whitespace-nowrap">
                 ⟺ Auto-fit
               </button>
-              <button
-                onClick={() => gridRef.current?.api.sizeColumnsToFit()}
-                title="Fit all columns to grid width"
-                className="px-3 py-1.5 bg-gray-100 text-gray-600 text-xs rounded border border-gray-300 hover:bg-gray-200 whitespace-nowrap"
-              >
-                ⊞ Fit Width
+              <button onClick={() => gridRef.current?.api.sizeColumnsToFit()}
+                className="h-6 px-2 bg-gray-100 text-gray-600 text-xs rounded border border-gray-300 hover:bg-gray-200 whitespace-nowrap">
+                ⊞ Fit
               </button>
 
             </div>
-            </div>{/* end overflow-x-auto */}
+          </div>
 
-            {/* ── Fixed right: Columns dropdown + Upload (outside overflow-x-auto to avoid clipping) ── */}
-            <div className="flex items-center gap-2 px-3 py-2 flex-shrink-0 border-l border-gray-100">
+          {/* RIGHT — always visible: Columns panel + Upload CSV */}
+          <div className="flex items-center gap-2 px-3 flex-shrink-0 border-l border-gray-100">
 
-              <div className="relative" ref={colPanelRef}>
-                <button
-                  onClick={openColPanel}
-                  title="Show/hide and freeze columns"
-                  className={`px-3 py-1.5 text-xs rounded border font-medium flex items-center gap-1.5 whitespace-nowrap ${
-                    colPanelOpen
-                      ? 'bg-indigo-600 text-white border-indigo-600'
-                      : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200'
-                  }`}
-                >
-                  <span>Columns</span>
-                  {colSnapshot.filter(s => s.hide && s.colId !== 'rowNum').length > 0 && (
-                    <span className={`text-xs px-1.5 py-0.5 rounded-full font-semibold ${colPanelOpen ? 'bg-indigo-400 text-white' : 'bg-red-100 text-red-600'}`}>
-                      {colSnapshot.filter(s => s.hide && s.colId !== 'rowNum').length}
-                    </span>
-                  )}
-                  <span className="opacity-60">{colPanelOpen ? '▲' : '▼'}</span>
-                </button>
+            <div className="relative" ref={colPanelRef}>
+              <button
+                onClick={openColPanel}
+                title="Show/hide and freeze columns"
+                className={`h-8 px-2.5 text-xs rounded border font-medium flex items-center gap-1.5 whitespace-nowrap transition-colors ${
+                  colPanelOpen
+                    ? 'bg-indigo-600 text-white border-indigo-600'
+                    : 'bg-gray-50 text-gray-600 border-gray-300 hover:bg-gray-100'
+                }`}
+              >
+                <span>Columns</span>
+                {colSnapshot.filter(s => s.hide && s.colId !== 'rowNum').length > 0 && (
+                  <span className={`text-[10px] px-1 py-0.5 rounded-full font-semibold ${colPanelOpen ? 'bg-indigo-400 text-white' : 'bg-red-100 text-red-600'}`}>
+                    {colSnapshot.filter(s => s.hide && s.colId !== 'rowNum').length}
+                  </span>
+                )}
+                <span className="opacity-60 text-[10px]">{colPanelOpen ? '▲' : '▼'}</span>
+              </button>
 
-                {colPanelOpen && (() => {
-                  const snapMap = new Map(colSnapshot.map(s => [s.colId, s]))
-                  const groupedIds = new Set(COL_GROUPS.flatMap(g => g.ids))
-                  const otherIds = colSnapshot
-                    .filter(s => !groupedIds.has(s.colId) && s.colId !== 'rowNum' && !s.colId.startsWith('ag-Grid'))
-                    .map(s => s.colId)
-                  const groups = otherIds.length > 0
-                    ? [...COL_GROUPS, { label: 'Other', ids: otherIds }]
-                    : COL_GROUPS
+              {colPanelOpen && (() => {
+                const snapMap = new Map(colSnapshot.map(s => [s.colId, s]))
+                const groupedIds = new Set(COL_GROUPS.flatMap(g => g.ids))
+                const otherIds = colSnapshot
+                  .filter(s => !groupedIds.has(s.colId) && s.colId !== 'rowNum' && !s.colId.startsWith('ag-Grid'))
+                  .map(s => s.colId)
+                const groups = otherIds.length > 0
+                  ? [...COL_GROUPS, { label: 'Other', ids: otherIds }]
+                  : COL_GROUPS
 
-                  return (
-                    <div className="absolute right-0 top-full mt-1 z-50 w-72 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
-                      <div className="flex items-center justify-between px-4 py-2.5 bg-gray-50 border-b border-gray-200">
-                        <span className="text-xs font-semibold text-gray-700">Columns</span>
-                        <div className="flex items-center gap-2">
-                          <button onClick={showAllColumns} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium">Show all</button>
-                          <span className="text-gray-300">|</span>
-                          <button onClick={resetColumnLayout} className="text-xs text-gray-500 hover:text-red-600">Reset</button>
-                          <button onClick={() => setColPanelOpen(false)} className="text-gray-400 hover:text-gray-600 text-sm leading-none ml-1">✕</button>
-                        </div>
-                      </div>
-                      <div className="overflow-y-auto max-h-[420px] py-1">
-                        {groups.map(group => {
-                          const groupSnaps = group.ids
-                            .map(id => snapMap.get(id))
-                            .filter((s): s is NonNullable<typeof s> => !!s)
-                          if (groupSnaps.length === 0) return null
-                          return (
-                            <div key={group.label}>
-                              <div className="px-4 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400 bg-gray-50 border-y border-gray-100">
-                                {group.label}
-                              </div>
-                              {groupSnaps.map(snap => {
-                                const col = gridRef.current?.api.getColumn(snap.colId)
-                                const name = col?.getColDef().headerName || snap.colId
-                                const isPinned = snap.pinned === 'left'
-                                return (
-                                  <div
-                                    key={snap.colId}
-                                    className={`flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-colors ${snap.hide ? 'opacity-50' : ''}`}
-                                  >
-                                    <button
-                                      onClick={() => toggleColVisibility(snap.colId, snap.hide)}
-                                      title={snap.hide ? 'Show column' : 'Hide column'}
-                                      className={`flex-shrink-0 w-8 h-4 rounded-full transition-colors ${snap.hide ? 'bg-gray-200' : 'bg-indigo-500'}`}
-                                    >
-                                      <span className={`block w-3 h-3 rounded-full bg-white shadow transition-transform mx-0.5 ${snap.hide ? 'translate-x-0' : 'translate-x-4'}`} />
-                                    </button>
-                                    <span className={`flex-1 text-xs ${snap.hide ? 'text-gray-400 line-through' : 'text-gray-700'}`}>{name}</span>
-                                    <button
-                                      onClick={() => toggleColPin(snap.colId, !isPinned)}
-                                      title={isPinned ? 'Unfreeze' : 'Freeze left'}
-                                      className={`flex-shrink-0 text-xs px-1.5 py-0.5 rounded border transition-colors ${
-                                        isPinned
-                                          ? 'bg-blue-100 text-blue-700 border-blue-300 font-semibold'
-                                          : 'bg-transparent text-gray-300 border-gray-200 hover:text-blue-500 hover:border-blue-300'
-                                      }`}
-                                    >
-                                      {isPinned ? '⊣ frozen' : '⊣'}
-                                    </button>
-                                  </div>
-                                )
-                              })}
-                            </div>
-                          )
-                        })}
-                      </div>
-                      <div className="px-4 py-2 border-t border-gray-100 bg-gray-50 text-[10px] text-gray-400">
-                        Drag columns in the grid to reorder
+                return (
+                  <div className="absolute right-0 top-full mt-1 z-50 w-72 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+                      <span className="text-xs font-semibold text-gray-700">Columns</span>
+                      <div className="flex items-center gap-2">
+                        <button onClick={showAllColumns} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium">Show all</button>
+                        <span className="text-gray-300">|</span>
+                        <button onClick={resetColumnLayout} className="text-xs text-gray-500 hover:text-red-600">Reset</button>
+                        <button onClick={() => setColPanelOpen(false)} className="text-gray-400 hover:text-gray-600 text-sm leading-none ml-1">✕</button>
                       </div>
                     </div>
-                  )
-                })()}
-              </div>
-
-              <button onClick={() => router.push('/commission/admin/upload')}
-                className="px-3 py-1.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 whitespace-nowrap">
-                Upload CSV
-              </button>
-
-            </div>{/* end fixed right */}
-          </div>{/* end flex items-stretch */}
-
-          {/* ── Bulk formula apply (selection-only) ── */}
-          {selectedRows.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2 px-3 pb-2 pt-1.5 border-t border-gray-100">
-              <span className="text-xs text-gray-600 font-medium whitespace-nowrap">
-                Apply to {selectedRows.length} selected:
-              </span>
-              <select value={formulaField} onChange={e => { setFormulaField(e.target.value); setFormulaValue('') }}
-                className="text-xs border border-gray-300 rounded px-2 py-1.5 focus:ring-2 focus:ring-purple-500">
-                {FORMULA_FIELDS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
-              </select>
-              <input type="text" placeholder={currentHint} value={formulaValue}
-                onChange={e => setFormulaValue(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') bulkApplyFormula() }}
-                className="text-xs border border-gray-300 rounded px-2 py-1.5 w-44 focus:ring-2 focus:ring-purple-500" />
-              <button onClick={bulkApplyFormula} disabled={formulaApplying}
-                className="px-3 py-1.5 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 disabled:opacity-40 font-medium">
-                {formulaApplying ? 'Applying…' : 'Apply'}
-              </button>
+                    <div className="overflow-y-auto max-h-[420px] py-1">
+                      {groups.map(group => {
+                        const groupSnaps = group.ids
+                          .map(id => snapMap.get(id))
+                          .filter((s): s is NonNullable<typeof s> => !!s)
+                        if (groupSnaps.length === 0) return null
+                        return (
+                          <div key={group.label}>
+                            <div className="px-4 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400 bg-gray-50 border-y border-gray-100">
+                              {group.label}
+                            </div>
+                            {groupSnaps.map(snap => {
+                              const col = gridRef.current?.api.getColumn(snap.colId)
+                              const name = col?.getColDef().headerName || snap.colId
+                              const isPinned = snap.pinned === 'left'
+                              return (
+                                <div key={snap.colId}
+                                  className={`flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-colors ${snap.hide ? 'opacity-50' : ''}`}
+                                >
+                                  <button
+                                    onClick={() => toggleColVisibility(snap.colId, snap.hide)}
+                                    title={snap.hide ? 'Show column' : 'Hide column'}
+                                    className={`flex-shrink-0 w-8 h-4 rounded-full transition-colors ${snap.hide ? 'bg-gray-200' : 'bg-indigo-500'}`}
+                                  >
+                                    <span className={`block w-3 h-3 rounded-full bg-white shadow transition-transform mx-0.5 ${snap.hide ? 'translate-x-0' : 'translate-x-4'}`} />
+                                  </button>
+                                  <span className={`flex-1 text-xs ${snap.hide ? 'text-gray-400 line-through' : 'text-gray-700'}`}>{name}</span>
+                                  <button
+                                    onClick={() => toggleColPin(snap.colId, !isPinned)}
+                                    title={isPinned ? 'Unfreeze' : 'Freeze left'}
+                                    className={`flex-shrink-0 text-xs px-1.5 py-0.5 rounded border transition-colors ${
+                                      isPinned
+                                        ? 'bg-blue-100 text-blue-700 border-blue-300 font-semibold'
+                                        : 'bg-transparent text-gray-300 border-gray-200 hover:text-blue-500 hover:border-blue-300'
+                                    }`}
+                                  >
+                                    {isPinned ? '⊣ frozen' : '⊣'}
+                                  </button>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        )
+                      })}
+                    </div>
+                    <div className="px-4 py-2 border-t border-gray-100 bg-gray-50 text-[10px] text-gray-400">
+                      Drag columns in the grid to reorder
+                    </div>
+                  </div>
+                )
+              })()}
             </div>
-          )}
 
+            <button onClick={() => router.push('/commission/admin/upload')}
+              className="h-8 px-2.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 whitespace-nowrap font-medium transition-colors">
+              Upload CSV
+            </button>
+
+          </div>
         </div>
+      )}
+
+      <main className="flex flex-col flex-1 min-h-0 px-3 pt-2 pb-2 overflow-hidden">
+
+        {/* Feedback toast */}
+        {feedback && (
+          <div className="flex-shrink-0 mb-2 bg-green-50 border border-green-200 text-green-800 px-4 py-1.5 rounded text-xs font-medium">
+            {feedback}
+          </div>
+        )}
+
+        {/* Bulk formula row — conditional on selection */}
+        {selectedRows.length > 0 && (
+          <div className="flex-shrink-0 flex flex-wrap items-center gap-2 px-3 py-1.5 mb-2 bg-white border border-gray-200 rounded-md">
+            <span className="text-xs text-purple-700 font-medium whitespace-nowrap">
+              Apply to {selectedRows.length} selected:
+            </span>
+            <select value={formulaField} onChange={e => { setFormulaField(e.target.value); setFormulaValue('') }}
+              className="text-xs border border-gray-300 rounded px-2 h-6 focus:ring-1 focus:ring-purple-400 focus:outline-none bg-white">
+              {FORMULA_FIELDS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
+            </select>
+            <input type="text" placeholder={currentHint} value={formulaValue}
+              onChange={e => setFormulaValue(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') bulkApplyFormula() }}
+              className="text-xs border border-gray-300 rounded px-2 h-6 w-44 focus:ring-1 focus:ring-purple-400 focus:outline-none" />
+            <button onClick={bulkApplyFormula} disabled={formulaApplying}
+              className="h-6 px-3 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 disabled:opacity-40 font-medium">
+              {formulaApplying ? 'Applying…' : 'Apply'}
+            </button>
+          </div>
+        )}
 
         {/* AG Grid */}
-        <div className="ag-theme-alpine flex-1 rounded-lg shadow overflow-hidden" style={{ minHeight: 0 }}>
+        <div className="ag-theme-alpine flex-1 border border-gray-200 rounded-md" style={{ minHeight: 0 }}>
           <AgGridReact
             ref={gridRef}
-            theme="legacy"
             rowData={rowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             getRowId={(params) => String(params.data.id ?? '')}
             animateRows={true}
             rowHeight={ROW_HEIGHTS[density]}
-            rowSelection={{ mode: 'multiRow', checkboxes: true, headerCheckbox: true, enableClickSelection: false }}
+            rowSelection={{ mode: 'multiRow', checkboxes: false, enableClickSelection: true }}
+            popupParent={document.body}
             onCellValueChanged={onCellValueChanged}
             onSelectionChanged={onSelectionChanged}
             onFilterChanged={onFilterChanged}
@@ -1505,14 +1465,33 @@ export default function MasterFilePage() {
               return undefined
             }}
             onGridReady={(e: GridReadyEvent) => {
+              // Always purge any auto-generated ag-grid columns (e.g. the old checkbox selection column)
+              const hideAutoGen = () => {
+                const autoCols = e.api.getAllGridColumns?.()?.filter(
+                  (c: any) => String(c.getColId?.() ?? '').startsWith('ag-Grid')
+                )
+                if (autoCols?.length) {
+                  e.api.setColumnsVisible(autoCols.map((c: any) => c.getColId()), false)
+                }
+              }
+
               const saved = localStorage.getItem(COLUMN_STATE_KEY)
               let restored = false
               if (saved) {
                 try {
-                  e.api.applyColumnState({ state: JSON.parse(saved), applyOrder: true })
+                  const parsed = JSON.parse(saved)
+                  const cleaned = parsed.filter((s: any) => !String(s.colId ?? '').startsWith('ag-Grid'))
+                  if (cleaned.length !== parsed.length) {
+                    localStorage.setItem(COLUMN_STATE_KEY, JSON.stringify(cleaned))
+                  }
+                  e.api.applyColumnState({ state: cleaned, applyOrder: true })
                   restored = true
-                } catch {}
+                } catch {
+                  localStorage.removeItem(COLUMN_STATE_KEY)
+                }
               }
+
+              hideAutoGen()
               if (!restored) e.api.sizeColumnsToFit()
               gridIsReadyRef.current = true
               maybeRestoreFilters()

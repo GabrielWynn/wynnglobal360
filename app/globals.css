@@ -121,10 +121,215 @@
 .badge-pending  { background: #FEF3C7; color: #92400E; }
 .badge-cancelled{ background: #FEE2E2; color: #991B1B; }
 
+/* Toolbar strip: horizontal scroll only, fixed height, paper-thin scrollbar */
+.toolbar-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.toolbar-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+.toolbar-scroll::-webkit-scrollbar-track {
+  background: #e2e8f0;
+}
+.toolbar-scroll::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 2px;
+}
+.toolbar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+/* Firefox */
+.toolbar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #e2e8f0;
+}
+
 /* AG Grid: ensure text selection works in cells */
 .ag-theme-alpine .ag-cell-value,
 .ag-theme-alpine .ag-group-value {
   -webkit-user-select: text;
   -moz-user-select: text;
   user-select: text;
+}
+
+/* ── AG Grid: Excel-oriented overrides ── */
+
+/* ── Selected row — blue tint on rows (kept here for row highlight) ── */
+
+/* ── Column filter popup — opaque, well-designed card ── */
+.ag-theme-alpine .ag-popup {
+  z-index: 9999;
+}
+.ag-theme-alpine .ag-menu,
+.ag-theme-alpine .ag-popup-child {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18) !important;
+  min-width: 220px;
+}
+
+/* Every nesting layer inside the filter — all must be white */
+.ag-theme-alpine .ag-filter,
+.ag-theme-alpine .ag-filter-wrapper,
+.ag-theme-alpine .ag-filter-body-wrapper,
+.ag-theme-alpine .ag-filter-body,
+.ag-theme-alpine .ag-filter-filter,
+.ag-theme-alpine .ag-input-field,
+.ag-theme-alpine .ag-wrapper {
+  background: #ffffff !important;
+}
+
+/* AND / OR condition row */
+.ag-theme-alpine .ag-filter-condition {
+  background: #f8fafc !important;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 6px 10px;
+}
+
+/* ── The actual input box ── */
+/* ag-grid v35 renders text inputs as .ag-input-field-input inside .ag-wrapper */
+.ag-theme-alpine .ag-input-field-input,
+.ag-theme-alpine .ag-text-field-input,
+.ag-theme-alpine .ag-number-field-input,
+.ag-theme-alpine .ag-wrapper input,
+.ag-theme-alpine .ag-filter input {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 5px !important;
+  color: #111827 !important;
+  padding: 4px 8px !important;
+  font-size: 12px !important;
+  height: 28px !important;
+  box-shadow: none !important;
+  outline: none !important;
+  width: 100%;
+}
+.ag-theme-alpine .ag-input-field-input:focus,
+.ag-theme-alpine .ag-wrapper input:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+}
+.ag-theme-alpine .ag-input-field-input::placeholder,
+.ag-theme-alpine .ag-wrapper input::placeholder {
+  color: #9ca3af !important;
+}
+
+/* ── Condition type select (Contains / Equals / etc.) ── */
+.ag-theme-alpine .ag-filter select,
+.ag-theme-alpine .ag-filter .ag-select,
+.ag-theme-alpine .ag-filter .ag-picker-field {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 5px !important;
+  color: #111827 !important;
+  font-size: 12px !important;
+  height: 28px !important;
+  padding: 0 6px !important;
+}
+
+/* ag-grid custom select (not native <select>) */
+.ag-theme-alpine .ag-filter .ag-select .ag-picker-field-wrapper,
+.ag-theme-alpine .ag-filter .ag-select .ag-picker-field-display {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 5px !important;
+  height: 28px !important;
+  padding: 0 8px !important;
+  color: #111827 !important;
+  font-size: 12px !important;
+}
+.ag-theme-alpine .ag-filter .ag-select:hover .ag-picker-field-wrapper {
+  border-color: #94a3b8 !important;
+}
+
+/* Padding inside the filter body */
+.ag-theme-alpine .ag-filter-body {
+  padding: 10px !important;
+}
+.ag-theme-alpine .ag-filter-body-wrapper {
+  padding: 0 !important;
+}
+
+/* ── Horizontal body scrollbar — visual styling only, no height overrides ── */
+.ag-theme-alpine .ag-body-horizontal-scroll {
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+.ag-theme-alpine .ag-body-horizontal-scroll-viewport::-webkit-scrollbar {
+  height: 10px;
+}
+.ag-theme-alpine .ag-body-horizontal-scroll-viewport::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 0;
+}
+.ag-theme-alpine .ag-body-horizontal-scroll-viewport::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 4px;
+  border: 2px solid #f1f5f9;
+}
+.ag-theme-alpine .ag-body-horizontal-scroll-viewport::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* ── Pagination panel ── */
+.ag-theme-alpine .ag-paging-panel {
+  display: flex !important;
+  align-items: center;
+  height: auto;
+  min-height: 32px;
+  padding: 0 12px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 11px;
+  color: #475569;
+  gap: 8px;
+  background: #f8fafc;
+}
+.ag-theme-alpine .ag-paging-page-summary-panel {
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+}
+.ag-theme-alpine .ag-paging-page-size {
+  display: flex !important;
+  align-items: center;
+  gap: 4px;
+}
+.ag-theme-alpine .ag-paging-page-size select,
+.ag-theme-alpine select.ag-paging-page-size-select {
+  display: inline-block !important;
+  font-size: 11px;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  padding: 1px 4px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+}
+
+/* ── Pinned-left separator ── */
+.ag-theme-alpine .ag-pinned-left-cols-container {
+  border-right: 2px solid #e2e8f0;
+}
+
+/* ── Selected row ── */
+.ag-theme-alpine .ag-row-selected {
+  background-color: #eff6ff !important;
+}
+
+/* ── Header styling — cleaner Excel look ── */
+.ag-theme-alpine .ag-header {
+  background: #f1f5f9;
+  border-bottom: 2px solid #cbd5e1;
+}
+.ag-theme-alpine .ag-header-cell {
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: 0.01em;
+}
+.ag-theme-alpine .ag-header-cell-resize::after {
+  background-color: #cbd5e1;
 }

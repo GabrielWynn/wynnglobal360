@@ -1,23 +1,18 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 interface AuditEntry {
   id: string
-  table_name: string
-  record_id: string
+  target_id: string | null
   action: string
-  old_value: any
-  new_value: any
-  override_reason: string | null
-  performed_by: string | null
-  performed_at: string
+  before_data: any
+  after_data: any
+  created_at: string
 }
 
 export default function AuditPage() {
-  const router = useRouter()
   const [entries, setEntries] = useState<AuditEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [filterAction, setFilterAction] = useState('')
@@ -31,19 +26,19 @@ export default function AuditPage() {
     setError('')
 
     let query = supabase
-      .from('audit_log')
+      .from('admin_audit_log')
       .select('*')
-      .order('performed_at', { ascending: false })
+      .order('created_at', { ascending: false })
       .limit(500)
 
     if (filterAction) query = query.eq('action', filterAction)
-    if (filterFrom) query = query.gte('performed_at', filterFrom)
-    if (filterTo) query = query.lte('performed_at', filterTo + 'T23:59:59')
+    if (filterFrom) query = query.gte('created_at', filterFrom)
+    if (filterTo) query = query.lte('created_at', filterTo + 'T23:59:59')
 
     const { data, error: err } = await query
 
     if (err) {
-      // audit_log may not exist yet in this environment
+      // admin_audit_log may not exist yet in this environment
       if (err.code === '42P01') {
         setError('Audit log table does not exist yet. Apply the migration first.')
       } else {
@@ -129,17 +124,17 @@ export default function AuditPage() {
                     <>
                       <tr key={e.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => setExpanded(expanded === e.id ? null : e.id)}>
                         <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
-                          {e.performed_at ? new Date(e.performed_at).toLocaleString() : '—'}
+                          {e.created_at ? new Date(e.created_at).toLocaleString() : '—'}
                         </td>
                         <td className="px-4 py-3">
                           <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${actionBadge(e.action)}`}>
                             {e.action}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-xs text-gray-600 font-mono">{e.table_name}</td>
-                        <td className="px-4 py-3 text-xs text-gray-500 font-mono">{e.record_id?.slice(0, 8)}…</td>
+                        <td className="px-4 py-3 text-xs text-gray-600 font-mono">{(e as any).after_data?.table_name ?? '—'}</td>
+                        <td className="px-4 py-3 text-xs text-gray-500 font-mono">{(e as any).target_id?.slice?.(0, 8) ?? '—'}…</td>
                         <td className="px-4 py-3 text-xs text-gray-400">
-                          {e.override_reason ? <span className="text-amber-700">{e.override_reason}</span> : 'Click to expand'}
+                          {(e as any).after_data?.override_reason ? <span className="text-amber-700">{(e as any).after_data.override_reason}</span> : 'Click to expand'}
                         </td>
                       </tr>
                       {expanded === e.id && (
@@ -149,13 +144,13 @@ export default function AuditPage() {
                               <div>
                                 <p className="font-semibold text-gray-600 mb-1">Old Value</p>
                                 <pre className="bg-white border rounded p-2 text-gray-700 overflow-auto max-h-32">
-                                  {JSON.stringify(e.old_value, null, 2)}
+                                  {JSON.stringify((e as any).before_data, null, 2)}
                                 </pre>
                               </div>
                               <div>
                                 <p className="font-semibold text-gray-600 mb-1">New Value</p>
                                 <pre className="bg-white border rounded p-2 text-gray-700 overflow-auto max-h-32">
-                                  {JSON.stringify(e.new_value, null, 2)}
+                                  {JSON.stringify((e as any).after_data, null, 2)}
                                 </pre>
                               </div>
                             </div>

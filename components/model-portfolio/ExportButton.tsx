@@ -9,6 +9,7 @@ import {
   IconTable,
 } from "@tabler/icons-react";
 import type { StandardReturns, HoldingRow, PeriodReturn } from "@/lib/model-portfolio";
+import type { AnnualisedReturns } from "@/lib/analytics";
 import { formatReturn } from "@/lib/model-portfolio";
 
 // ---------------------------------------------------------------------------
@@ -20,6 +21,7 @@ export interface ExportData {
   profileLabel:      string;
   profileName:       string;
   standardReturns:   StandardReturns;
+  annualisedReturns: AnnualisedReturns;
   holdings:          HoldingRow[];
   periods:           PeriodReturn[];
   latestPeriodLabel: string;
@@ -75,21 +77,34 @@ async function generatePDF(d: ExportData) {
   doc.setFont("helvetica", "bold");
   doc.text("Performance Summary", 14, 63);
 
-  const PERIODS: Array<keyof StandardReturns> = [
-    "1M", "3M", "6M", "YTD", "1Y", "2Y", "Since Inception",
+  const si   = d.annualisedReturns["Since Inception"];
+  const ann2 = d.annualisedReturns["2Y"].annualised;
+
+  const perfBody: [string, string, string][] = [
+    ["1M",              formatReturn(d.standardReturns["1M"]),  ""],
+    ["3M",              formatReturn(d.standardReturns["3M"]),  ""],
+    ["6M",              formatReturn(d.standardReturns["6M"]),  ""],
+    ["YTD",             formatReturn(d.standardReturns["YTD"]), ""],
+    ["1 Year",          formatReturn(d.standardReturns["1Y"]),  ""],
+    ["2 Years",         formatReturn(d.standardReturns["2Y"]),  ann2   !== null ? `${formatReturn(ann2)} p.a.`  : ""],
+    ["Since Inception", formatReturn(si.raw),
+      si.annualised !== null
+        ? `${formatReturn(si.annualised)} p.a. (${si.years.toFixed(1)} yrs)`
+        : ""],
   ];
 
   autoTable(doc, {
     startY: 66,
-    head: [["Period", "Return"]],
-    body: PERIODS.map((key) => [key, formatReturn(d.standardReturns[key])]),
+    head: [["Period", "Total Return", "Annualised"]],
+    body: perfBody,
     theme: "striped",
     headStyles: { fillColor: NAVY, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
     bodyStyles: { fontSize: 9 },
     alternateRowStyles: { fillColor: LIGHT },
     columnStyles: {
-      0: { cellWidth: 55 },
-      1: { cellWidth: 45, halign: "right" },
+      0: { cellWidth: 45 },
+      1: { cellWidth: 35, halign: "right" },
+      2: { cellWidth: 60, halign: "right" },
     },
     margin: { left: 14, right: 14 },
   });
@@ -192,6 +207,12 @@ async function generatePDF(d: ExportData) {
 }
 
 // ---------------------------------------------------------------------------
+// Formats a decimal return as a numeric percentage for Excel cells
+function fmtPct(v: number | null): number | string {
+  return v !== null ? parseFloat((v * 100).toFixed(4)) : "N/A";
+}
+
+// ---------------------------------------------------------------------------
 // Excel generator
 // ---------------------------------------------------------------------------
 
@@ -202,24 +223,27 @@ async function generateExcel(d: ExportData) {
   const today = new Date().toLocaleDateString("en-GB");
 
   // ── Sheet 1: Performance Summary ─────────────────────────────────────────
-  const PERIODS: Array<keyof StandardReturns> = [
-    "1M", "3M", "6M", "YTD", "1Y", "2Y", "Since Inception",
-  ];
+  const si   = d.annualisedReturns["Since Inception"];
+  const ann2 = d.annualisedReturns["2Y"].annualised;
 
-  const summaryRows: (string | number)[][] = [
+  type Row = (string | number)[];
+  const summaryRows: Row[] = [
     ["Wynn Global Insurance — Model Portfolio Report"],
     [`Platform: ${d.platformName}`, `Profile: Perfil ${d.profileLabel} (${d.profileName})`],
     [`Generated: ${today}`],
     [],
-    ["Period", "Return (%)"],
-    ...PERIODS.map((key) => {
-      const val = d.standardReturns[key];
-      return [key, val !== null ? parseFloat((val * 100).toFixed(4)) : "N/A"];
-    }),
+    ["Period", "Total Return (%)", "Annualised Return (% p.a.)", "Notes"],
+    ["1M",  fmtPct(d.standardReturns["1M"]),  "", ""],
+    ["3M",  fmtPct(d.standardReturns["3M"]),  "", ""],
+    ["6M",  fmtPct(d.standardReturns["6M"]),  "", ""],
+    ["YTD", fmtPct(d.standardReturns["YTD"]), "", ""],
+    ["1 Year",          fmtPct(d.standardReturns["1Y"]), fmtPct(d.standardReturns["1Y"]),   ""],
+    ["2 Years",         fmtPct(d.standardReturns["2Y"]), fmtPct(ann2), ""],
+    ["Since Inception", fmtPct(si.raw), fmtPct(si.annualised), `${si.years.toFixed(1)} years`],
   ];
 
   const summaryWS = XLSX.utils.aoa_to_sheet(summaryRows);
-  summaryWS["!cols"] = [{ wch: 20 }, { wch: 16 }];
+  summaryWS["!cols"] = [{ wch: 20 }, { wch: 18 }, { wch: 24 }, { wch: 16 }];
   XLSX.utils.book_append_sheet(wb, summaryWS, "Performance Summary");
 
   // ── Sheet 2: Current Holdings ─────────────────────────────────────────────

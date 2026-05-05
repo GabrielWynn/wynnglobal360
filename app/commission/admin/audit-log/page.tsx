@@ -1,14 +1,13 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
-import { supabase, getAuthHeaders } from '@/lib/supabase'
+import { getAuthHeaders } from '@/lib/supabase'
 
 interface AuditEntry {
   id: string
   record_id: string
   policy_number: string | null
-  action: 'INSERT' | 'UPDATE' | 'DELETE'
+  action: string
   changes: Record<string, { old: string | null; new: string | null }> | null
   changed_by: string | null
   user_email: string | null
@@ -16,9 +15,12 @@ interface AuditEntry {
 }
 
 const ACTION_COLOURS: Record<string, string> = {
-  INSERT: 'bg-green-100 text-green-800',
-  UPDATE: 'bg-blue-100 text-blue-800',
-  DELETE: 'bg-red-100 text-red-800',
+  'commission.approve': 'bg-green-100 text-green-800',
+  'commission.reject': 'bg-red-100 text-red-800',
+  'commission.override': 'bg-amber-100 text-amber-800',
+  'commission.pay': 'bg-blue-100 text-blue-800',
+  'commission.reconcile': 'bg-purple-100 text-purple-800',
+  'commission.config_update': 'bg-gray-100 text-gray-700',
 }
 
 const FIELD_LABELS: Record<string, string> = {
@@ -42,8 +44,6 @@ function fmtDateTime(iso: string): string {
 }
 
 export default function AuditLogPage() {
-  const router = useRouter()
-
   const [logs,        setLogs]        = useState<AuditEntry[]>([])
   const [total,       setTotal]       = useState(0)
   const [page,        setPage]        = useState(1)
@@ -88,7 +88,11 @@ export default function AuditLogPage() {
   function toggleExpand(id: string) {
     setExpanded(prev => {
       const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
       return next
     })
   }
@@ -120,9 +124,12 @@ export default function AuditLogPage() {
               className="border border-gray-300 rounded px-2 py-1.5 text-sm"
             >
               <option value="">All</option>
-              <option value="INSERT">Insert</option>
-              <option value="UPDATE">Update</option>
-              <option value="DELETE">Delete</option>
+              <option value="commission.approve">Approve</option>
+              <option value="commission.reject">Reject</option>
+              <option value="commission.override">Override</option>
+              <option value="commission.pay">Pay</option>
+              <option value="commission.reconcile">Reconcile</option>
+              <option value="commission.config_update">Config update</option>
             </select>
           </div>
 

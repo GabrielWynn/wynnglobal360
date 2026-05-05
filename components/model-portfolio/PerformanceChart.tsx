@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import type { ChartPoint } from "@/lib/model-portfolio";
+import type { DailyChartPoint } from "@/lib/analytics";
 
 interface BenchmarkOption {
   id:   string;
@@ -19,10 +20,12 @@ interface BenchmarkOption {
 }
 
 interface Props {
-  series:     ChartPoint[];
-  profileLabel: string;
-  benchmarks: BenchmarkOption[];
-  // benchmark prices keyed by benchmark id → array of { date, price }
+  series:           ChartPoint[] | DailyChartPoint[];  // period-level (full history)
+  dailySeries?:     DailyChartPoint[] | null;          // daily (recent window)
+  dailyEarliestDate?: string | null;
+  dailyLatestDate?:   string | null;
+  profileLabel:     string;
+  benchmarks:       BenchmarkOption[];
   benchmarkPriceMap: Record<string, Array<{ date: string; price: number }>>;
 }
 
@@ -42,9 +45,9 @@ function pct(v: number) {
 // Merge benchmark prices into chart series so each point has both portfolio
 // and benchmark cumulative return.
 function mergeWithBenchmark(
-  series: ChartPoint[],
+  series: ChartPoint[] | DailyChartPoint[],
   benchPrices: Array<{ date: string; price: number }>
-): ChartPoint[] {
+): (ChartPoint | DailyChartPoint)[] {
   if (!benchPrices.length || !series.length) return series;
 
   const priceMap = new Map(benchPrices.map((b) => [b.date, b.price]));
@@ -117,18 +120,27 @@ function CustomTooltip({
 
 export default function PerformanceChart({
   series,
+  dailySeries,
+  dailyEarliestDate,
+  dailyLatestDate,
   profileLabel,
   benchmarks,
   benchmarkPriceMap,
 }: Props) {
   const [selectedBenchmark, setSelectedBenchmark] = useState<string>("none");
+  const hasDailyData = !!dailySeries?.length;
+  // Default to daily view when data is available — it's the most current
+  const [viewMode, setViewMode] = useState<"period" | "daily">(
+    hasDailyData ? "daily" : "period"
+  );
+  const activeSeries = viewMode === "daily" && hasDailyData ? dailySeries! : series;
 
   const benchPrices =
     selectedBenchmark !== "none"
       ? (benchmarkPriceMap[selectedBenchmark] ?? [])
       : [];
 
-  const chartData = mergeWithBenchmark(series, benchPrices);
+  const chartData = mergeWithBenchmark(activeSeries, benchPrices);
   const hasBenchmarkData =
     selectedBenchmark !== "none" && benchPrices.length > 0;
   const benchmarkName =
@@ -141,9 +153,43 @@ export default function PerformanceChart({
     >
       {/* Chart header */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-        <p className="text-sm font-semibold" style={{ color: "var(--wgi-text)" }}>
-          Cumulative Return — Perfil {profileLabel}
-        </p>
+        <div>
+          <p className="text-sm font-semibold" style={{ color: "var(--wgi-text)" }}>
+            Cumulative Return — Perfil {profileLabel}
+          </p>
+          {viewMode === "daily" && dailyEarliestDate && dailyLatestDate && (
+            <p className="text-[11px] mt-0.5" style={{ color: "var(--wgi-text-muted)" }}>
+              Daily prices · {dailyEarliestDate} → {dailyLatestDate}
+            </p>
+          )}
+          {viewMode === "period" && (
+            <p className="text-[11px] mt-0.5" style={{ color: "var(--wgi-text-muted)" }}>
+              Full history · one point per period
+            </p>
+          )}
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* Period / Daily toggle */}
+          {hasDailyData && (
+            <div className="flex rounded-lg border overflow-hidden text-[11px] font-semibold"
+                 style={{ borderColor: "var(--wgi-border)" }}>
+              {(["period", "daily"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => setViewMode(mode)}
+                  className="px-3 py-1.5 capitalize transition-colors"
+                  style={{
+                    background: viewMode === mode ? "var(--wgi-navy)" : "white",
+                    color:      viewMode === mode ? "white" : "var(--wgi-text-muted)",
+                    borderRight: mode === "period" ? "1px solid var(--wgi-border)" : undefined,
+                  }}
+                >
+                  {mode === "period" ? "Full history" : "Daily"}
+                </button>
+              ))}
+            </div>
+          )}
 
         {/* Benchmark selector */}
         <div className="flex items-center gap-2">
@@ -170,6 +216,7 @@ export default function PerformanceChart({
             ))}
           </select>
         </div>
+        </div> {/* end right controls */}
       </div>
 
       {selectedBenchmark !== "none" && !hasBenchmarkData && (

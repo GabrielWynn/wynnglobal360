@@ -192,7 +192,7 @@ export default function UnmappedPage() {
         {successMsg && (
           <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md text-sm flex items-start justify-between">
             <span>{successMsg}</span>
-            <button onClick={() => setSuccessMsg(null)} className="ml-4 text-green-600 hover:text-green-800 font-bold text-lg leading-none">×</button>
+            <button aria-label="Dismiss success message" onClick={() => setSuccessMsg(null)} className="ml-4 text-green-600 hover:text-green-800 font-bold text-lg leading-none">×</button>
           </div>
         )}
 
@@ -200,7 +200,7 @@ export default function UnmappedPage() {
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md text-sm flex items-start justify-between">
             <span>{error}</span>
-            <button onClick={() => setError(null)} className="ml-4 text-red-500 hover:text-red-700 font-bold text-lg leading-none">×</button>
+            <button aria-label="Dismiss error message" onClick={() => setError(null)} className="ml-4 text-red-500 hover:text-red-700 font-bold text-lg leading-none">×</button>
           </div>
         )}
 

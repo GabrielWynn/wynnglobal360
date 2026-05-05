@@ -144,3 +144,38 @@ export async function resolveISINToTicker(
     name: best.Name,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Fund / ETF fundamentals (look-through data)
+// ---------------------------------------------------------------------------
+
+export interface EodhdFundamentals {
+  General?: { Type?: string; Name?: string; CurrencyCode?: string };
+  ETF_Data?: {
+    Asset_Allocation?: Record<string, { "Net_Assets_%": string }>;
+    Sector_Weights?:   Array<{ Equity_Portfolio_Weight?: string; Type?: string }>;
+    World_Regions?:    Array<{ Equity_Portfolio_Weight?: string; Country?: string }>;
+    Top_10_Holdings?:  Array<{
+      Code?: string; Name?: string; Country?: string;
+      Sector?: string; "Assets_%"?: string;
+    }>;
+  };
+}
+
+/**
+ * Fetch fundamentals for a ticker (ETF or mutual fund).
+ * Returns null if the ticker is not found or EODHD has no data.
+ */
+export async function getFundamentals(ticker: string): Promise<EodhdFundamentals | null> {
+  const url = `${BASE_URL}/fundamentals/${encodeURIComponent(ticker)}?api_token=${token()}&fmt=json`;
+  try {
+    const res = await fetch(url, { next: { revalidate: 3600 } }); // cache 1 h
+    if (!res.ok) return null;
+    const data = await res.json();
+    // EODHD returns an object; if it's empty or has no useful keys, return null
+    if (!data || typeof data !== "object" || !("General" in data)) return null;
+    return data as EodhdFundamentals;
+  } catch {
+    return null;
+  }
+}

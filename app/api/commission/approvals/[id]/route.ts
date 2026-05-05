@@ -18,6 +18,14 @@ export async function PATCH(
   if (!userId) return unauthorised()
 
   try {
+    let actorEmail = `${userId}@local`
+    try {
+      const { data } = await supabaseAdmin.auth.admin.getUserById(userId)
+      actorEmail = data.user?.email ?? actorEmail
+    } catch {
+      // keep fallback if auth lookup fails
+    }
+
     const { id: paramId } = await params
     const { action, ifa_amount, override_reason } = await request.json()
     // action: 'approve' | 'reject' | 'override'
@@ -78,16 +86,15 @@ export async function PATCH(
 
     // Audit log entry (best-effort — table may not exist yet)
     try {
-      await supabaseAdmin.from('audit_log').insert({
-        table_name: 'commission_records',
-        record_id: paramId,
-        action,
-        old_value: { status: current.status, ifa_amount: current.ifa_amount, ifa_percentage: current.ifa_percentage },
-        new_value: updates,
-        override_reason: override_reason ?? null,
-        performed_at: new Date().toISOString(),
+      await supabaseAdmin.from('admin_audit_log').insert({
+        actor_id: userId,
+        actor_email: actorEmail,
+        action: `commission.${action}`,
+        target_id: paramId,
+        before_data: { status: current.status, ifa_amount: current.ifa_amount, ifa_percentage: current.ifa_percentage },
+        after_data: { ...updates, override_reason: override_reason ?? null, table_name: 'commission_records' },
       })
-    } catch { /* audit_log may not exist yet */ }
+    } catch { /* admin_audit_log may not exist yet */ }
 
     return NextResponse.json({ transaction: data })
   } catch (err: any) {

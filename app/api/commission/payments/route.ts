@@ -139,6 +139,14 @@ export async function POST(request: Request) {
   if (!userId) return unauthorised()
 
   try {
+    let actorEmail = `${userId}@local`
+    try {
+      const { data } = await supabaseAdmin.auth.admin.getUserById(userId)
+      actorEmail = data.user?.email ?? actorEmail
+    } catch {
+      // keep fallback if auth lookup fails
+    }
+
     const { ifa_id, payment_reference, payment_date, currency } = await request.json()
 
     if (!ifa_id) {
@@ -236,20 +244,21 @@ export async function POST(request: Request) {
 
     // 5. Audit log (best-effort)
     try {
-      await supabaseAdmin.from('audit_log').insert({
-        table_name: 'payment_batches',
-        record_id: batch.id,
-        action: 'pay',
-        new_value: {
+      await supabaseAdmin.from('admin_audit_log').insert({
+        actor_id: userId,
+        actor_email: actorEmail,
+        action: 'commission.pay',
+        target_id: batch.id,
+        after_data: {
+          table_name: 'payment_batches',
           ifa_id,
           total_amount: totalAmount,
           currency: resolvedCurrency,
           transaction_count: records.length,
           payment_reference: payment_reference ?? null,
         },
-        performed_at: new Date().toISOString(),
       })
-    } catch { /* audit_log may not exist yet */ }
+    } catch { /* admin_audit_log may not exist yet */ }
 
     return NextResponse.json({
       batch,

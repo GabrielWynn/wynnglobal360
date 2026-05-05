@@ -3,37 +3,32 @@ import Link from "next/link";
 import { IconChevronLeft } from "@tabler/icons-react";
 import { supabaseAdmin } from "@/lib/supabase";
 import {
-  computePeriodReturns,
+  fetchCompositions,
+  buildDailyReturns,
   computeStandardReturns,
-  formatReturn,
-  returnColor,
-} from "@/lib/model-portfolio";
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+} from "@/lib/portfolio-compositions";
 
 interface PageProps {
   params: { platform: string };
 }
 
-// ---------------------------------------------------------------------------
-// Profile styling
-// ---------------------------------------------------------------------------
-
-const PROFILE_META: Record<
-  string,
-  { color: string; bg: string; desc: string }
-> = {
-  A: { color: "#10b981", bg: "#ecfdf5", desc: "Conservative" },
-  B: { color: "#3b82f6", bg: "#eff6ff", desc: "Moderate" },
+const PROFILE_META: Record<string, { color: string; bg: string; desc: string }> = {
+  A: { color: "#10b981", bg: "#ecfdf5", desc: "Conservative"        },
+  B: { color: "#3b82f6", bg: "#eff6ff", desc: "Moderate"            },
   C: { color: "#f59e0b", bg: "#fffbeb", desc: "Moderate Aggressive" },
-  D: { color: "#ef4444", bg: "#fef2f2", desc: "Aggressive" },
+  D: { color: "#ef4444", bg: "#fef2f2", desc: "Aggressive"          },
 };
 
-// ---------------------------------------------------------------------------
-// Data fetching
-// ---------------------------------------------------------------------------
+function fmt(v: number | null): string {
+  if (v === null) return "—";
+  const p = (v * 100).toFixed(2);
+  return v >= 0 ? `+${p}%` : `${p}%`;
+}
+
+function color(v: number | null): string {
+  if (v === null) return "var(--wgi-text-muted)";
+  return v >= 0 ? "#10b981" : "#ef4444";
+}
 
 async function getPlatformData(slug: string) {
   const { data: platform } = await supabaseAdmin
@@ -41,7 +36,6 @@ async function getPlatformData(slug: string) {
     .select("id, name, slug")
     .eq("slug", slug)
     .maybeSingle();
-
   if (!platform) return null;
 
   const { data: profiles } = await supabaseAdmin
@@ -49,40 +43,48 @@ async function getPlatformData(slug: string) {
     .select("id, label, name, risk_level")
     .order("risk_level");
 
-  // For each profile, compute since-inception return
+  // Batch: single price query for all funds across all profiles
+  const { data: allCompositions } = await supabaseAdmin
+    .from("mp_portfolio_compositions")
+    .select("id, profile_id, effective_from, effective_to, mp_composition_holdings(fund_id, weight, mp_funds(isin, display_name))")
+    .eq("platform_id", platform.id);
+
+  const fundIds = [
+    ...new Set(
+      (allCompositions ?? []).flatMap((c) =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (c.mp_composition_holdings ?? []).map((h: any) => h.fund_id as string)
+      )
+    ),
+  ];
+
+  // Only fetch the last 13 months — enough for 1M/3M/6M/YTD/1Y.
+  // High limit overrides Supabase's default 1 000-row cap.
+  const thirteenMonthsAgo = (() => {
+    const d = new Date();
+    d.setMonth(d.getMonth() - 13);
+    return d.toISOString().slice(0, 10);
+  })();
+
+  const { data: priceRows } = await supabaseAdmin
+    .from("mp_fund_prices")
+    .select("fund_id, date, price")
+    .in("fund_id", fundIds)
+    .gte("date", thirteenMonthsAgo)
+    .order("date")
+    .limit(50000);
+
   const profileSummaries = await Promise.all(
-    (profiles ?? []).map(async (profile) => {
-      const { data: periods } = await supabaseAdmin
-        .from("mp_portfolio_periods")
-        .select(
-          `id, label, start_date, end_date, is_open,
-           mp_portfolio_holdings!inner(weighted_return)`
-        )
-        .eq("platform_id", platform.id)
-        .eq("mp_portfolio_holdings.profile_id", profile.id)
-        .order("start_date");
-
-      const computed = computePeriodReturns(periods ?? []);
-      const std = computeStandardReturns(computed);
-      const latestCompleted = [...computed]
-        .reverse()
-        .find((p) => !p.isOpen);
-
-      return {
-        ...profile,
-        sinceInception: std["Since Inception"],
-        latestReturn:   latestCompleted?.portfolioReturn ?? null,
-        periodCount:    computed.filter((p) => !p.isOpen).length,
-      };
+    (profiles ?? []).map(async (prof) => {
+      const compositions = await fetchCompositions(platform.id, prof.id);
+      const daily        = buildDailyReturns(compositions, priceRows ?? []);
+      const std          = computeStandardReturns(daily);
+      return { ...prof, returns: std };
     })
   );
 
   return { platform, profileSummaries };
 }
-
-// ---------------------------------------------------------------------------
-// Page
-// ---------------------------------------------------------------------------
 
 export default async function PlatformPage({ params }: PageProps) {
   const data = await getPlatformData(params.platform);
@@ -92,7 +94,6 @@ export default async function PlatformPage({ params }: PageProps) {
 
   return (
     <div className="max-w-5xl mx-auto px-6 md:px-10 py-10">
-      {/* Breadcrumb */}
       <Link
         href="/model-portfolio"
         className="inline-flex items-center gap-1 text-sm mb-6 transition-opacity hover:opacity-70"
@@ -102,12 +103,8 @@ export default async function PlatformPage({ params }: PageProps) {
         All Platforms
       </Link>
 
-      {/* Header */}
       <div className="mb-8">
-        <h1
-          className="text-2xl md:text-3xl font-bold"
-          style={{ color: "var(--wgi-text)" }}
-        >
+        <h1 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--wgi-text)" }}>
           {platform.name}
         </h1>
         <p className="mt-1 text-sm" style={{ color: "var(--wgi-text-muted)" }}>
@@ -115,107 +112,49 @@ export default async function PlatformPage({ params }: PageProps) {
         </p>
       </div>
 
-      {/* Profile cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        {profileSummaries.map((profile) => {
-          const meta = PROFILE_META[profile.label] ?? {
-            color: "#64748b",
-            bg: "#f8fafc",
-            desc: profile.name,
-          };
-
+        {profileSummaries.map((prof) => {
+          const meta = PROFILE_META[prof.label] ?? { color: "#64748b", bg: "#f8fafc", desc: prof.name };
           return (
             <Link
-              key={profile.id}
-              href={`/model-portfolio/${platform.slug}/${profile.label.toLowerCase()}`}
+              key={prof.id}
+              href={`/model-portfolio/${platform.slug}/${prof.label.toLowerCase()}`}
               className="group block rounded-2xl border p-6 transition-all hover:shadow-md"
-              style={{
-                background: "white",
-                borderColor: "var(--wgi-border)",
-              }}
+              style={{ background: "white", borderColor: "var(--wgi-border)" }}
             >
-              {/* Profile badge + label */}
               <div className="flex items-center gap-3 mb-5">
                 <span
                   className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-lg font-bold flex-shrink-0"
                   style={{ background: meta.color }}
                 >
-                  {profile.label}
+                  {prof.label}
                 </span>
                 <div>
-                  <p
-                    className="font-semibold text-base"
-                    style={{ color: "var(--wgi-text)" }}
-                  >
-                    Perfil {profile.label}
+                  <p className="font-semibold text-base" style={{ color: "var(--wgi-text)" }}>
+                    Perfil {prof.label}
                   </p>
-                  <p
-                    className="text-xs"
-                    style={{ color: "var(--wgi-text-muted)" }}
-                  >
-                    {meta.desc}
-                  </p>
+                  <p className="text-xs" style={{ color: "var(--wgi-text-muted)" }}>{meta.desc}</p>
                 </div>
               </div>
 
-              {/* Stats row */}
-              <div className="grid grid-cols-2 gap-4">
-                <div
-                  className="rounded-xl p-3"
-                  style={{ background: meta.bg }}
-                >
-                  <p
-                    className="text-[10px] font-semibold uppercase tracking-wider mb-1"
-                    style={{ color: meta.color }}
-                  >
-                    Since Inception
-                  </p>
-                  <p
-                    className="text-xl font-bold"
-                    style={{
-                      color: returnColor(profile.sinceInception),
-                    }}
-                  >
-                    {formatReturn(profile.sinceInception)}
-                  </p>
-                </div>
-
-                <div
-                  className="rounded-xl p-3"
-                  style={{ background: "var(--wgi-bg)" }}
-                >
-                  <p
-                    className="text-[10px] font-semibold uppercase tracking-wider mb-1"
-                    style={{ color: "var(--wgi-text-muted)" }}
-                  >
-                    Latest Period
-                  </p>
-                  <p
-                    className="text-xl font-bold"
-                    style={{
-                      color: returnColor(profile.latestReturn),
-                    }}
-                  >
-                    {formatReturn(profile.latestReturn)}
-                  </p>
-                </div>
+              {/* 1M / 3M / YTD quick stats */}
+              <div className="grid grid-cols-3 gap-3">
+                {(["1M", "3M", "YTD"] as const).map((k) => (
+                  <div key={k} className="rounded-xl p-3" style={{ background: meta.bg }}>
+                    <p className="text-[10px] font-bold uppercase tracking-wider mb-1"
+                       style={{ color: meta.color }}>
+                      {k}
+                    </p>
+                    <p className="text-lg font-bold" style={{ color: color(prof.returns[k]) }}>
+                      {fmt(prof.returns[k])}
+                    </p>
+                  </div>
+                ))}
               </div>
 
-              {/* Periods count + CTA */}
-              <div className="flex items-center justify-between mt-4">
-                <span
-                  className="text-xs"
-                  style={{ color: "var(--wgi-text-muted)" }}
-                >
-                  {profile.periodCount} completed periods
-                </span>
-                <span
-                  className="text-xs font-medium group-hover:underline"
-                  style={{ color: "var(--wgi-accent)" }}
-                >
-                  View details →
-                </span>
-              </div>
+              <p className="mt-4 text-xs group-hover:underline" style={{ color: "var(--wgi-accent)" }}>
+                View details →
+              </p>
             </Link>
           );
         })}

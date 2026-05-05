@@ -112,7 +112,7 @@ export default function AdminDashboard() {
     { label: 'Payment Matrix',    sub: 'Commission rules',                    href: '/commission/admin/payment-matrix',  btnCls: 'bg-orange-600 hover:bg-orange-700', subCls: 'text-orange-100' },
     { label: 'KPI Dashboard',     sub: 'Revenue & alerts',                    href: '/commission/admin/kpi',             btnCls: 'bg-teal-600   hover:bg-teal-700',   subCls: 'text-teal-100' },
     { label: 'Unmapped Policies', sub: stats.unmappedPolicies > 0 ? `${stats.unmappedPolicies} need mapping` : 'All resolved', href: '/commission/admin/unmapped', btnCls: stats.unmappedPolicies > 0 ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-500 hover:bg-gray-600', subCls: stats.unmappedPolicies > 0 ? 'text-red-100' : 'text-gray-200' },
-    { label: 'Audit Log',         sub: 'Change history',                      href: '/commission/commission/admin/audit-log',       btnCls: 'bg-slate-600  hover:bg-slate-700',  subCls: 'text-slate-100' },
+    { label: 'Audit Log',         sub: 'Change history',                      href: '/commission/admin/audit-log',       btnCls: 'bg-slate-600  hover:bg-slate-700',  subCls: 'text-slate-100' },
   ]
 
   return (
@@ -125,14 +125,14 @@ export default function AdminDashboard() {
             <span><strong>{stats.unmappedPolicies} unmapped policies</strong> could not be matched to an IFA in Azure.</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <button onClick={() => router.push('/commission/admin/unmapped')} style={{ color: '#B91C1C', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: '13px' }}>Manage →</button>
-              <button onClick={() => dismiss('unmapped')} style={{ color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', lineHeight: 1, fontFamily: 'inherit' }}>×</button>
+              <button aria-label="Dismiss unmapped policies alert" onClick={() => dismiss('unmapped')} style={{ color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', lineHeight: 1, fontFamily: 'inherit' }}>×</button>
             </div>
           </div>
         )}
         {stats.negativeBalanceIFAs > 0 && !dismissedAlerts.has('negative') && (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', padding: '12px 16px', borderRadius: '10px', fontSize: '14px' }}>
             <span><strong>{stats.negativeBalanceIFAs} IFAs</strong> have a negative balance.</span>
-            <button onClick={() => dismiss('negative')} style={{ color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', lineHeight: 1, fontFamily: 'inherit' }}>×</button>
+            <button aria-label="Dismiss negative balances alert" onClick={() => dismiss('negative')} style={{ color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', lineHeight: 1, fontFamily: 'inherit' }}>×</button>
           </div>
         )}
         {stats.pendingApproval > 0 && !dismissedAlerts.has('pending') && (
@@ -140,7 +140,7 @@ export default function AdminDashboard() {
             <span><strong>{stats.pendingApproval} transactions</strong> are awaiting approval ({formatCurrency(stats.pendingApprovalSum, 'USD')} total IFA value).</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <button onClick={() => router.push('/commission/admin/approvals')} style={{ color: '#1D4ED8', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: '13px' }}>Review →</button>
-              <button onClick={() => dismiss('pending')} style={{ color: '#60A5FA', background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', lineHeight: 1, fontFamily: 'inherit' }}>×</button>
+              <button aria-label="Dismiss pending approvals alert" onClick={() => dismiss('pending')} style={{ color: '#60A5FA', background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', lineHeight: 1, fontFamily: 'inherit' }}>×</button>
             </div>
           </div>
         )}

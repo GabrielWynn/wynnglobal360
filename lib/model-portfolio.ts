@@ -197,9 +197,9 @@ export function buildChartSeries(
 
 /**
  * Finds the price in the map on or nearest to (searching back up to 7 days)
- * the given date string.
+ * the given date string. Exported so analytics.ts can share the same logic.
  */
-function findNearestPrice(
+export function findNearestPrice(
   prices: Map<string, number>,
   dateStr: string
 ): number | null {
