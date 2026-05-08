@@ -32,7 +32,7 @@ if (!EODHD_KEY) {
 // EODHD helpers
 // ---------------------------------------------------------------------------
 
-async function searchByISIN(isin: string): Promise<Array<{ Code: string; Exchange: string; Name: string; ISIN: string | null }>> {
+async function searchByISIN(isin: string): Promise<Array<{ Code: string; Exchange: string; Name: string; ISIN: string | null; Type: string | null }>> {
   const url = `${BASE_URL}/search/${encodeURIComponent(isin)}?api_token=${EODHD_KEY}&fmt=json`;
   const res = await fetch(url);
   if (!res.ok) return [];
