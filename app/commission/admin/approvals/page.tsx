@@ -173,6 +173,13 @@ export default function ApprovalsPage() {
     <div className="min-h-screen bg-gray-100">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-4">
 
+        <button
+          onClick={() => router.push('/commission/admin')}
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
+        >
+          ← Back to Admin
+        </button>
+
         {/* Feedback */}
         {feedback && (
           <div className={`${feedback.startsWith('Error:') ? 'bg-red-50 border-red-200 text-red-800' : 'bg-green-50 border-green-200 text-green-800'} border px-4 py-3 rounded-md text-sm`}>

@@ -172,6 +172,13 @@ export default function PaymentsPage() {
     <div className="min-h-screen bg-gray-100">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
+        <button
+          onClick={() => router.push('/commission/admin')}
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
+        >
+          ← Back to Admin
+        </button>
+
         {/* Feedback */}
         {feedback && (
           <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md text-sm">

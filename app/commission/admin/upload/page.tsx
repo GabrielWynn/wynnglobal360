@@ -312,6 +312,13 @@ export default function UploadPage() {
     <div className="min-h-screen bg-gray-100">
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
+        <button
+          onClick={() => router.push('/commission/admin')}
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
+        >
+          ← Back to Admin
+        </button>
+
         {/* Step indicator */}
         {step !== 'done' && (
           <div className="flex items-center gap-2">

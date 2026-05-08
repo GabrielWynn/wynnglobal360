@@ -211,6 +211,13 @@ export default function KPIDashboard() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
+        <button
+          onClick={() => router.push('/commission/admin')}
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
+        >
+          ← Back to Admin
+        </button>
+
         {/* ── Date controls toolbar ─────────────────────────────────────────── */}
         <div className="flex flex-wrap items-center justify-between gap-3 bg-white rounded-xl border px-4 py-3" style={{ borderColor: 'var(--wgi-border)' }}>
           <div>

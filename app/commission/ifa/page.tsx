@@ -217,6 +217,16 @@ export default function IFAPortal() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
+        <button
+          onClick={() => router.push('/advisors')}
+          className="flex items-center gap-1.5 text-sm font-medium transition-colors"
+          style={{ color: 'var(--wgi-text-muted)' }}
+          onMouseEnter={e => (e.currentTarget.style.color = 'var(--wgi-accent)')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--wgi-text-muted)')}
+        >
+          ← Back to Hub
+        </button>
+
         {/* Balance cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {([

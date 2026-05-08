@@ -338,6 +338,12 @@ export default function PaymentMatrixPage() {
     <div className="min-h-screen bg-gray-100">
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        <button
+          onClick={() => router.push('/commission/admin')}
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
+        >
+          ← Back to Admin
+        </button>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold" style={{ color: 'var(--wgi-text)' }}>Payment Matrix</h1>

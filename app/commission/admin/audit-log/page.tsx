@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { getAuthHeaders } from '@/lib/supabase'
 
 interface AuditEntry {
@@ -44,6 +45,7 @@ function fmtDateTime(iso: string): string {
 }
 
 export default function AuditLogPage() {
+  const router = useRouter()
   const [logs,        setLogs]        = useState<AuditEntry[]>([])
   const [total,       setTotal]       = useState(0)
   const [page,        setPage]        = useState(1)
@@ -103,6 +105,13 @@ export default function AuditLogPage() {
     <div className="min-h-screen bg-gray-50">
 
       <main className="px-6 py-4 space-y-4">
+
+        <button
+          onClick={() => router.push('/commission/admin')}
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
+        >
+          ← Back to Admin
+        </button>
 
         {/* Filters */}
         <div className="bg-white rounded-lg shadow px-4 py-3 flex flex-wrap items-end gap-3">

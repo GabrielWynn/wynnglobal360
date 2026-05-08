@@ -340,6 +340,12 @@ export default function ReportsPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-4">
+        <button
+          onClick={() => router.push('/commission/admin')}
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
+        >
+          ← Back to Admin
+        </button>
         {/* Selectors */}
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2">
