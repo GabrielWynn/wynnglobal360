@@ -1642,7 +1642,7 @@ export default function MasterFilePage() {
                     value={pgSize}
                     onChange={e => {
                       const s = Number(e.target.value)
-                      gridRef.current?.api.paginationSetPageSize(s)
+                      gridRef.current?.api.setGridOption('paginationPageSize', s)
                       setPgSize(s)
                     }}
                     className="border border-slate-300 rounded px-1 h-5 text-[11px] bg-white text-slate-600 focus:outline-none focus:ring-1 focus:ring-blue-400"
