@@ -1526,7 +1526,6 @@ export default function MasterFilePage() {
             onFilterChanged={onFilterChanged}
             onPaginationChanged={onPaginationChanged}
             onBodyScroll={syncHScroll}
-            onColumnResized={syncHScroll}
             enableCellTextSelection={true}
             ensureDomOrder={true}
             pagination={true}
