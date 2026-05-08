@@ -48,21 +48,31 @@ async function getData(platformSlug: string, profileSlug: string) {
   // Fund IDs across all compositions
   const fundIds = [...new Set(compositions.flatMap((c) => c.holdings.map((h) => h.fundId)))];
 
-  // Fetch daily prices — only the last 13 months (covers 1Y, YTD, 6M, 3M, 1M).
-  // Using a high limit to avoid Supabase's default 1 000-row cap.
   const thirteenMonthsAgo = (() => {
     const d = new Date();
     d.setMonth(d.getMonth() - 13);
     return d.toISOString().slice(0, 10);
   })();
 
-  const { data: fundPriceRows } = await supabaseAdmin
-    .from("mp_fund_prices")
-    .select("fund_id, date, price")
-    .in("fund_id", fundIds)
-    .gte("date", thirteenMonthsAgo)
-    .order("date")
-    .limit(50000);
+  // Paginate the price query to bypass Supabase's server-side max_rows cap.
+  // Each page fetches 900 rows; we stop when a page returns fewer than 900.
+  const fundPriceRows: Array<{ fund_id: string; date: string; price: number }> = [];
+  const PAGE = 900;
+  let page = 0;
+  while (true) {
+    const { data: chunk } = await supabaseAdmin
+      .from("mp_fund_prices")
+      .select("fund_id, date, price")
+      .in("fund_id", fundIds)
+      .gte("date", thirteenMonthsAgo)
+      .order("date")
+      .range(page * PAGE, page * PAGE + PAGE - 1);
+
+    if (!chunk?.length) break;
+    fundPriceRows.push(...chunk);
+    if (chunk.length < PAGE) break;  // last page
+    page++;
+  }
 
   // Build analytics
   const dailyReturns   = buildDailyReturns(compositions, fundPriceRows ?? []);

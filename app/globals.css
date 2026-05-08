@@ -253,60 +253,15 @@
   padding: 0 !important;
 }
 
-/* ── Horizontal body scrollbar — visual styling only, no height overrides ── */
+/* ── Hide ag-grid's built-in scrollbar and pagination visually,
+      but keep the scroll container in the DOM so scrollWidth stays live ── */
 .ag-theme-alpine .ag-body-horizontal-scroll {
-  background: #f8fafc;
-  border-top: 1px solid #e2e8f0;
+  height: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
 }
-.ag-theme-alpine .ag-body-horizontal-scroll-viewport::-webkit-scrollbar {
-  height: 10px;
-}
-.ag-theme-alpine .ag-body-horizontal-scroll-viewport::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 0;
-}
-.ag-theme-alpine .ag-body-horizontal-scroll-viewport::-webkit-scrollbar-thumb {
-  background: #94a3b8;
-  border-radius: 4px;
-  border: 2px solid #f1f5f9;
-}
-.ag-theme-alpine .ag-body-horizontal-scroll-viewport::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
-}
-
-/* ── Pagination panel ── */
 .ag-theme-alpine .ag-paging-panel {
-  display: flex !important;
-  align-items: center;
-  height: auto;
-  min-height: 32px;
-  padding: 0 12px;
-  border-top: 1px solid #e2e8f0;
-  font-size: 11px;
-  color: #475569;
-  gap: 8px;
-  background: #f8fafc;
-}
-.ag-theme-alpine .ag-paging-page-summary-panel {
-  display: flex !important;
-  align-items: center;
-  gap: 6px;
-}
-.ag-theme-alpine .ag-paging-page-size {
-  display: flex !important;
-  align-items: center;
-  gap: 4px;
-}
-.ag-theme-alpine .ag-paging-page-size select,
-.ag-theme-alpine select.ag-paging-page-size-select {
-  display: inline-block !important;
-  font-size: 11px;
-  border: 1px solid #d1d5db;
-  border-radius: 3px;
-  padding: 1px 4px;
-  background: #fff;
-  color: #374151;
-  cursor: pointer;
+  display: none !important;
 }
 
 /* ── Pinned-left separator ── */

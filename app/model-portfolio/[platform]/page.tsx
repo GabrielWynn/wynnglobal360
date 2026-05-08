@@ -58,21 +58,30 @@ async function getPlatformData(slug: string) {
     ),
   ];
 
-  // Only fetch the last 13 months — enough for 1M/3M/6M/YTD/1Y.
-  // High limit overrides Supabase's default 1 000-row cap.
   const thirteenMonthsAgo = (() => {
     const d = new Date();
     d.setMonth(d.getMonth() - 13);
     return d.toISOString().slice(0, 10);
   })();
 
-  const { data: priceRows } = await supabaseAdmin
-    .from("mp_fund_prices")
-    .select("fund_id, date, price")
-    .in("fund_id", fundIds)
-    .gte("date", thirteenMonthsAgo)
-    .order("date")
-    .limit(50000);
+  // Paginated price fetch — bypasses Supabase server-side max_rows cap
+  const priceRows: Array<{ fund_id: string; date: string; price: number }> = [];
+  const PAGE = 900;
+  let page = 0;
+  while (true) {
+    const { data: chunk } = await supabaseAdmin
+      .from("mp_fund_prices")
+      .select("fund_id, date, price")
+      .in("fund_id", fundIds)
+      .gte("date", thirteenMonthsAgo)
+      .order("date")
+      .range(page * PAGE, page * PAGE + PAGE - 1);
+
+    if (!chunk?.length) break;
+    priceRows.push(...chunk);
+    if (chunk.length < PAGE) break;
+    page++;
+  }
 
   const profileSummaries = await Promise.all(
     (profiles ?? []).map(async (prof) => {

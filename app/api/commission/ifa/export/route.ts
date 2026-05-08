@@ -35,17 +35,16 @@ export async function GET(request: Request) {
 
   const { data: ifaFallback } = ifa
     ? { data: ifa }
-    : await supabaseAdmin.from('ifas').select('id, name, code').eq('email', user.email!).maybeSingle()
+    : await supabaseAdmin.from('ifas').select('id, name, code').ilike('email', user.email!).maybeSingle()
 
   if (!ifaFallback) return NextResponse.json({ error: 'No IFA account found' }, { status: 404 })
 
-  const ifaId = ifaFallback.id
   const { searchParams } = new URL(request.url)
 
   let query = supabaseAdmin
     .from('commission_records')
     .select('transaction_date, commission_type, ifa_amount, currency, status, policy_number, policy_holder_name, platform:platforms(name)')
-    .eq('ifa_id', ifaId)
+    .eq('ifa_code', ifaFallback.code)
     .eq('is_deleted', false)
     .in('status', ['approved', 'paid'])
     .order('transaction_date', { ascending: false })

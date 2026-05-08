@@ -232,6 +232,21 @@ export default function MasterFilePage() {
   const [formulaValue,    setFormulaValue]    = useState('')
   const [formulaApplying, setFormulaApplying] = useState(false)
 
+  // ── Custom bottom bar: pagination ─────────────────────────────────────────────
+  const [pgPage,      setPgPage]      = useState(0)   // 0-indexed
+  const [pgTotal,     setPgTotal]     = useState(0)
+  const [pgSize,      setPgSize]      = useState(500)
+  const [pgRowCount,  setPgRowCount]  = useState(0)
+
+  // ── Custom bottom bar: horizontal scroll ──────────────────────────────────────
+  const [hScrollPos,  setHScrollPos]  = useState(0)   // 0–1 fraction
+  const [hScrollMax,  setHScrollMax]  = useState(0)   // max scrollable px
+  const hScrollTrackRef = useRef<HTMLDivElement>(null)
+  const hScrollThumbRef = useRef<HTMLDivElement>(null)
+  const isDraggingRef   = useRef(false)
+  const dragStartXRef   = useRef(0)
+  const dragStartPosRef = useRef(0)
+
   // ── Add modal ────────────────────────────────────────────────────────────────
   const [addModal,      setAddModal]      = useState(false)
   const [addForm,       setAddForm]       = useState<AddForm>(defaultAddForm)
@@ -833,6 +848,72 @@ export default function MasterFilePage() {
   }
   function selectNone() { gridRef.current?.api.deselectAll() }
 
+  // ── Custom pagination handlers ────────────────────────────────────────────────
+  const onPaginationChanged = useCallback(() => {
+    const api = gridRef.current?.api
+    if (!api) return
+    setPgPage(api.paginationGetCurrentPage())
+    setPgTotal(api.paginationGetTotalPages())
+    setPgSize(api.paginationGetPageSize())
+    setPgRowCount(api.paginationGetRowCount())
+  }, [])
+
+  // ── Custom horizontal scroll handlers ─────────────────────────────────────────
+  // ag-grid keeps its scroll state in .ag-body-horizontal-scroll-viewport
+  // (the parent .ag-body-horizontal-scroll is collapsed to height:0 via CSS so it's
+  //  invisible but still live, meaning scrollWidth is correctly maintained by ag-grid)
+  const getAgHScrollViewport = (): HTMLElement | null =>
+    document.querySelector<HTMLElement>('.ag-body-horizontal-scroll-viewport')
+
+  const syncHScroll = useCallback(() => {
+    const vp = getAgHScrollViewport()
+    if (!vp) return
+    const max = vp.scrollWidth - vp.clientWidth
+    setHScrollMax(Math.max(0, max))
+    setHScrollPos(max > 0 ? vp.scrollLeft / max : 0)
+  }, [])
+
+  const scrollGridTo = useCallback((fraction: number) => {
+    const vp = getAgHScrollViewport()
+    if (!vp) return
+    const clamped = Math.max(0, Math.min(1, fraction))
+    // Writing to the ag-grid scroll viewport triggers ag-grid's internal listener
+    // which applies the horizontal position to the column containers
+    vp.scrollLeft = Math.round(clamped * hScrollMax)
+    setHScrollPos(clamped)
+  }, [hScrollMax])
+
+  // Thumb drag
+  const onThumbMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    isDraggingRef.current = true
+    dragStartXRef.current = e.clientX
+    dragStartPosRef.current = hScrollPos
+    const onMove = (ev: MouseEvent) => {
+      if (!isDraggingRef.current || !hScrollTrackRef.current) return
+      const trackW = hScrollTrackRef.current.clientWidth
+      const thumbW = hScrollThumbRef.current?.clientWidth ?? 40
+      const dx = ev.clientX - dragStartXRef.current
+      const newFraction = dragStartPosRef.current + dx / (trackW - thumbW)
+      scrollGridTo(newFraction)
+    }
+    const onUp = () => {
+      isDraggingRef.current = false
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onUp)
+    }
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onUp)
+  }, [hScrollPos, scrollGridTo])
+
+  // Click on track (not thumb) jumps to that position
+  const onTrackClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!hScrollTrackRef.current || isDraggingRef.current) return
+    const rect = hScrollTrackRef.current.getBoundingClientRect()
+    const fraction = (e.clientX - rect.left) / rect.width
+    scrollGridTo(fraction)
+  }, [scrollGridTo])
+
   // ── Bulk ops ──────────────────────────────────────────────────────────────────
   async function bulkUpdateStatus(newStatus: string) {
     if (!selectedRows.length) { alert('Select rows first'); return }
@@ -849,10 +930,11 @@ export default function MasterFilePage() {
   async function bulkMarkAsPaid() {
     if (!selectedRows.length) { alert('Select rows first'); return }
     if (!confirm(`Mark ${selectedRows.length} record(s) as paid?`)) return
+    const paidAt = new Date().toISOString()
     const results = await Promise.all(
       selectedRows.map(row =>
         supabase.from('commission_records')
-          .update({ paid: row.ifa_amount, status: 'paid', updated_at: new Date().toISOString() })
+          .update({ paid: row.ifa_amount, status: 'paid', paid_at: paidAt, updated_at: paidAt })
           .eq('id', row.id)
       )
     )
@@ -1070,7 +1152,7 @@ export default function MasterFilePage() {
 
       {/* ── Single merged toolbar strip ── */}
       {!fullScreen && (
-        <div className="bg-white border-b border-gray-200 flex-shrink-0 flex items-stretch h-12 overflow-hidden">
+        <div className="bg-white border-b border-gray-200 flex-shrink-0 flex items-stretch h-12">
 
           {/* LEFT — always visible: back link + title */}
           <div className="flex items-center gap-2.5 px-4 flex-shrink-0 border-r border-gray-200 bg-slate-50">
@@ -1295,7 +1377,7 @@ export default function MasterFilePage() {
 
             <div className="relative" ref={colPanelRef}>
               <button
-                onClick={openColPanel}
+                onClick={() => colPanelOpen ? setColPanelOpen(false) : openColPanel()}
                 title="Show/hide and freeze columns"
                 className={`h-8 px-2.5 text-xs rounded border font-medium flex items-center gap-1.5 whitespace-nowrap transition-colors ${
                   colPanelOpen
@@ -1425,8 +1507,9 @@ export default function MasterFilePage() {
           </div>
         )}
 
-        {/* AG Grid */}
-        <div className="ag-theme-alpine flex-1 border border-gray-200 rounded-md" style={{ minHeight: 0 }}>
+        {/* AG Grid + custom bottom bar */}
+        <div className="flex flex-col flex-1 border border-gray-200 rounded-md overflow-hidden" style={{ minHeight: 0 }}>
+          <div className="ag-theme-alpine flex-1" style={{ minHeight: 0 }}>
           <AgGridReact
             ref={gridRef}
             rowData={rowData}
@@ -1437,15 +1520,17 @@ export default function MasterFilePage() {
             rowHeight={ROW_HEIGHTS[density]}
             rowSelection={{ mode: 'multiRow', checkboxes: false, enableClickSelection: true }}
             popupParent={document.body}
+            suppressPaginationPanel={true}
             onCellValueChanged={onCellValueChanged}
             onSelectionChanged={onSelectionChanged}
             onFilterChanged={onFilterChanged}
-            onModelUpdated={recomputeSummary}
+            onPaginationChanged={onPaginationChanged}
+            onBodyScroll={syncHScroll}
+            onColumnResized={syncHScroll}
             enableCellTextSelection={true}
             ensureDomOrder={true}
             pagination={true}
             paginationPageSize={500}
-            paginationPageSizeSelector={[100, 250, 500, 1000, 5000]}
             pinnedBottomRowData={pinnedBottomRows}
             getRowStyle={(params: any): any => {
               if (params.node.rowPinned === 'bottom') {
@@ -1495,13 +1580,116 @@ export default function MasterFilePage() {
               if (!restored) e.api.sizeColumnsToFit()
               gridIsReadyRef.current = true
               maybeRestoreFilters()
+              // Initialise custom scrollbar once the grid has painted
+              setTimeout(() => {
+                syncHScroll()
+                // Keep thumb in sync when grid scrolls via trackpad / keyboard
+                const vp = getAgHScrollViewport()
+                vp?.addEventListener('scroll', syncHScroll, { passive: true })
+              }, 150)
             }}
-            onColumnMoved={saveColumnState}
-            onColumnVisible={saveColumnState}
-            onColumnPinned={saveColumnState}
-            onColumnResized={saveColumnState}
+            onModelUpdated={() => { recomputeSummary(); setTimeout(syncHScroll, 50) }}
+            onColumnMoved={(p) => { saveColumnState(); syncHScroll() }}
+            onColumnVisible={(p) => { saveColumnState(); syncHScroll() }}
+            onColumnPinned={(p) => { saveColumnState(); syncHScroll() }}
+            onColumnResized={(p) => { if (p.finished) { saveColumnState(); syncHScroll() } }}
           />
-        </div>
+          </div>{/* end ag-theme-alpine */}
+
+          {/* ── Unified bottom bar: scrollbar + pagination ── */}
+          {(() => {
+            const fromRow  = pgRowCount === 0 ? 0 : pgPage * pgSize + 1
+            const toRow    = Math.min((pgPage + 1) * pgSize, pgRowCount)
+            const vpW = getAgHScrollViewport()?.clientWidth ?? 400
+            const thumbPct = hScrollMax > 0
+              ? Math.max(8, Math.min(60, (vpW / (vpW + hScrollMax)) * 100))
+              : 0
+
+            return (
+              <div className="flex items-center h-8 border-t border-gray-200 bg-slate-50 flex-shrink-0 select-none">
+
+                {/* ── Scrollbar track (left, fills remaining space) ── */}
+                <div
+                  ref={hScrollTrackRef}
+                  onClick={onTrackClick}
+                  className="flex-1 h-full flex items-center px-2 cursor-pointer relative"
+                  style={{ minWidth: 0 }}
+                >
+                  {/* Track rail */}
+                  <div className="w-full h-1.5 bg-slate-200 rounded-full relative">
+                    {/* Thumb */}
+                    {hScrollMax > 0 && (
+                      <div
+                        ref={hScrollThumbRef}
+                        onMouseDown={onThumbMouseDown}
+                        className="absolute top-0 h-full bg-slate-400 hover:bg-slate-500 rounded-full cursor-grab active:cursor-grabbing transition-colors"
+                        style={{
+                          width: `${thumbPct}%`,
+                          left: `${hScrollPos * (100 - thumbPct)}%`,
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* ── Divider ── */}
+                <span className="w-px h-4 bg-gray-200 flex-shrink-0" />
+
+                {/* ── Pagination controls (right, fixed width) ── */}
+                <div className="flex items-center gap-1.5 px-3 flex-shrink-0 text-[11px] text-slate-500">
+
+                  {/* Page size */}
+                  <select
+                    value={pgSize}
+                    onChange={e => {
+                      const s = Number(e.target.value)
+                      gridRef.current?.api.paginationSetPageSize(s)
+                      setPgSize(s)
+                    }}
+                    className="border border-slate-300 rounded px-1 h-5 text-[11px] bg-white text-slate-600 focus:outline-none focus:ring-1 focus:ring-blue-400"
+                  >
+                    {[100, 250, 500, 1000, 5000].map(s => (
+                      <option key={s} value={s}>{s} / page</option>
+                    ))}
+                  </select>
+
+                  <span className="text-slate-400 whitespace-nowrap">
+                    {pgRowCount === 0 ? '0' : `${fromRow}–${toRow}`} of {pgRowCount}
+                  </span>
+
+                  {/* Nav buttons */}
+                  <div className="flex items-center gap-0.5">
+                    <button onClick={() => gridRef.current?.api.paginationGoToFirstPage()}
+                      disabled={pgPage === 0}
+                      className="w-6 h-5 flex items-center justify-center rounded text-slate-500 hover:bg-slate-200 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-bold">
+                      «
+                    </button>
+                    <button onClick={() => gridRef.current?.api.paginationGoToPreviousPage()}
+                      disabled={pgPage === 0}
+                      className="w-6 h-5 flex items-center justify-center rounded text-slate-500 hover:bg-slate-200 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-bold">
+                      ‹
+                    </button>
+                    <span className="px-1.5 whitespace-nowrap">
+                      {pgPage + 1} / {pgTotal || 1}
+                    </span>
+                    <button onClick={() => gridRef.current?.api.paginationGoToNextPage()}
+                      disabled={pgPage >= pgTotal - 1}
+                      className="w-6 h-5 flex items-center justify-center rounded text-slate-500 hover:bg-slate-200 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-bold">
+                      ›
+                    </button>
+                    <button onClick={() => gridRef.current?.api.paginationGoToLastPage()}
+                      disabled={pgPage >= pgTotal - 1}
+                      className="w-6 h-5 flex items-center justify-center rounded text-slate-500 hover:bg-slate-200 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-bold">
+                      »
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            )
+          })()}
+
+        </div>{/* end grid+bottom-bar wrapper */}
       </main>
 
       {/* ── Add Record Modal ────────────────────────────────────────────────────── */}

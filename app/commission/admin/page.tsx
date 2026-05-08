@@ -170,7 +170,7 @@ export default function AdminDashboard() {
               onMouseEnter={e => { if (href !== '#') { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)' } }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)' }}
             >
-              <p style={{ fontSize: '11px', fontWeight: 600, color: 'var(--wgi-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{label}</p>
+              <p style={{ fontSize: '11px', fontWeight: 700, color: 'var(--wgi-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{label}</p>
               <p style={{ fontSize: '24px', fontWeight: 700, color: accent, marginTop: '6px', letterSpacing: '-0.02em' }}>{value}</p>
               <p style={{ fontSize: '12px', color: 'var(--wgi-text-light)', marginTop: '2px' }}>{sub}</p>
             </div>
@@ -224,7 +224,7 @@ export default function AdminDashboard() {
                 onClick={() => router.push(href)}
                 className={`${btnCls} text-white rounded-xl px-4 py-4 text-left transition-all hover:scale-[1.02] hover:shadow-md`}
               >
-                <p className="font-semibold text-sm">{label}</p>
+                <p className="font-bold text-sm">{label}</p>
                 <p className={`text-xs ${subCls} mt-0.5`}>{sub}</p>
               </button>
             ))}

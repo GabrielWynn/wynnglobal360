@@ -46,7 +46,7 @@ export async function GET(
     const available   = records.filter(r => r.status === 'approved').reduce((s, r) => s + (r.ifa_amount ?? 0), 0)
     const totalPaid   = records.filter(r => r.status === 'paid').reduce((s, r) => s + (r.ifa_amount ?? 0), 0)
     const suspended   = records.filter(r => r.status === 'pending').reduce((s, r) => s + (r.ifa_amount ?? 0), 0)
-    const totalEarned = available + totalPaid
+    const totalEarned = available + totalPaid + suspended
 
     // Fetch approved/paid transactions
     const { data: transactions } = await supabaseAdmin

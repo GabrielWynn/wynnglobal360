@@ -215,7 +215,7 @@ export default function IFAManagementPage() {
 
         {/* Action feedback */}
         {actionMsg && (
-          <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md text-sm">
+          <div className={`${actionMsg.toLowerCase().startsWith('delete failed') || actionMsg.toLowerCase().startsWith('failed') ? 'bg-red-50 border-red-200 text-red-800' : 'bg-green-50 border-green-200 text-green-800'} border px-4 py-3 rounded-md text-sm`}>
             {actionMsg}
           </div>
         )}
