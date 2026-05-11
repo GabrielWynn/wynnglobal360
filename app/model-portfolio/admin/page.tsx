@@ -2,8 +2,9 @@ import { redirect } from "next/navigation";
 import { createServerClient, supabaseAdmin } from "@/lib/supabase";
 import Link from "next/link";
 import { IconChevronLeft } from "@tabler/icons-react";
-import AdminHistorySection from "@/components/model-portfolio/AdminHistorySection";
-import FundDatabase        from "@/components/model-portfolio/FundDatabase";
+import AdminHistorySection    from "@/components/model-portfolio/AdminHistorySection";
+import FundDatabase           from "@/components/model-portfolio/FundDatabase";
+import FundamentalsSyncButton from "@/components/model-portfolio/FundamentalsSyncButton";
 
 // ---------------------------------------------------------------------------
 // Admin role guard
@@ -110,6 +111,24 @@ export default async function ModelPortfolioAdminPage() {
           </p>
         </div>
         <FundDatabase />
+      </div>
+
+      {/* Divider */}
+      <div className="h-px" style={{ background: "var(--wgi-border)" }} />
+
+      {/* Look-through data sync */}
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-xl font-bold" style={{ color: "var(--wgi-text)" }}>
+            Look-Through Data
+          </h2>
+          <p className="text-sm mt-1" style={{ color: "var(--wgi-text-muted)" }}>
+            Fetch asset allocation, world regions, stock sectors, country exposure,
+            and top holdings from the EODHD Fundamentals API for every fund
+            with a resolved ticker. Data is displayed on each portfolio profile page.
+          </p>
+        </div>
+        <FundamentalsSyncButton />
       </div>
     </div>
   );

@@ -149,17 +149,41 @@ export async function resolveISINToTicker(
 // Fund / ETF fundamentals (look-through data)
 // ---------------------------------------------------------------------------
 
+interface EodhdFundData {
+  Asset_Allocation?: Record<string, {
+    "Long_%"?:        string;
+    "Short_%"?:       string;
+    "Net_Assets_%"?:  string;
+  }>;
+  World_Regions?: Record<string, {
+    "Equity_%"?:              string;
+    Relative_to_Category?:    string;
+  }>;
+  Sector_Weights?: Record<string, {
+    "Equity_%"?:              string;
+    Relative_to_Category?:    string;
+  }>;
+  // ETFs use Top_10_Holdings; some mutual funds use Top_Holdings
+  Top_10_Holdings?: Record<string, {
+    Code?: string; Exchange?: string; Name?: string;
+    Sector?: string; Industry?: string;
+    Country?: string; Region?: string;
+    "Assets_%"?: string;
+  }>;
+  Top_Holdings?: Record<string, {
+    Code?: string; Name?: string;
+    Sector?: string; Country?: string;
+    "Assets_%"?: string;
+  }>;
+  Country_Allocation?: Record<string, {
+    "Equity_%"?: string;
+  }>;
+}
+
 export interface EodhdFundamentals {
   General?: { Type?: string; Name?: string; CurrencyCode?: string };
-  ETF_Data?: {
-    Asset_Allocation?: Record<string, { "Net_Assets_%": string }>;
-    Sector_Weights?:   Array<{ Equity_Portfolio_Weight?: string; Type?: string }>;
-    World_Regions?:    Array<{ Equity_Portfolio_Weight?: string; Country?: string }>;
-    Top_10_Holdings?:  Array<{
-      Code?: string; Name?: string; Country?: string;
-      Sector?: string; "Assets_%"?: string;
-    }>;
-  };
+  ETF_Data?:         EodhdFundData;
+  MutualFund_Data?:  EodhdFundData;
 }
 
 /**

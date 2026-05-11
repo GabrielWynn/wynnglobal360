@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase, getAuthHeaders } from '@/lib/supabase'
+import { getAuthHeaders } from '@/lib/supabase'
 import { AgGridReact } from 'ag-grid-react'
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
 import 'ag-grid-community/styles/ag-grid.css'
@@ -705,20 +705,18 @@ export default function MasterFilePage() {
     const updatePayload: Record<string, unknown> = { [field]: data[field], updated_at: new Date().toISOString() }
 
     try {
-      const { error } = await supabase
-        .from('commission_records')
-        .update(updatePayload)
-        .eq('id', data.id)
-      if (error) throw error
-      const { data: fresh, error: fe } = await supabase
-        .from('commission_records')
-        .select('*, platform:platforms(name), upload_batch:csv_upload_batches(filename)')
-        .eq('id', data.id).single()
-      if (!fe && fresh) {
-        gridRef.current?.api.applyTransaction({ update: [fresh as unknown as CommissionRecord] })
+      const authHeaders = await getAuthHeaders()
+      const res = await fetch('/api/commission/commission-records', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
+        body: JSON.stringify({ ids: [data.id], updates: updatePayload }),
+      })
+      const result = await res.json()
+      if (!res.ok) throw new Error(result.error)
+      if (result.record) {
+        gridRef.current?.api.applyTransaction({ update: [result.record as unknown as CommissionRecord] })
         recomputeSummary()
       } else {
-        // Re-fetch failed (e.g. RLS not yet warmed up) — full reload keeps grid consistent
         await loadData()
       }
     } catch (err: any) {
@@ -918,11 +916,14 @@ export default function MasterFilePage() {
   async function bulkUpdateStatus(newStatus: string) {
     if (!selectedRows.length) { alert('Select rows first'); return }
     if (!confirm(`Set ${selectedRows.length} record(s) to "${newStatus}"?`)) return
-    const { error } = await supabase
-      .from('commission_records')
-      .update({ status: newStatus, updated_at: new Date().toISOString() })
-      .in('id', selectedRows.map(r => r.id))
-    if (error) { alert(`Failed: ${error.message}`); return }
+    const authHeaders = await getAuthHeaders()
+    const res = await fetch('/api/commission/commission-records', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
+      body: JSON.stringify({ ids: selectedRows.map(r => r.id), updates: { status: newStatus, updated_at: new Date().toISOString() } }),
+    })
+    const data = await res.json()
+    if (!res.ok) { alert(`Failed: ${data.error}`); return }
     showFeedback(`${selectedRows.length} record(s) set to "${newStatus}".`)
     await loadData()
   }
@@ -930,16 +931,15 @@ export default function MasterFilePage() {
   async function bulkMarkAsPaid() {
     if (!selectedRows.length) { alert('Select rows first'); return }
     if (!confirm(`Mark ${selectedRows.length} record(s) as paid?`)) return
-    const paidAt = new Date().toISOString()
-    const results = await Promise.all(
-      selectedRows.map(row =>
-        supabase.from('commission_records')
-          .update({ paid: row.ifa_amount, status: 'paid', paid_at: paidAt, updated_at: paidAt })
-          .eq('id', row.id)
-      )
-    )
-    const failed = results.filter(r => r.error).length
-    if (failed > 0) { alert(`${failed} row(s) failed`) } else { showFeedback(`${selectedRows.length} record(s) marked paid.`) }
+    const authHeaders = await getAuthHeaders()
+    const res = await fetch('/api/commission/commission-records', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
+      body: JSON.stringify({ ids: selectedRows.map(r => r.id), mark_paid: true }),
+    })
+    const data = await res.json()
+    if (!res.ok) { alert(`Failed: ${data.error}`); return }
+    showFeedback(`${selectedRows.length} record(s) marked paid.`)
     await loadData()
   }
 
@@ -967,12 +967,15 @@ export default function MasterFilePage() {
     const label = FORMULA_FIELDS.find(f => f.value === formulaField)?.label ?? formulaField
     if (!confirm(`Apply "${label} = ${formulaValue}" to ${selectedRows.length} record(s)?`)) return
     setFormulaApplying(true)
-    const { error } = await supabase
-      .from('commission_records')
-      .update({ [formulaField]: dbValue, updated_at: new Date().toISOString() })
-      .in('id', selectedRows.map(r => r.id))
+    const authHeaders = await getAuthHeaders()
+    const res = await fetch('/api/commission/commission-records', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
+      body: JSON.stringify({ ids: selectedRows.map(r => r.id), updates: { [formulaField]: dbValue, updated_at: new Date().toISOString() } }),
+    })
+    const data = await res.json()
     setFormulaApplying(false)
-    if (error) { alert(`Failed: ${error.message}`); return }
+    if (!res.ok) { alert(`Failed: ${data.error}`); return }
     showFeedback(`Applied "${label} = ${formulaValue}" to ${selectedRows.length} record(s).`)
     setFormulaValue('')
     await loadData()
@@ -984,8 +987,10 @@ export default function MasterFilePage() {
     setAddError('')
     setAddModal(true)
     if (ifaList.length === 0) {
-      const { data } = await supabase.from('ifas').select('id, code, name').neq('role', 'admin').order('name')
-      setIfaList((data ?? []) as IFAEntry[])
+      const headers = await getAuthHeaders()
+      const res = await fetch('/api/commission/ifas', { headers })
+      const { ifas } = await res.json()
+      setIfaList(((ifas ?? []) as { id: string; code: string; name: string }[]).map(i => ({ id: i.id, code: i.code, name: i.name })))
     }
     if (platformList.length === 0) {
       const headers = await getAuthHeaders()
@@ -1002,29 +1007,33 @@ export default function MasterFilePage() {
     setAddSaving(true)
     setAddError('')
     const selectedIFA = ifaList.find(i => i.id === addForm.ifa_id)
-    const { data: { user } } = await supabase.auth.getUser()
-    const { error } = await supabase.from('commission_records').insert({
-      transaction_date:    addForm.transaction_date,
-      policy_number:       addForm.policy_number.trim(),
-      policy_holder_name:  addForm.policy_holder_name.trim() || null,
-      ifa_id:              selectedIFA?.id ?? null,
-      ifa_code:            selectedIFA?.code ?? null,
-      ifa_name:            selectedIFA?.name ?? null,
-      platform_id:         addForm.platform_id || null,
-      commission_type:      addForm.commission_type.trim() || null,
-      commission_type_code: normalizeCommissionType(addForm.commission_type.trim()),
-      amount:              amt,
-      currency:            addForm.currency || 'USD',
-      ifa_percentage:      addForm.ifa_percentage      ? parseFloat(addForm.ifa_percentage)      / 100 : null,
-      suspense_percentage: addForm.suspense_percentage ? parseFloat(addForm.suspense_percentage) / 100 : null,
-      wgi_percentage:      addForm.wgi_percentage      ? parseFloat(addForm.wgi_percentage)      / 100 : null,
-      status:              addForm.is_advance ? 'advance' : addForm.status,
-      is_advance:          addForm.is_advance,
-      notes:               addForm.notes.trim() || null,
-      created_by:          user?.id ?? null,
+    const authHeaders = await getAuthHeaders()
+    const res = await fetch('/api/commission/commission-records', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
+      body: JSON.stringify({
+        transaction_date:    addForm.transaction_date,
+        policy_number:       addForm.policy_number.trim(),
+        policy_holder_name:  addForm.policy_holder_name.trim() || null,
+        ifa_id:              selectedIFA?.id ?? null,
+        ifa_code:            selectedIFA?.code ?? null,
+        ifa_name:            selectedIFA?.name ?? null,
+        platform_id:         addForm.platform_id || null,
+        commission_type:      addForm.commission_type.trim() || null,
+        commission_type_code: normalizeCommissionType(addForm.commission_type.trim()),
+        amount:              amt,
+        currency:            addForm.currency || 'USD',
+        ifa_percentage:      addForm.ifa_percentage      ? parseFloat(addForm.ifa_percentage)      / 100 : null,
+        suspense_percentage: addForm.suspense_percentage ? parseFloat(addForm.suspense_percentage) / 100 : null,
+        wgi_percentage:      addForm.wgi_percentage      ? parseFloat(addForm.wgi_percentage)      / 100 : null,
+        status:              addForm.is_advance ? 'advance' : addForm.status,
+        is_advance:          addForm.is_advance,
+        notes:               addForm.notes.trim() || null,
+      }),
     })
+    const result = await res.json()
     setAddSaving(false)
-    if (error) { setAddError(error.message); return }
+    if (!res.ok) { setAddError(result.error); return }
     setAddModal(false)
     showFeedback('Record added successfully.')
     await loadData()

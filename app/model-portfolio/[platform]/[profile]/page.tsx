@@ -8,10 +8,12 @@ import {
   computeStandardReturns,
   computeAnnualReturns,
 } from "@/lib/portfolio-compositions";
+import { getPortfolioFundamentals } from "@/lib/portfolio-fundamentals";
 
 import PerformanceSummaryCards from "@/components/model-portfolio/PerformanceSummaryCards";
 import InteractiveChart        from "@/components/model-portfolio/InteractiveChart";
 import AnnualPerformance       from "@/components/model-portfolio/AnnualPerformance";
+import FundamentalsSection     from "@/components/model-portfolio/FundamentalsSection";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -80,6 +82,17 @@ async function getData(platformSlug: string, profileSlug: string) {
   const standardRet    = computeStandardReturns(dailyReturns);
   const annualRet      = computeAnnualReturns(dailyReturns);
 
+  // Portfolio look-through: use the current (most recent active) composition
+  const activeComposition =
+    compositions.find((c) => c.effectiveTo === null) ??
+    compositions[compositions.length - 1];
+
+  const fundamentals = activeComposition
+    ? await getPortfolioFundamentals(
+        activeComposition.holdings.map((h) => ({ fundId: h.fundId, weight: h.weight }))
+      )
+    : null;
+
   return {
     platform,
     profile,
@@ -87,6 +100,7 @@ async function getData(platformSlug: string, profileSlug: string) {
     chartSeries,
     standardRet,
     annualRet,
+    fundamentals,
   };
 }
 
@@ -98,7 +112,7 @@ export default async function ProfileDetailPage({ params }: PageProps) {
   const data = await getData(params.platform, params.profile);
   if (!data) notFound();
 
-  const { platform, profile, compositions, chartSeries, standardRet, annualRet } = data;
+  const { platform, profile, compositions, chartSeries, standardRet, annualRet, fundamentals } = data;
   const profileColor = PROFILE_COLORS[profile.label] ?? "#64748b";
 
   return (
@@ -169,6 +183,9 @@ export default async function ProfileDetailPage({ params }: PageProps) {
 
       {/* ── Annual Performance ──────────────────────────────────────── */}
       <AnnualPerformance returns={annualRet} />
+
+      {/* ── Portfolio Look-Through ──────────────────────────────────── */}
+      {fundamentals && <FundamentalsSection data={fundamentals} />}
 
       {/* ── Disclaimer ─────────────────────────────────────────────── */}
       <p className="text-xs text-center pb-4" style={{ color: "var(--wgi-text-muted)" }}>
