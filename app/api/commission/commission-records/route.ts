@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     while (true) {
       let q = supabaseAdmin
         .from('commission_records')
-        .select('*, platform:platforms(name), upload_batch:csv_upload_batches(filename)')
+        .select('*, platform:platforms(name), upload_batch:csv_upload_batches(filename), allocations:commission_allocations!parent_record_id(*)')
         .order('transaction_date', { ascending: false })
         .range(from, from + PAGE - 1)
 
@@ -110,7 +110,7 @@ export async function PATCH(request: Request) {
     if (ids.length === 1) {
       const { data: fresh } = await supabaseAdmin
         .from('commission_records')
-        .select('*, platform:platforms(name), upload_batch:csv_upload_batches(filename)')
+        .select('*, platform:platforms(name), upload_batch:csv_upload_batches(filename), allocations:commission_allocations!parent_record_id(*)')
         .eq('id', ids[0])
         .single()
       return NextResponse.json({ updated: 1, record: fresh ?? null })

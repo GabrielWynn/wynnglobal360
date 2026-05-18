@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { IconClockHour4, IconX } from "@tabler/icons-react";
 import {
   Carousel,
@@ -56,7 +57,7 @@ const ComingSoonOverlay = () => (
 // Card definitions
 // ---------------------------------------------------------------------------
 
-function buildCards(showToast: () => void): CardType[] {
+function buildCards(navigate: (path: string) => void, showToast: () => void): CardType[] {
   return [
     // ── Card 1: Commission (Live) ────────────────────────────────────────
     {
@@ -73,7 +74,7 @@ function buildCards(showToast: () => void): CardType[] {
         />
       ),
       extra: <LiveBadge />,
-      onClick: () => window.open("/commission", "_blank"),
+      onClick: () => navigate("/commission"),
     },
 
     // ── Card 2: Financial Planner (Coming Soon) ──────────────────────────
@@ -112,7 +113,7 @@ function buildCards(showToast: () => void): CardType[] {
         />
       ),
       extra: <LiveBadge />,
-      onClick: () => window.open("/model-portfolio", "_blank"),
+      onClick: () => navigate("/model-portfolio"),
     },
 
     // ── Card 4: AI Chatbot (Coming Soon) ────────────────────────────────
@@ -173,6 +174,7 @@ interface CarouselHubProps {
 }
 
 export default function CarouselHub({ name, role: _role }: CarouselHubProps) {
+  const router = useRouter();
   const [greeting, setGreeting] = useState(`Welcome, ${name.trim().split(/\s+/)[0]}`);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimerRef = { current: null as ReturnType<typeof setTimeout> | null };
@@ -188,7 +190,7 @@ export default function CarouselHub({ name, role: _role }: CarouselHubProps) {
     toastTimerRef.current = setTimeout(() => setToast(null), 3500);
   }
 
-  const cards = buildCards(showToast);
+  const cards = buildCards(router.push, showToast);
 
   const carouselItems = cards.map((card, i) => (
     <Card key={i} card={card} index={i} layout />

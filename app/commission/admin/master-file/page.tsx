@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { getAuthHeaders } from '@/lib/supabase'
 import { AgGridReact } from 'ag-grid-react'
@@ -54,8 +54,22 @@ interface CommissionRecord {
   is_advance: boolean
   linked_record_id: string | null
   reconciled_at: string | null
+  allocation_parent_id: string | null
+  allocations?: CommissionAllocation[]
   platform: { name: string } | null
   upload_batch: { filename: string } | null
+}
+
+interface CommissionAllocation {
+  id: string
+  parent_record_id: string
+  child_record_id: string | null
+  secondary_ifa_id: string | null
+  secondary_ifa_code: string
+  secondary_ifa_name: string | null
+  percentage: number
+  source_bucket: string
+  notes: string | null
 }
 
 interface IFAEntry      { id: string; code: string; name: string }
@@ -85,7 +99,7 @@ const COLUMN_STATE_KEY    = 'wgi_master_file_columns'
 
 // Column panel groups — maps colIds to labelled sections in the dropdown
 const COL_GROUPS: { label: string; ids: string[] }[] = [
-  { label: 'Identity',   ids: ['transaction_date', 'commencement_date', 'policy_number', 'policy_holder_name', 'ifa_code', 'ifa_name'] },
+  { label: 'Identity',   ids: ['expand', 'transaction_date', 'commencement_date', 'policy_number', 'policy_holder_name', 'ifa_code', 'ifa_name'] },
   { label: 'Commission', ids: ['commission_type', 'amount', 'variable_amount', 'adjusted', 'currency', 'platform_payment_pct', 'ape', 'ape_wgi', 'ifa_percentage', 'ifa_amount', 'suspense_percentage', 'suspense_amount', 'wgi_percentage', 'wg_amount'] },
   { label: 'Payment',    ids: ['due_wg', 'paid', 'unpaid', 'status'] },
   { label: 'Metadata',   ids: ['rate', 'notes', 'ifa_notes', 'platform.name', 'upload_batch.filename'] },
@@ -197,6 +211,111 @@ function normalizeCommissionType(raw: string): string | null {
   return raw.slice(0, 255) || null
 }
 
+// ── Allocation detail panel (full-width row renderer) ──────────────────────────
+
+const thS: React.CSSProperties = { padding: '4px 8px', textAlign: 'left', borderBottom: '1px solid #bae6fd', fontWeight: 600, fontSize: 11, color: '#0369a1', whiteSpace: 'nowrap' }
+const tdS: React.CSSProperties = { padding: '4px 8px', borderBottom: '1px solid #e0f2fe', fontSize: 12 }
+
+function AllocationDetailPanel(params: any) {
+  const record: CommissionRecord = params.data?._parentRecord
+  const allocations: CommissionAllocation[] = params.data?._allocations ?? []
+  const ctx = params.context ?? {}
+
+  if (!record) return null
+
+  const fmtP = (v: number) => `${(v * 100).toFixed(2)}%`
+  const fmtA = (v: number) => `$${v.toFixed(2)}`
+
+  const wgiAllocd  = allocations.filter(a => a.source_bucket === 'wgi').reduce((s, a) => s + a.percentage, 0)
+  const ifaAllocd  = allocations.filter(a => a.source_bucket === 'ifa').reduce((s, a) => s + a.percentage, 0)
+  const suspAllocd = allocations.filter(a => a.source_bucket === 'suspense').reduce((s, a) => s + a.percentage, 0)
+
+  const origWgi  = record.wgi_percentage  + wgiAllocd
+  const origIfa  = record.ifa_percentage  + ifaAllocd
+  const origSusp = record.suspense_percentage + suspAllocd
+
+  return (
+    <div style={{ padding: '10px 16px 10px 48px', background: '#f0f9ff', borderBottom: '2px solid #bae6fd' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: '#0369a1', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          Allocation Breakdown — {record.policy_number} / {record.ifa_code}
+        </span>
+        <button
+          onClick={() => ctx.onAddAllocation?.(record)}
+          style={{ fontSize: 11, padding: '3px 10px', background: '#0284c7', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}
+        >
+          + Add Allocation
+        </button>
+      </div>
+      <table style={{ borderCollapse: 'collapse', fontSize: 12, width: '100%' }}>
+        <thead>
+          <tr style={{ background: '#e0f2fe' }}>
+            <th style={thS}>Party</th>
+            <th style={thS}>Uploaded %</th>
+            <th style={thS}>Effective %</th>
+            <th style={thS}>Effective Amt</th>
+            <th style={thS}>Source</th>
+            <th style={thS}>Notes</th>
+            <th style={{ ...thS, width: 80 }}></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style={tdS}><strong>{record.ifa_code}</strong> (Primary IFA)</td>
+            <td style={tdS}>{fmtP(origIfa)}</td>
+            <td style={tdS}>{fmtP(record.ifa_percentage)}</td>
+            <td style={tdS}>{fmtA(record.ifa_amount)}</td>
+            <td style={tdS}>IFA</td>
+            <td style={tdS}></td>
+            <td style={tdS}></td>
+          </tr>
+          <tr>
+            <td style={tdS}>WGI</td>
+            <td style={tdS}>{fmtP(origWgi)}</td>
+            <td style={tdS}>{fmtP(record.wgi_percentage)}</td>
+            <td style={tdS}>{fmtA(record.wg_amount)}</td>
+            <td style={tdS}>WGI</td>
+            <td style={tdS}></td>
+            <td style={tdS}></td>
+          </tr>
+          <tr>
+            <td style={tdS}>IFA Suspense</td>
+            <td style={tdS}>{fmtP(origSusp)}</td>
+            <td style={tdS}>{fmtP(record.suspense_percentage)}</td>
+            <td style={tdS}>{fmtA(record.suspense_amount)}</td>
+            <td style={tdS}>Suspense</td>
+            <td style={tdS}></td>
+            <td style={tdS}></td>
+          </tr>
+          {allocations.map(alloc => (
+            <tr key={alloc.id} style={{ background: '#fef9c3' }}>
+              <td style={tdS}>
+                <strong style={{ color: '#92400e' }}>{alloc.secondary_ifa_code}</strong>
+                {alloc.secondary_ifa_name ? ` — ${alloc.secondary_ifa_name}` : ''}{' '}
+                <span style={{ fontSize: 10, color: '#b45309', fontStyle: 'italic' }}>(Secondary IFA)</span>
+              </td>
+              <td style={{ ...tdS, color: '#9ca3af' }}>—</td>
+              <td style={{ ...tdS, color: '#b45309', fontWeight: 700 }}>{fmtP(alloc.percentage)}</td>
+              <td style={{ ...tdS, color: '#b45309', fontWeight: 700 }}>{fmtA(record.amount * alloc.percentage)}</td>
+              <td style={tdS}>{alloc.source_bucket.toUpperCase()}</td>
+              <td style={tdS}>{alloc.notes ?? ''}</td>
+              <td style={tdS}>
+                <button
+                  onClick={() => ctx.onDeleteAllocation?.(alloc.id)}
+                  disabled={ctx.deletingAllocationIdRef?.current === alloc.id}
+                  style={{ fontSize: 11, padding: '2px 8px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: 4, cursor: 'pointer' }}
+                >
+                  {ctx.deletingAllocationIdRef?.current === alloc.id ? '…' : 'Remove'}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 // ── Component ──────────────────────────────────────────────────────────────────
 
 export default function MasterFilePage() {
@@ -264,6 +383,23 @@ export default function MasterFilePage() {
   // ── Reconcile ─────────────────────────────────────────────────────────────────
   const [reconcileModal, setReconcileModal] = useState(false)
   const [reconciling,    setReconciling]    = useState(false)
+
+  // ── Allocations ───────────────────────────────────────────────────────────────
+  const [allocationsByParent, setAllocationsByParent] = useState<Map<string, CommissionAllocation[]>>(new Map())
+  const [deletingAllocId,     setDeletingAllocId]     = useState<string | null>(null)
+  // Side panel — shows breakdown for the selected parent record
+  const [detailRecord,        setDetailRecord]        = useState<CommissionRecord | null>(null)
+
+  // Refs — keep cell renderer closures (inside useMemo([])) in sync with latest state
+  const allocationsByParentRef = useRef(allocationsByParent)
+  const detailRecordRef        = useRef(detailRecord)
+  allocationsByParentRef.current = allocationsByParent
+  detailRecordRef.current        = detailRecord
+
+  const [allocModal,   setAllocModal]   = useState<{ open: boolean; parentRecord: CommissionRecord | null }>({ open: false, parentRecord: null })
+  const [allocForm,    setAllocForm]    = useState({ secondary_ifa_id: '', percentage: '', source_bucket: 'wgi', notes: '' })
+  const [allocSaving,  setAllocSaving]  = useState(false)
+  const [allocError,   setAllocError]   = useState('')
 
   // ── Full-screen ───────────────────────────────────────────────────────────────
   const [fullScreen, setFullScreen] = useState(false)
@@ -371,6 +507,21 @@ export default function MasterFilePage() {
       }
       const { records } = await res.json()
       setRowData(records ?? [])
+
+      // Build allocations map from inline data
+      const map = new Map<string, CommissionAllocation[]>()
+      for (const r of (records ?? [])) {
+        if (r.allocations && r.allocations.length > 0) {
+          map.set(r.id, r.allocations)
+        }
+      }
+      setAllocationsByParent(map)
+      // Refresh detail panel record from the new data, or close if no longer has allocations
+      setDetailRecord(prev => {
+        if (!prev) return null
+        const fresh = (records ?? []).find((r: any) => r.id === prev.id)
+        return (fresh && map.has(fresh.id)) ? fresh : null
+      })
     } catch (err: any) {
       const msg: string = err?.message ?? err?.code ?? JSON.stringify(err)
       console.error('Error loading commission records:', msg)
@@ -458,6 +609,79 @@ export default function MasterFilePage() {
     }
   }
 
+  // ── Allocation panel / modal handlers ────────────────────────────────────────
+  // Refresh expand column whenever alloc map or open panel changes
+  useEffect(() => {
+    gridRef.current?.api?.refreshCells({ columns: ['expand'], force: true })
+  }, [allocationsByParent, detailRecord])
+
+  const openAllocModalCb = useCallback((parentRecord: CommissionRecord) => {
+    setAllocModal({ open: true, parentRecord })
+    setAllocForm({ secondary_ifa_id: '', percentage: '', source_bucket: 'wgi', notes: '' })
+    setAllocError('')
+    if (ifaList.length === 0) {
+      getAuthHeaders().then(headers =>
+        fetch('/api/commission/ifas', { headers })
+          .then(r => r.json())
+          .then(({ ifas }) => setIfaList(((ifas ?? []) as { id: string; code: string; name: string }[]).map(i => ({ id: i.id, code: i.code, name: i.name }))))
+      )
+    }
+  }, [ifaList.length]) // eslint-disable-line
+
+  const handleDeleteAllocationCb = useCallback(async (allocationId: string) => {
+    if (!confirm('Remove this allocation? The child commission record will be soft-deleted and the parent percentage restored.')) return
+    setDeletingAllocId(allocationId)
+    try {
+      const authHeaders = await getAuthHeaders()
+      const res = await fetch(`/api/commission/commission-records/allocations?id=${allocationId}`, {
+        method: 'DELETE',
+        headers: authHeaders,
+      })
+      const result = await res.json()
+      if (!res.ok) { alert(`Failed to remove: ${result.error}`); return }
+      showFeedback('Allocation removed.')
+      await loadData()
+    } finally {
+      setDeletingAllocId(null)
+    }
+  }, []) // eslint-disable-line
+
+  async function handleSubmitAllocation() {
+    const parent = allocModal.parentRecord
+    if (!parent) return
+    if (!allocForm.secondary_ifa_id) { setAllocError('Select a secondary IFA'); return }
+    const pct = parseFloat(allocForm.percentage) / 100
+    if (isNaN(pct) || pct <= 0 || pct > 1) { setAllocError('Enter a valid percentage between 0 and 100'); return }
+    const selectedIFA = ifaList.find(i => i.id === allocForm.secondary_ifa_id)
+    setAllocSaving(true)
+    setAllocError('')
+    try {
+      const authHeaders = await getAuthHeaders()
+      const res = await fetch('/api/commission/commission-records/allocations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
+        body: JSON.stringify({
+          parent_record_id:   parent.id,
+          secondary_ifa_id:   allocForm.secondary_ifa_id,
+          secondary_ifa_code: selectedIFA?.code ?? '',
+          secondary_ifa_name: selectedIFA?.name ?? null,
+          percentage:         pct,
+          source_bucket:      allocForm.source_bucket,
+          notes:              allocForm.notes.trim() || null,
+        }),
+      })
+      const result = await res.json()
+      if (!res.ok) { setAllocError(result.error); return }
+      setAllocModal({ open: false, parentRecord: null })
+      showFeedback('Allocation created. Child record added for secondary IFA.')
+      await loadData()
+      // Re-open the detail panel with refreshed data after load
+      setDetailRecord(prev => prev?.id === parent.id ? prev : prev)
+    } finally {
+      setAllocSaving(false)
+    }
+  }
+
   // ── Column Definitions ────────────────────────────────────────────────────────
   const columnDefs = useMemo<ColDef[]>(() => {
     const yellowCell = { backgroundColor: '#fef3c7' }
@@ -481,6 +705,43 @@ export default function MasterFilePage() {
           borderRight: '1px solid #e2e8f0',
         }),
         valueGetter: (p: any) => p.node?.rowPinned ? '' : (p.node?.rowIndex ?? 0) + 1,
+      },
+      // Expand chevron — only visible for parent records that have allocations
+      {
+        colId: 'expand',
+        headerName: '',
+        width: 30, minWidth: 30, maxWidth: 30,
+        pinned: 'left',
+        sortable: false, filter: false, editable: false,
+        suppressMovable: true, resizable: false,
+        cellStyle: { padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+        cellRenderer: (p: any) => {
+          const data = p.data
+          if (!data || data.allocation_parent_id || p.node?.rowPinned) return null
+          const hasAlloc = allocationsByParentRef.current.has(data.id)
+          if (hasAlloc) {
+            const isOpen = detailRecordRef.current?.id === data.id
+            return (
+              <button
+                onClick={(e) => { e.stopPropagation(); setDetailRecord(isOpen ? null : data) }}
+                title={isOpen ? 'Close breakdown panel' : 'View allocation breakdown'}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: '#0284c7', fontWeight: 'bold', padding: '0 2px', lineHeight: 1 }}
+              >
+                {isOpen ? '▼' : '▶'}
+              </button>
+            )
+          }
+          return (
+            <button
+              onClick={(e) => { e.stopPropagation(); openAllocModalCb(data) }}
+              title="Add commission allocation"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: '#94a3b8', fontWeight: 'bold', padding: '0 2px', lineHeight: 1 }}
+            >
+              +
+            </button>
+          )
+        },
+        valueGetter: () => null,
       },
       // Date
       {
@@ -727,7 +988,8 @@ export default function MasterFilePage() {
 
   // ── Selection ────────────────────────────────────────────────────────────────
   const onSelectionChanged = useCallback(() => {
-    setSelectedRows(gridRef.current?.api.getSelectedRows() ?? [])
+    const rows = (gridRef.current?.api.getSelectedRows() ?? []).filter((r: any) => !r._isDetailRow)
+    setSelectedRows(rows)
     recomputeSummary()
   }, []) // eslint-disable-line
 
@@ -841,7 +1103,7 @@ export default function MasterFilePage() {
   // ── Selection helpers ─────────────────────────────────────────────────────────
   function selectAllFiltered() {
     gridRef.current?.api.forEachNodeAfterFilter(node => {
-      if (!node.rowPinned) node.setSelected(true)
+      if (!node.rowPinned && !node.data?._isDetailRow) node.setSelected(true)
     })
   }
   function selectNone() { gridRef.current?.api.deselectAll() }
@@ -944,7 +1206,8 @@ export default function MasterFilePage() {
   }
 
   async function bulkApplyFormula() {
-    if (!selectedRows.length) { alert('Select rows first'); return }
+    const eligibleRows = selectedRows.filter(r => !r.allocation_parent_id)
+    if (!eligibleRows.length) { alert('No eligible rows selected (child allocation records cannot be bulk-edited)'); return }
     if (!formulaValue.trim()) { alert('Enter a value'); return }
     let dbValue: string | number = formulaValue.trim()
     if (['ifa_percentage', 'suspense_percentage', 'wgi_percentage'].includes(formulaField)) {
@@ -965,18 +1228,18 @@ export default function MasterFilePage() {
       dbValue = v
     }
     const label = FORMULA_FIELDS.find(f => f.value === formulaField)?.label ?? formulaField
-    if (!confirm(`Apply "${label} = ${formulaValue}" to ${selectedRows.length} record(s)?`)) return
+    if (!confirm(`Apply "${label} = ${formulaValue}" to ${eligibleRows.length} record(s)?`)) return
     setFormulaApplying(true)
     const authHeaders = await getAuthHeaders()
     const res = await fetch('/api/commission/commission-records', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', ...authHeaders },
-      body: JSON.stringify({ ids: selectedRows.map(r => r.id), updates: { [formulaField]: dbValue, updated_at: new Date().toISOString() } }),
+      body: JSON.stringify({ ids: eligibleRows.map(r => r.id), updates: { [formulaField]: dbValue, updated_at: new Date().toISOString() } }),
     })
     const data = await res.json()
     setFormulaApplying(false)
     if (!res.ok) { alert(`Failed: ${data.error}`); return }
-    showFeedback(`Applied "${label} = ${formulaValue}" to ${selectedRows.length} record(s).`)
+    showFeedback(`Applied "${label} = ${formulaValue}" to ${eligibleRows.length} record(s).`)
     setFormulaValue('')
     await loadData()
   }
@@ -1092,6 +1355,7 @@ export default function MasterFilePage() {
     const rows: Record<string, unknown>[] = []
     gridRef.current?.api.forEachNodeAfterFilter(node => {
       if (!node.data || node.rowPinned) return
+      if (node.data._isDetailRow) return
       const r = node.data as CommissionRecord
       rows.push({
         'Trans Date': r.transaction_date, 'Issue Date': r.commencement_date ?? '', Policy: r.policy_number, Holder: r.policy_holder_name ?? '',
@@ -1499,7 +1763,7 @@ export default function MasterFilePage() {
         {selectedRows.length > 0 && (
           <div className="flex-shrink-0 flex flex-wrap items-center gap-2 px-3 py-1.5 mb-2 bg-white border border-gray-200 rounded-md">
             <span className="text-xs text-purple-700 font-medium whitespace-nowrap">
-              Apply to {selectedRows.length} selected:
+              Apply to {selectedRows.filter(r => !r.allocation_parent_id).length} selected:
             </span>
             <select value={formulaField} onChange={e => { setFormulaField(e.target.value); setFormulaValue('') }}
               className="text-xs border border-gray-300 rounded px-2 h-6 focus:ring-1 focus:ring-purple-400 focus:outline-none bg-white">
@@ -1546,8 +1810,12 @@ export default function MasterFilePage() {
                   ? { background: '#dbeafe', fontWeight: 700, borderTop: '2px solid #3b82f6' }
                   : { background: '#f1f5f9', fontWeight: 700, borderTop: '2px solid #94a3b8' }
               }
+              if (params.data?._isDetailRow) return {}
               if (params.data?.is_deleted) {
                 return { opacity: '0.5', background: '#fee2e2', textDecoration: 'line-through' }
+              }
+              if (params.data?.allocation_parent_id) {
+                return { background: '#e0f2fe', borderLeft: '3px solid #0ea5e9' } // light blue — allocation child
               }
               if (params.data?.status === 'reconciled') {
                 return { background: '#d1fae5' } // green — statement covered by advance
@@ -1910,6 +2178,211 @@ export default function MasterFilePage() {
           </div>
         </div>
       )}
+
+      {/* ── Allocation Breakdown Side Panel ─────────────────────────────────── */}
+      {detailRecord && (() => {
+        const allocations = allocationsByParent.get(detailRecord.id) ?? []
+        const wgiAllocd  = allocations.filter(a => a.source_bucket === 'wgi').reduce((s, a) => s + a.percentage, 0)
+        const ifaAllocd  = allocations.filter(a => a.source_bucket === 'ifa').reduce((s, a) => s + a.percentage, 0)
+        const suspAllocd = allocations.filter(a => a.source_bucket === 'suspense').reduce((s, a) => s + a.percentage, 0)
+        const origWgi    = detailRecord.wgi_percentage  + wgiAllocd
+        const origIfa    = detailRecord.ifa_percentage  + ifaAllocd
+        const origSusp   = detailRecord.suspense_percentage + suspAllocd
+        const fmtP = (v: number) => `${(v * 100).toFixed(2)}%`
+        const fmtA = (v: number) => `$${v.toFixed(2)}`
+
+        return (
+          <div className="fixed inset-0 z-40 flex justify-end pointer-events-none">
+            {/* backdrop — only covers area, closes panel on click */}
+            <div className="absolute inset-0 pointer-events-auto" onClick={() => setDetailRecord(null)} />
+            <div className="relative pointer-events-auto w-full max-w-xl bg-white shadow-2xl border-l border-sky-200 flex flex-col overflow-hidden">
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 py-3 bg-sky-50 border-b border-sky-200 flex-shrink-0">
+                <div>
+                  <p className="text-sm font-bold text-sky-900">Allocation Breakdown</p>
+                  <p className="text-xs text-sky-600">{detailRecord.policy_number} — {detailRecord.ifa_code} / {detailRecord.ifa_name}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => { openAllocModalCb(detailRecord) }}
+                    className="text-xs px-3 py-1.5 bg-sky-600 text-white rounded font-medium hover:bg-sky-700"
+                  >
+                    + Add Allocation
+                  </button>
+                  <button onClick={() => setDetailRecord(null)} className="text-gray-400 hover:text-gray-600 text-lg leading-none ml-1">✕</button>
+                </div>
+              </div>
+              {/* Breakdown table */}
+              <div className="flex-1 overflow-y-auto p-5">
+                <table className="w-full text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-sky-50 text-sky-700">
+                      <th className="text-left px-3 py-2 border border-sky-200 font-semibold">Party</th>
+                      <th className="text-right px-3 py-2 border border-sky-200 font-semibold">Uploaded %</th>
+                      <th className="text-right px-3 py-2 border border-sky-200 font-semibold">Effective %</th>
+                      <th className="text-right px-3 py-2 border border-sky-200 font-semibold">Effective Amt</th>
+                      <th className="px-3 py-2 border border-sky-200"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-3 py-2 border border-gray-200 font-semibold">{detailRecord.ifa_code} <span className="font-normal text-gray-400">(Primary IFA)</span></td>
+                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtP(origIfa)}</td>
+                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtP(detailRecord.ifa_percentage)}</td>
+                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtA(detailRecord.ifa_amount)}</td>
+                      <td className="px-3 py-2 border border-gray-200"></td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-3 py-2 border border-gray-200">WGI</td>
+                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtP(origWgi)}</td>
+                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtP(detailRecord.wgi_percentage)}</td>
+                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtA(detailRecord.wg_amount)}</td>
+                      <td className="px-3 py-2 border border-gray-200"></td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-3 py-2 border border-gray-200">IFA Suspense</td>
+                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtP(origSusp)}</td>
+                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtP(detailRecord.suspense_percentage)}</td>
+                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtA(detailRecord.suspense_amount)}</td>
+                      <td className="px-3 py-2 border border-gray-200"></td>
+                    </tr>
+                    {allocations.map(alloc => (
+                      <tr key={alloc.id} className="bg-amber-50">
+                        <td className="px-3 py-2 border border-amber-200">
+                          <span className="font-semibold text-amber-800">{alloc.secondary_ifa_code}</span>
+                          {alloc.secondary_ifa_name && <span className="text-amber-700"> — {alloc.secondary_ifa_name}</span>}
+                          <span className="ml-1 text-[10px] italic text-amber-500">(Secondary IFA · from {alloc.source_bucket.toUpperCase()})</span>
+                        </td>
+                        <td className="px-3 py-2 border border-amber-200 text-right text-gray-400">—</td>
+                        <td className="px-3 py-2 border border-amber-200 text-right font-bold text-amber-700">{fmtP(alloc.percentage)}</td>
+                        <td className="px-3 py-2 border border-amber-200 text-right font-bold text-amber-700">{fmtA(detailRecord.amount * alloc.percentage)}</td>
+                        <td className="px-3 py-2 border border-amber-200 text-center">
+                          <button
+                            onClick={() => handleDeleteAllocationCb(alloc.id)}
+                            disabled={deletingAllocId === alloc.id}
+                            className="text-[11px] px-2 py-0.5 bg-red-50 text-red-600 border border-red-200 rounded hover:bg-red-100 disabled:opacity-40"
+                          >
+                            {deletingAllocId === alloc.id ? '…' : 'Remove'}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {allocations.length === 0 && (
+                  <p className="text-xs text-gray-400 mt-4 text-center">No allocations yet. Click &quot;+ Add Allocation&quot; to create one.</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* ── Add Allocation Modal ────────────────────────────────────────────── */}
+      {allocModal.open && allocModal.parentRecord && (() => {
+        const parent = allocModal.parentRecord
+        const existingAllocs = allocationsByParent.get(parent.id) ?? []
+        const bucketPct = allocForm.source_bucket === 'wgi'
+          ? parent.wgi_percentage
+          : allocForm.source_bucket === 'ifa'
+            ? parent.ifa_percentage
+            : parent.suspense_percentage
+        const alreadyAllocd = existingAllocs
+          .filter(a => a.source_bucket === allocForm.source_bucket)
+          .reduce((s, a) => s + a.percentage, 0)
+        const available = bucketPct - alreadyAllocd
+        const previewPct = parseFloat(allocForm.percentage) / 100
+        const previewAmt = !isNaN(previewPct) ? parent.amount * previewPct : 0
+
+        return (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h2 className="text-base font-semibold text-gray-900">Add Allocation</h2>
+                  <p className="text-xs text-gray-500 mt-0.5">{parent.policy_number} — {parent.ifa_code} / {parent.ifa_name}</p>
+                </div>
+                <button onClick={() => setAllocModal({ open: false, parentRecord: null })} className="text-gray-400 hover:text-gray-600 text-xl leading-none">✕</button>
+              </div>
+
+              {allocError && (
+                <div className="mb-3 bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">{allocError}</div>
+              )}
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Source Bucket</label>
+                  <select
+                    value={allocForm.source_bucket}
+                    onChange={e => setAllocForm(f => ({ ...f, source_bucket: e.target.value }))}
+                    className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm"
+                  >
+                    <option value="wgi">WGI ({(parent.wgi_percentage * 100).toFixed(2)}% → ${parent.wg_amount?.toFixed(2)})</option>
+                    <option value="ifa">IFA ({(parent.ifa_percentage * 100).toFixed(2)}% → ${parent.ifa_amount?.toFixed(2)})</option>
+                    <option value="suspense">Suspense ({(parent.suspense_percentage * 100).toFixed(2)}% → ${parent.suspense_amount?.toFixed(2)})</option>
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Available from {allocForm.source_bucket.toUpperCase()}: <strong className="text-blue-700">{(available * 100).toFixed(2)}%</strong>
+                    {' '}= <strong className="text-blue-700">${(parent.amount * available).toFixed(2)}</strong>
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Percentage to redirect (0–100) <span className="text-red-500">*</span></label>
+                  <input
+                    type="number" min="0.01" max="100" step="0.01"
+                    placeholder={`Max ${(available * 100).toFixed(2)}`}
+                    value={allocForm.percentage}
+                    onChange={e => setAllocForm(f => ({ ...f, percentage: e.target.value }))}
+                    className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm"
+                  />
+                  {allocForm.percentage && !isNaN(previewPct) && previewPct > 0 && (
+                    <p className="text-xs text-blue-700 mt-1">
+                      = <strong>${previewAmt.toFixed(2)}</strong> redirected to secondary IFA
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Secondary IFA <span className="text-red-500">*</span></label>
+                  <select
+                    value={allocForm.secondary_ifa_id}
+                    onChange={e => setAllocForm(f => ({ ...f, secondary_ifa_id: e.target.value }))}
+                    className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm"
+                  >
+                    <option value="">— select IFA —</option>
+                    {ifaList.filter(i => i.code !== parent.ifa_code).map(i => (
+                      <option key={i.id} value={i.id}>{i.code} — {i.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Notes (optional)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Producer works under supervising IFA"
+                    value={allocForm.notes}
+                    onChange={e => setAllocForm(f => ({ ...f, notes: e.target.value }))}
+                    className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-5">
+                <button onClick={() => setAllocModal({ open: false, parentRecord: null })}
+                  className="flex-1 border border-gray-300 text-gray-700 py-2 rounded text-sm hover:bg-gray-50">
+                  Cancel
+                </button>
+                <button onClick={handleSubmitAllocation} disabled={allocSaving}
+                  className="flex-1 bg-sky-600 text-white py-2 rounded text-sm font-medium hover:bg-sky-700 disabled:opacity-40">
+                  {allocSaving ? 'Creating…' : 'Create Allocation'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* ── Reconcile Confirmation Modal ─────────────────────────────────────── */}
       {reconcileModal && (() => {
