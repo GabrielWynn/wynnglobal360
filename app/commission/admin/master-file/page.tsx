@@ -554,14 +554,20 @@ export default function MasterFilePage() {
       if (node.rowPinned || !node.data) return
       const r = node.data as CommissionRecord
       filteredCount++
-      fAmt    += r.amount          ?? 0
+      // Child allocation rows are excluded from Received/Expect/Gross — that money
+      // is already counted on the parent row. IFA/Unpaid/Paid are included because
+      // the secondary IFA is owed real commission.
+      const isChild = !!r.allocation_parent_id
+      if (!isChild) {
+        fAmt += r.amount          ?? 0
+        fVar += r.variable_amount ?? 0
+        fAdj += (r.amount ?? 0) + (r.variable_amount ?? 0)
+      }
       fIFA    += r.ifa_amount      ?? 0
       fSusp   += r.suspense_amount ?? 0
       fWG     += r.wg_amount       ?? 0
       fPaid   += r.paid            ?? 0
       fUnpaid += r.unpaid          ?? 0
-      fVar    += r.variable_amount ?? 0
-      fAdj    += (r.amount ?? 0) + (r.variable_amount ?? 0)
       fApe    += r.ape             ?? 0
       fApeWgi += r.ape_wgi         ?? 0
       fDueWg  += r.due_wg          ?? 0
@@ -582,14 +588,17 @@ export default function MasterFilePage() {
       let sAmt = 0, sIFA = 0, sSusp = 0, sWG = 0, sPaid = 0, sUnpaid = 0
       let sAdj = 0, sVar = 0, sApe = 0, sApeWgi = 0, sDueWg = 0
       sel.forEach(r => {
-        sAmt    += r.amount          ?? 0
+        const isChild = !!r.allocation_parent_id
+        if (!isChild) {
+          sAmt += r.amount          ?? 0
+          sVar += r.variable_amount ?? 0
+          sAdj += (r.amount ?? 0) + (r.variable_amount ?? 0)
+        }
         sIFA    += r.ifa_amount      ?? 0
         sSusp   += r.suspense_amount ?? 0
         sWG     += r.wg_amount       ?? 0
         sPaid   += r.paid            ?? 0
         sUnpaid += r.unpaid          ?? 0
-        sVar    += r.variable_amount ?? 0
-        sAdj    += (r.amount ?? 0) + (r.variable_amount ?? 0)
         sApe    += r.ape             ?? 0
         sApeWgi += r.ape_wgi         ?? 0
         sDueWg  += r.due_wg          ?? 0
@@ -1403,7 +1412,7 @@ export default function MasterFilePage() {
   }
 
   // ── Derived values ────────────────────────────────────────────────────────────
-  const totalAmount = rowData.reduce((s, r) => s + (r.amount ?? 0), 0)
+  const totalAmount = rowData.reduce((s, r) => s + (r.allocation_parent_id ? 0 : (r.amount ?? 0)), 0)
   const totalIFA    = rowData.reduce((s, r) => s + (r.ifa_amount ?? 0), 0)
   const totalPaid   = rowData.reduce((s, r) => s + (r.paid ?? 0), 0)
   const totalUnpaid = rowData.reduce((s, r) => s + (r.unpaid ?? 0), 0)
