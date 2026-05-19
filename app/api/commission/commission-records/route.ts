@@ -52,7 +52,7 @@ export async function GET(request: Request) {
 // Whitelist of fields editable from the master file.
 // Prevents arbitrary column overwrites via the API.
 const EDITABLE_FIELDS = new Set([
-  'ifa_percentage', 'suspense_percentage', 'wgi_percentage',
+  'ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage',
   'variable_amount', 'ape', 'ape_wgi', 'due_wg',
   'paid', 'paid_at', 'status', 'rate', 'notes', 'ifa_notes', 'updated_at',
 ])

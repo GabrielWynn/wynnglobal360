@@ -355,7 +355,7 @@ export default function IFAPortal() {
                           </td>
                           <td style={{ padding: '10px 14px', color: 'var(--wgi-text-muted)', fontSize: '12px', maxWidth: '200px' }}>
                             {t.ifa_notes ? (
-                              <span title={t.ifa_notes} style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              <span style={{ display: 'block', whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
                                 {t.ifa_notes}
                               </span>
                             ) : <span style={{ color: 'var(--wgi-text-light)' }}>—</span>}

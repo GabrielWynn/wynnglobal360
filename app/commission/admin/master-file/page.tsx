@@ -16,6 +16,7 @@ import type {
   CellClassParams,
 } from 'ag-grid-community'
 import * as XLSX from 'xlsx'
+import { computeMergePreview, getMergeBlockReason, type MergeableRecord } from '@/lib/commission-merge'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 
@@ -28,6 +29,7 @@ interface CommissionRecord {
   policy_holder_name: string | null
   ifa_code: string | null
   ifa_name: string | null
+  platform_id: string | null
   commission_type: string | null
   commission_type_code: string | null
   amount: number
@@ -36,9 +38,11 @@ interface CommissionRecord {
   ifa_percentage: number
   suspense_percentage: number
   wgi_percentage: number
+  pending_percentage: number
   ifa_amount: number
   suspense_amount: number
   wg_amount: number
+  pending_amount: number
   due_wg: number | null
   paid: number
   unpaid: number
@@ -55,6 +59,7 @@ interface CommissionRecord {
   linked_record_id: string | null
   reconciled_at: string | null
   allocation_parent_id: string | null
+  payment_batch_id: string | null
   allocations?: CommissionAllocation[]
   platform: { name: string } | null
   upload_batch: { filename: string } | null
@@ -100,7 +105,7 @@ const COLUMN_STATE_KEY    = 'wgi_master_file_columns'
 // Column panel groups — maps colIds to labelled sections in the dropdown
 const COL_GROUPS: { label: string; ids: string[] }[] = [
   { label: 'Identity',   ids: ['expand', 'transaction_date', 'commencement_date', 'policy_number', 'policy_holder_name', 'ifa_code', 'ifa_name'] },
-  { label: 'Commission', ids: ['commission_type', 'amount', 'variable_amount', 'adjusted', 'currency', 'platform_payment_pct', 'ape', 'ape_wgi', 'ifa_percentage', 'ifa_amount', 'suspense_percentage', 'suspense_amount', 'wgi_percentage', 'wg_amount'] },
+  { label: 'Commission', ids: ['commission_type', 'amount', 'variable_amount', 'adjusted', 'currency', 'platform_payment_pct', 'ape', 'ape_wgi', 'ifa_percentage', 'ifa_amount', 'suspense_percentage', 'suspense_amount', 'wgi_percentage', 'wg_amount', 'pending_percentage', 'pending_amount'] },
   { label: 'Payment',    ids: ['due_wg', 'paid', 'unpaid', 'status'] },
   { label: 'Metadata',   ids: ['rate', 'notes', 'ifa_notes', 'platform.name', 'upload_batch.filename'] },
 ]
@@ -167,13 +172,13 @@ const defaultAddForm: AddForm = {
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 const fmtMoney = (n: number): string => {
-  const [int, dec] = Math.abs(n).toFixed(2).split('.')
+  const [int, dec] = Math.abs(n).toFixed(3).split('.')
   const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   return (n < 0 ? '-' : '') + grouped + '.' + dec
 }
 
 const fmtNum = (p: ValueFormatterParams): string =>
-  p.value != null ? fmtMoney(Number(p.value)) : '0.00'
+  p.value != null ? fmtMoney(Number(p.value)) : '0.000'
 
 const fmtPct = (p: ValueFormatterParams): string =>
   (p.value != null && Number(p.value) !== 0) ? `${(Number(p.value) * 100).toFixed(4)}%` : '—'
@@ -224,7 +229,7 @@ function AllocationDetailPanel(params: any) {
   if (!record) return null
 
   const fmtP = (v: number) => `${(v * 100).toFixed(2)}%`
-  const fmtA = (v: number) => `$${v.toFixed(2)}`
+  const fmtA = (v: number) => `$${v.toFixed(3)}`
 
   const wgiAllocd  = allocations.filter(a => a.source_bucket === 'wgi').reduce((s, a) => s + a.percentage, 0)
   const ifaAllocd  = allocations.filter(a => a.source_bucket === 'ifa').reduce((s, a) => s + a.percentage, 0)
@@ -383,6 +388,12 @@ export default function MasterFilePage() {
   // ── Reconcile ─────────────────────────────────────────────────────────────────
   const [reconcileModal, setReconcileModal] = useState(false)
   const [reconciling,    setReconciling]    = useState(false)
+
+  // ── Merge selected rows ───────────────────────────────────────────────────────
+  const [mergeModal,     setMergeModal]     = useState(false)
+  const [mergeSurvivorId, setMergeSurvivorId] = useState('')
+  const [merging,        setMerging]        = useState(false)
+  const [mergeError,     setMergeError]     = useState('')
 
   // ── Allocations ───────────────────────────────────────────────────────────────
   const [allocationsByParent, setAllocationsByParent] = useState<Map<string, CommissionAllocation[]>>(new Map())
@@ -548,7 +559,7 @@ export default function MasterFilePage() {
     if (!api) return
 
     let filteredCount = 0
-    let fAmt = 0, fIFA = 0, fSusp = 0, fWG = 0, fPaid = 0, fUnpaid = 0
+    let fAmt = 0, fIFA = 0, fSusp = 0, fWG = 0, fPdng = 0, fPaid = 0, fUnpaid = 0
     let fAdj = 0, fVar = 0, fApe = 0, fApeWgi = 0, fDueWg = 0
     api.forEachNodeAfterFilter(node => {
       if (node.rowPinned || !node.data) return
@@ -566,6 +577,7 @@ export default function MasterFilePage() {
       fIFA    += r.ifa_amount      ?? 0
       fSusp   += r.suspense_amount ?? 0
       fWG     += r.wg_amount       ?? 0
+      fPdng   += r.pending_amount  ?? 0
       fPaid   += r.paid            ?? 0
       fUnpaid += r.unpaid          ?? 0
       fApe    += r.ape             ?? 0
@@ -578,6 +590,7 @@ export default function MasterFilePage() {
       _label: `ALL FILTERED: ${filteredCount} rows`,
       amount: round2(fAmt), ifa_amount: round2(fIFA),
       suspense_amount: round2(fSusp), wg_amount: round2(fWG),
+      pending_amount: round2(fPdng),
       paid: round2(fPaid), unpaid: round2(fUnpaid),
       variable_amount: round2(fVar), adjusted: round2(fAdj), ape: round2(fApe),
       ape_wgi: round2(fApeWgi), due_wg: round2(fDueWg),
@@ -585,7 +598,7 @@ export default function MasterFilePage() {
 
     const sel = api.getSelectedRows() as CommissionRecord[]
     if (sel.length > 0) {
-      let sAmt = 0, sIFA = 0, sSusp = 0, sWG = 0, sPaid = 0, sUnpaid = 0
+      let sAmt = 0, sIFA = 0, sSusp = 0, sWG = 0, sPdng = 0, sPaid = 0, sUnpaid = 0
       let sAdj = 0, sVar = 0, sApe = 0, sApeWgi = 0, sDueWg = 0
       sel.forEach(r => {
         const isChild = !!r.allocation_parent_id
@@ -597,6 +610,7 @@ export default function MasterFilePage() {
         sIFA    += r.ifa_amount      ?? 0
         sSusp   += r.suspense_amount ?? 0
         sWG     += r.wg_amount       ?? 0
+        sPdng   += r.pending_amount  ?? 0
         sPaid   += r.paid            ?? 0
         sUnpaid += r.unpaid          ?? 0
         sApe    += r.ape             ?? 0
@@ -608,6 +622,7 @@ export default function MasterFilePage() {
         _label: `SELECTED: ${sel.length} rows`,
         amount: round2(sAmt), ifa_amount: round2(sIFA),
         suspense_amount: round2(sSusp), wg_amount: round2(sWG),
+        pending_amount: round2(sPdng),
         paid: round2(sPaid), unpaid: round2(sUnpaid),
         variable_amount: round2(sVar), adjusted: round2(sAdj), ape: round2(sApe),
         ape_wgi: round2(sApeWgi), due_wg: round2(sDueWg),
@@ -883,7 +898,9 @@ export default function MasterFilePage() {
       },
       {
         headerName: 'IFA Susp', field: 'suspense_amount',
-        width: 130, type: 'numericColumn', valueFormatter: fmtNum,
+        width: 130, type: 'numericColumn',
+        cellStyle: { fontWeight: 'bold' } as Record<string, string | number>,
+        valueFormatter: fmtNum,
       },
       {
         headerName: 'WGI %', field: 'wgi_percentage',
@@ -894,7 +911,22 @@ export default function MasterFilePage() {
       },
       {
         headerName: 'WG O/R', field: 'wg_amount',
-        width: 120, type: 'numericColumn', valueFormatter: fmtNum,
+        width: 120, type: 'numericColumn',
+        cellStyle: { fontWeight: 'bold' } as Record<string, string | number>,
+        valueFormatter: fmtNum,
+      },
+      {
+        headerName: 'Pdng %', field: 'pending_percentage',
+        width: 95, editable: true, type: 'numericColumn',
+        cellStyle: (p: CellClassParams) => p.node.rowPinned ? null : yellowCell,
+        valueFormatter: (p: ValueFormatterParams) => p.node?.rowPinned ? '' : fmtPct(p),
+        valueParser: parsePct,
+      },
+      {
+        headerName: 'Pdng$', field: 'pending_amount',
+        width: 120, type: 'numericColumn',
+        cellStyle: { fontWeight: 'bold' } as Record<string, string | number>,
+        valueFormatter: fmtNum,
       },
       {
         headerName: 'DUE WG', field: 'due_wg',
@@ -946,8 +978,20 @@ export default function MasterFilePage() {
           p.value != null ? Number(p.value).toFixed(4) : (p.node?.rowPinned ? '' : '—'),
         valueParser: parseAmt,
       },
-      { headerName: 'Notes', field: 'notes', width: 200, editable: true, filter: 'agTextColumnFilter', cellStyle: { backgroundColor: '#fef9c3', borderLeft: '2px solid #facc15' } as Record<string, string | number> },
-      { headerName: 'IFA Notes', field: 'ifa_notes', width: 200, editable: true, filter: 'agTextColumnFilter', cellStyle: { backgroundColor: '#fef9c3', borderLeft: '2px solid #facc15' } as Record<string, string | number> },
+      {
+        headerName: 'Notes', field: 'notes', width: 200, editable: true, filter: 'agTextColumnFilter',
+        cellEditor: 'agLargeTextCellEditor', cellEditorPopup: true,
+        cellEditorParams: { maxLength: 2000, rows: 6, cols: 50 },
+        wrapText: true, autoHeight: true,
+        cellStyle: { backgroundColor: '#fef9c3', borderLeft: '2px solid #facc15', whiteSpace: 'pre-wrap', lineHeight: '1.4' } as Record<string, string | number>,
+      },
+      {
+        headerName: 'IFA Notes', field: 'ifa_notes', width: 200, editable: true, filter: 'agTextColumnFilter',
+        cellEditor: 'agLargeTextCellEditor', cellEditorPopup: true,
+        cellEditorParams: { maxLength: 2000, rows: 6, cols: 50 },
+        wrapText: true, autoHeight: true,
+        cellStyle: { backgroundColor: '#fef9c3', borderLeft: '2px solid #facc15', whiteSpace: 'pre-wrap', lineHeight: '1.4' } as Record<string, string | number>,
+      },
       { headerName: 'Platform', field: 'platform.name', width: 120, filter: 'agTextColumnFilter' },
       {
         headerName: 'Source File', field: 'upload_batch.filename',
@@ -969,7 +1013,7 @@ export default function MasterFilePage() {
   const onCellValueChanged = useCallback(async (event: CellValueChangedEvent) => {
     const { data, colDef } = event
     const field = colDef.field as string
-    const editableFields = ['ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'variable_amount', 'ape', 'ape_wgi', 'due_wg', 'paid', 'status', 'rate', 'notes', 'ifa_notes']
+    const editableFields = ['ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage', 'variable_amount', 'ape', 'ape_wgi', 'due_wg', 'paid', 'status', 'rate', 'notes', 'ifa_notes']
     if (!editableFields.includes(field)) return
 
     const updatePayload: Record<string, unknown> = { [field]: data[field], updated_at: new Date().toISOString() }
@@ -1335,6 +1379,83 @@ export default function MasterFilePage() {
     }
   }
 
+  // ── Merge ─────────────────────────────────────────────────────────────────────
+  const mergeCandidates = useMemo((): MergeableRecord[] => {
+    return selectedRows.map(r => ({
+      id: r.id,
+      policy_number: r.policy_number,
+      ifa_code: r.ifa_code,
+      currency: r.currency,
+      platform_id: r.platform_id,
+      amount: r.amount,
+      variable_amount: r.variable_amount,
+      paid: r.paid,
+      ifa_amount: r.ifa_amount,
+      status: r.status,
+      is_deleted: r.is_deleted,
+      is_advance: r.is_advance,
+      linked_record_id: r.linked_record_id,
+      allocation_parent_id: r.allocation_parent_id,
+      payment_batch_id: r.payment_batch_id,
+      transaction_date: r.transaction_date,
+      commission_type: r.commission_type,
+      has_allocations:
+        (allocationsByParent.has(r.id) && (allocationsByParent.get(r.id)?.length ?? 0) > 0) ||
+        ((r.allocations?.length ?? 0) > 0),
+    }))
+  }, [selectedRows, allocationsByParent])
+
+  const mergeBlockReason = useMemo(
+    () => (selectedRows.length >= 2 ? getMergeBlockReason(mergeCandidates) : null),
+    [selectedRows.length, mergeCandidates],
+  )
+
+  const mergePreview = useMemo(() => {
+    if (mergeBlockReason || mergeCandidates.length < 2) return null
+    return computeMergePreview(mergeCandidates)
+  }, [mergeBlockReason, mergeCandidates])
+
+  function openMergeModal() {
+    if (mergeBlockReason) {
+      alert(mergeBlockReason)
+      return
+    }
+    const sorted = [...selectedRows].sort((a, b) => b.transaction_date.localeCompare(a.transaction_date))
+    setMergeSurvivorId(sorted[0]?.id ?? '')
+    setMergeError('')
+    setMergeModal(true)
+  }
+
+  async function handleConfirmMerge() {
+    if (!mergeSurvivorId || mergeCandidates.length < 2) return
+    setMerging(true)
+    setMergeError('')
+    try {
+      const authHeaders = await getAuthHeaders()
+      const res = await fetch('/api/commission/commission-records/merge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
+        body: JSON.stringify({
+          ids: mergeCandidates.map(r => r.id),
+          survivor_id: mergeSurvivorId,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? 'Merge failed')
+      setMergeModal(false)
+      setSelectedRows([])
+      gridRef.current?.api.deselectAll()
+      showFeedback(
+        `Merged ${data.merged_count} row(s) into one record for policy ${data.record?.policy_number ?? ''}.`,
+      )
+      await loadData()
+    } catch (err: any) {
+      setMergeError(err.message ?? 'Merge failed')
+    } finally {
+      setMerging(false)
+    }
+  }
+
   // ── Reconcile ─────────────────────────────────────────────────────────────────
   async function handleReconcile() {
     const advanceRow   = selectedRows.find(r => r.is_advance)
@@ -1373,7 +1494,8 @@ export default function MasterFilePage() {
         Currency: r.currency, 'IA Rate': r.platform_payment_pct ?? '', 'APE IFA': r.ape ?? '', 'APE WGI': r.ape_wgi ?? '',
         'IFA %': r.ifa_percentage, 'IFA Comm': r.ifa_amount,
         'IFA Susp %': r.suspense_percentage, 'IFA Susp': r.suspense_amount,
-        'WGI %': r.wgi_percentage, 'WG O/R': r.wg_amount, 'DUE WG': r.due_wg ?? '',
+        'WGI %': r.wgi_percentage, 'WG O/R': r.wg_amount,
+        'Pdng %': r.pending_percentage, 'Pdng$': r.pending_amount, 'DUE WG': r.due_wg ?? '',
         Paid: r.paid, Unpaid: r.unpaid, Status: r.status, Rate: r.rate ?? '', Notes: r.notes ?? '', 'IFA Notes': r.ifa_notes ?? '',
         Platform: r.platform?.name ?? '', 'Source File': r.upload_batch?.filename ?? 'manual entry',
       })
@@ -1574,6 +1696,16 @@ export default function MasterFilePage() {
                 <button onClick={() => setReconcileModal(true)}
                   className="h-6 px-2.5 bg-amber-50 text-amber-800 text-xs rounded border border-amber-300 hover:bg-amber-100 font-medium whitespace-nowrap">
                   🔗 Reconcile
+                </button>
+              )}
+              {selectedRows.length >= 2 && (
+                <button
+                  onClick={openMergeModal}
+                  disabled={!!mergeBlockReason}
+                  title={mergeBlockReason ?? 'Merge selected rows into one'}
+                  className="h-6 px-2.5 bg-violet-50 text-violet-800 text-xs rounded border border-violet-300 hover:bg-violet-100 font-medium whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  ⊕ Merge ({selectedRows.length})
                 </button>
               )}
 
@@ -2115,9 +2247,9 @@ export default function MasterFilePage() {
               <div className="mt-4 bg-blue-50 border border-blue-200 rounded p-3">
                 <p className="text-xs font-semibold text-blue-700 mb-1">Calculated Preview</p>
                 <div className="grid grid-cols-3 gap-2 text-xs text-blue-800">
-                  <span>IFA Comm: <strong>${previewIFA.toFixed(2)}</strong></span>
-                  <span>IFA Susp: <strong>${previewSusp.toFixed(2)}</strong></span>
-                  <span>WGI: <strong>${previewWGI.toFixed(2)}</strong></span>
+                  <span>IFA Comm: <strong>${previewIFA.toFixed(3)}</strong></span>
+                  <span>IFA Susp: <strong>${previewSusp.toFixed(3)}</strong></span>
+                  <span>WGI: <strong>${previewWGI.toFixed(3)}</strong></span>
                 </div>
               </div>
             )}
@@ -2198,7 +2330,7 @@ export default function MasterFilePage() {
         const origIfa    = detailRecord.ifa_percentage  + ifaAllocd
         const origSusp   = detailRecord.suspense_percentage + suspAllocd
         const fmtP = (v: number) => `${(v * 100).toFixed(2)}%`
-        const fmtA = (v: number) => `$${v.toFixed(2)}`
+        const fmtA = (v: number) => `$${v.toFixed(3)}`
 
         return (
           <div className="fixed inset-0 z-40 flex justify-end pointer-events-none">
@@ -2326,13 +2458,13 @@ export default function MasterFilePage() {
                     onChange={e => setAllocForm(f => ({ ...f, source_bucket: e.target.value }))}
                     className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm"
                   >
-                    <option value="wgi">WGI ({(parent.wgi_percentage * 100).toFixed(2)}% → ${parent.wg_amount?.toFixed(2)})</option>
-                    <option value="ifa">IFA ({(parent.ifa_percentage * 100).toFixed(2)}% → ${parent.ifa_amount?.toFixed(2)})</option>
-                    <option value="suspense">Suspense ({(parent.suspense_percentage * 100).toFixed(2)}% → ${parent.suspense_amount?.toFixed(2)})</option>
+                    <option value="wgi">WGI ({(parent.wgi_percentage * 100).toFixed(2)}% → ${parent.wg_amount?.toFixed(3)})</option>
+                    <option value="ifa">IFA ({(parent.ifa_percentage * 100).toFixed(2)}% → ${parent.ifa_amount?.toFixed(3)})</option>
+                    <option value="suspense">Suspense ({(parent.suspense_percentage * 100).toFixed(2)}% → ${parent.suspense_amount?.toFixed(3)})</option>
                   </select>
                   <p className="text-xs text-gray-500 mt-1">
                     Available from {allocForm.source_bucket.toUpperCase()}: <strong className="text-blue-700">{(available * 100).toFixed(2)}%</strong>
-                    {' '}= <strong className="text-blue-700">${(parent.amount * available).toFixed(2)}</strong>
+                    {' '}= <strong className="text-blue-700">${(parent.amount * available).toFixed(3)}</strong>
                   </p>
                 </div>
 
@@ -2347,7 +2479,7 @@ export default function MasterFilePage() {
                   />
                   {allocForm.percentage && !isNaN(previewPct) && previewPct > 0 && (
                     <p className="text-xs text-blue-700 mt-1">
-                      = <strong>${previewAmt.toFixed(2)}</strong> redirected to secondary IFA
+                      = <strong>${previewAmt.toFixed(3)}</strong> redirected to secondary IFA
                     </p>
                   )}
                 </div>
@@ -2393,6 +2525,82 @@ export default function MasterFilePage() {
         )
       })()}
 
+      {/* ── Merge Selected Rows Modal ──────────────────────────────────────────── */}
+      {mergeModal && mergePreview && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg font-semibold text-gray-900">Merge selected rows</h2>
+            <p className="text-sm text-gray-600">
+              Only the rows you selected will be combined. Other rows for this policy are unchanged.
+            </p>
+
+            <div className="overflow-x-auto border border-gray-200 rounded">
+              <table className="min-w-full text-xs">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-2 py-2 text-left">Primary</th>
+                    <th className="px-2 py-2 text-left">Date</th>
+                    <th className="px-2 py-2 text-left">Type</th>
+                    <th className="px-2 py-2 text-right">Received</th>
+                    <th className="px-2 py-2 text-right">IFA Comm</th>
+                    <th className="px-2 py-2 text-left">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {selectedRows.map(r => (
+                    <tr key={r.id} className={r.id === mergeSurvivorId ? 'bg-violet-50' : ''}>
+                      <td className="px-2 py-2">
+                        <input
+                          type="radio"
+                          name="merge-survivor"
+                          checked={mergeSurvivorId === r.id}
+                          onChange={() => setMergeSurvivorId(r.id)}
+                        />
+                      </td>
+                      <td className="px-2 py-2">{r.transaction_date}</td>
+                      <td className="px-2 py-2">{r.commission_type ?? '—'}</td>
+                      <td className="px-2 py-2 text-right">${fmtMoney(r.amount)}</td>
+                      <td className="px-2 py-2 text-right">${fmtMoney(r.ifa_amount)}</td>
+                      <td className="px-2 py-2">{r.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="bg-violet-50 border border-violet-200 rounded p-4 text-sm grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div><span className="text-gray-500 block text-xs">Received</span><strong>${fmtMoney(mergePreview.amount)}</strong></div>
+              <div><span className="text-gray-500 block text-xs">Expect</span><strong>${fmtMoney(mergePreview.variable_amount)}</strong></div>
+              <div><span className="text-gray-500 block text-xs">Gross</span><strong>${fmtMoney(mergePreview.gross)}</strong></div>
+              <div><span className="text-gray-500 block text-xs">IFA Comm</span><strong className="text-blue-700">${fmtMoney(mergePreview.ifa_amount)}</strong></div>
+              <div><span className="text-gray-500 block text-xs">Paid</span><strong>${fmtMoney(mergePreview.paid)}</strong></div>
+              <div><span className="text-gray-500 block text-xs">Unpaid</span><strong className="text-red-600">${fmtMoney(mergePreview.unpaid)}</strong></div>
+              <div><span className="text-gray-500 block text-xs">Status</span><strong>{mergePreview.status}</strong></div>
+              <div><span className="text-gray-500 block text-xs">Trans date</span><strong>{mergePreview.transaction_date}</strong></div>
+            </div>
+
+            <p className="text-xs text-gray-500">
+              Policy <strong>{selectedRows[0]?.policy_number}</strong> · IFA <strong>{selectedRows[0]?.ifa_code}</strong> · {selectedRows.length} rows → 1 row
+            </p>
+
+            {mergeError && (
+              <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">{mergeError}</p>
+            )}
+
+            <div className="flex gap-3 pt-1">
+              <button onClick={() => setMergeModal(false)}
+                className="flex-1 border border-gray-300 text-gray-700 py-2 rounded text-sm hover:bg-gray-50">
+                Cancel
+              </button>
+              <button onClick={handleConfirmMerge} disabled={merging || !mergeSurvivorId}
+                className="flex-1 bg-violet-600 text-white py-2 rounded text-sm font-medium hover:bg-violet-700 disabled:opacity-40">
+                {merging ? 'Merging…' : `Merge ${selectedRows.length} rows`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Reconcile Confirmation Modal ─────────────────────────────────────── */}
       {reconcileModal && (() => {
         const advRow = selectedRows.find(r => r.is_advance)
@@ -2406,12 +2614,12 @@ export default function MasterFilePage() {
                 <div className="bg-amber-50 border border-amber-200 rounded p-3">
                   <p className="text-xs font-semibold text-amber-700 mb-1">Advance Payment</p>
                   <p className="font-medium text-gray-900">{advRow?.policy_number} — {advRow?.ifa_name}</p>
-                  <p className="text-gray-500">${advRow?.ifa_amount?.toFixed(2)} {advRow?.currency} · {advRow?.transaction_date}</p>
+                  <p className="text-gray-500">${advRow?.ifa_amount?.toFixed(3)} {advRow?.currency} · {advRow?.transaction_date}</p>
                 </div>
                 <div className="bg-green-50 border border-green-200 rounded p-3">
                   <p className="text-xs font-semibold text-green-700 mb-1">Statement Entry (will be marked reconciled)</p>
                   <p className="font-medium text-gray-900">{stmRow?.policy_number} — {stmRow?.ifa_name}</p>
-                  <p className="text-gray-500">${stmRow?.ifa_amount?.toFixed(2)} {stmRow?.currency} · {stmRow?.transaction_date}</p>
+                  <p className="text-gray-500">${stmRow?.ifa_amount?.toFixed(3)} {stmRow?.currency} · {stmRow?.transaction_date}</p>
                 </div>
               </div>
 
