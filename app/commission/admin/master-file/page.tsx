@@ -198,7 +198,6 @@ const parseAmt = (p: ValueParserParams): number | null => {
   return isNaN(v) ? (p.oldValue as number) : v
 }
 
-const round2 = (n: number) => Math.round(n * 100) / 100
 
 // Format ISO date string (YYYY-MM-DD) as dd/mm/yy
 const fmtDate = (p: ValueFormatterParams): string => {
@@ -591,12 +590,12 @@ export default function MasterFilePage() {
     const allRow: Record<string, unknown> = {
       _summary: true, _selected: false,
       _label: `ALL FILTERED: ${filteredCount} rows`,
-      amount: round2(fAmt), ifa_amount: round2(fIFA),
-      suspense_amount: round2(fSusp), wg_amount: round2(fWG),
-      pending_amount: round2(fPdng),
-      paid: round2(fPaid), unpaid: round2(fUnpaid),
-      variable_amount: round2(fVar), adjusted: round2(fAdj), ape: round2(fApe),
-      ape_wgi: round2(fApeWgi), due_wg: round2(fDueWg),
+      amount: fAmt, ifa_amount: fIFA,
+      suspense_amount: fSusp, wg_amount: fWG,
+      pending_amount: fPdng,
+      paid: fPaid, unpaid: fUnpaid,
+      variable_amount: fVar, adjusted: fAdj, ape: fApe,
+      ape_wgi: fApeWgi, due_wg: fDueWg,
     }
 
     const sel = api.getSelectedRows() as CommissionRecord[]
@@ -623,12 +622,12 @@ export default function MasterFilePage() {
       const selRow: Record<string, unknown> = {
         _summary: true, _selected: true,
         _label: `SELECTED: ${sel.length} rows`,
-        amount: round2(sAmt), ifa_amount: round2(sIFA),
-        suspense_amount: round2(sSusp), wg_amount: round2(sWG),
-        pending_amount: round2(sPdng),
-        paid: round2(sPaid), unpaid: round2(sUnpaid),
-        variable_amount: round2(sVar), adjusted: round2(sAdj), ape: round2(sApe),
-        ape_wgi: round2(sApeWgi), due_wg: round2(sDueWg),
+        amount: sAmt, ifa_amount: sIFA,
+        suspense_amount: sSusp, wg_amount: sWG,
+        pending_amount: sPdng,
+        paid: sPaid, unpaid: sUnpaid,
+        variable_amount: sVar, adjusted: sAdj, ape: sApe,
+        ape_wgi: sApeWgi, due_wg: sDueWg,
       }
       setPinnedBottomRows([allRow, selRow])
     } else {
@@ -1545,10 +1544,10 @@ export default function MasterFilePage() {
   const currentHint = FORMULA_FIELDS.find(f => f.value === formulaField)?.hint ?? ''
 
   const prevAmt   = parseFloat(addForm.amount || '0')
-  const previewIFA  = round2(prevAmt * parseFloat(addForm.ifa_percentage  || '0') / 100)
-  const previewSusp = round2(prevAmt * parseFloat(addForm.suspense_percentage || '0') / 100)
-  const previewWGI  = round2(prevAmt * parseFloat(addForm.wgi_percentage  || '0') / 100)
-  const previewPdng = round2(prevAmt * parseFloat(addForm.pending_percentage  || '0') / 100)
+  const previewIFA  = prevAmt * parseFloat(addForm.ifa_percentage  || '0') / 100
+  const previewSusp = prevAmt * parseFloat(addForm.suspense_percentage || '0') / 100
+  const previewWGI  = prevAmt * parseFloat(addForm.wgi_percentage  || '0') / 100
+  const previewPdng = prevAmt * parseFloat(addForm.pending_percentage  || '0') / 100
 
   const paidSelectedCount      = selectedRows.filter(r => r.status === 'paid').length
   const requireTypedConfirm    = selectedRows.length > 100
