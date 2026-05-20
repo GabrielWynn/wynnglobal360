@@ -92,6 +92,7 @@ interface AddForm {
   ifa_percentage: string
   suspense_percentage: string
   wgi_percentage: string
+  pending_percentage: string
   status: string
   notes: string
   is_advance: boolean
@@ -165,6 +166,7 @@ const defaultAddForm: AddForm = {
   ifa_percentage: '',
   suspense_percentage: '',
   wgi_percentage: '',
+  pending_percentage: '',
   status: 'pending',
   notes: '',
   is_advance: false,
@@ -1264,7 +1266,7 @@ export default function MasterFilePage() {
     if (!eligibleRows.length) { alert('No eligible rows selected (child allocation records cannot be bulk-edited)'); return }
     if (!formulaValue.trim()) { alert('Enter a value'); return }
     let dbValue: string | number = formulaValue.trim()
-    if (['ifa_percentage', 'suspense_percentage', 'wgi_percentage'].includes(formulaField)) {
+    if (['ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage'].includes(formulaField)) {
       const v = parseFloat(formulaValue.replace('%', '').trim())
       if (isNaN(v) || v < 0 || v > 100) { alert('Enter a valid % between 0 and 100'); return }
       dbValue = v / 100
@@ -1343,6 +1345,7 @@ export default function MasterFilePage() {
         ifa_percentage:      addForm.ifa_percentage      ? parseFloat(addForm.ifa_percentage)      / 100 : null,
         suspense_percentage: addForm.suspense_percentage ? parseFloat(addForm.suspense_percentage) / 100 : null,
         wgi_percentage:      addForm.wgi_percentage      ? parseFloat(addForm.wgi_percentage)      / 100 : null,
+        pending_percentage:  addForm.pending_percentage  ? parseFloat(addForm.pending_percentage)  / 100 : null,
         status:              addForm.is_advance ? 'advance' : addForm.status,
         is_advance:          addForm.is_advance,
         notes:               addForm.notes.trim() || null,
@@ -1545,6 +1548,7 @@ export default function MasterFilePage() {
   const previewIFA  = round2(prevAmt * parseFloat(addForm.ifa_percentage  || '0') / 100)
   const previewSusp = round2(prevAmt * parseFloat(addForm.suspense_percentage || '0') / 100)
   const previewWGI  = round2(prevAmt * parseFloat(addForm.wgi_percentage  || '0') / 100)
+  const previewPdng = round2(prevAmt * parseFloat(addForm.pending_percentage  || '0') / 100)
 
   const paidSelectedCount      = selectedRows.filter(r => r.status === 'paid').length
   const requireTypedConfirm    = selectedRows.length > 100
@@ -2199,6 +2203,12 @@ export default function MasterFilePage() {
                   className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm bg-yellow-50" />
               </div>
               <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Pdng % (0–100)</label>
+                <input type="number" min="0" max="100" step="0.01" value={addForm.pending_percentage}
+                  onChange={e => setAddForm(f => ({ ...f, pending_percentage: e.target.value }))}
+                  className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm bg-yellow-50" />
+              </div>
+              <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">Status</label>
                 <select value={addForm.status}
                   onChange={e => setAddForm(f => ({ ...f, status: e.target.value }))}
@@ -2251,6 +2261,7 @@ export default function MasterFilePage() {
                   <span>IFA Comm: <strong>${previewIFA.toFixed(3)}</strong></span>
                   <span>IFA Susp: <strong>${previewSusp.toFixed(3)}</strong></span>
                   <span>WGI: <strong>${previewWGI.toFixed(3)}</strong></span>
+                  <span>Pdng$: <strong>${previewPdng.toFixed(3)}</strong></span>
                 </div>
               </div>
             )}
