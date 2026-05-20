@@ -114,6 +114,7 @@ const FORMULA_FIELDS = [
   { value: 'ifa_percentage',      label: 'IFA %',         hint: '0–100  e.g. 12.5' },
   { value: 'suspense_percentage', label: 'IFA Susp %',    hint: '0–100  e.g. 5' },
   { value: 'wgi_percentage',      label: 'WGI %',         hint: '0–100  e.g. 2.5' },
+  { value: 'pending_percentage',  label: 'Pdng %',        hint: '0–100  e.g. 2.5' },
   { value: 'variable_amount',     label: 'Expect ($)',    hint: 'e.g. 200 or -50' },
   { value: 'ape',                 label: 'APE IFA ($)',   hint: 'Annual Premium Equivalent (IFA) e.g. 12000' },
   { value: 'ape_wgi',            label: 'APE WGI ($)',   hint: 'Annual Premium Equivalent (WGI) e.g. 12000' },
