@@ -583,10 +583,13 @@ export async function listNotes(factFindId: string): Promise<FFNote[]> {
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
 
-  return (data ?? []).map((n: Record<string, unknown>) => ({
-    ...(n as FFNote),
-    author_name: (n.author as { name?: string } | null)?.name,
-  }));
+  return (data ?? []).map((n: Record<string, unknown>) => {
+    const { author, ...note } = n;
+    return {
+      ...(note as unknown as FFNote),
+      author_name: (author as { name?: string } | null)?.name,
+    };
+  });
 }
 
 export async function createNote(

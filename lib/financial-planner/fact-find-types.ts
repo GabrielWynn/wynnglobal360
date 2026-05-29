@@ -156,7 +156,19 @@ export interface FFAnswer {
   updated_at: string;
 }
 
-export type AnswerValue = string | number | boolean | null | unknown[];
+export interface CurrencyAnswerValue {
+  amount?: number;
+  currency?: string;
+}
+
+export type AnswerValue =
+  | string
+  | number
+  | boolean
+  | null
+  | CurrencyAnswerValue
+  | unknown[]
+  | Record<string, unknown>[];
 
 export interface UpsertAnswerPayload {
   field_key: string;

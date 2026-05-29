@@ -7,6 +7,7 @@ import {
   type FFSubField,
   type FFLanguage,
   type AnswerValue,
+  type CurrencyAnswerValue,
   type RiskProfile,
   getHelpText,
   getLabel,
@@ -113,7 +114,7 @@ export default function FieldRenderer({
       case "currency":
         return (
           <CurrencyField
-            value={value as { amount?: number; currency?: string } | null}
+            value={value as CurrencyAnswerValue | null}
             onChange={(v) => onChange(field.key, v)}
             required={required}
             readOnly={readOnly}
@@ -267,8 +268,8 @@ function CurrencyField({
   inputBase,
   inputStyle,
 }: {
-  value: { amount?: number; currency?: string } | null;
-  onChange: (v: { amount?: number; currency?: string }) => void;
+  value: CurrencyAnswerValue | null;
+  onChange: (v: CurrencyAnswerValue) => void;
   required: boolean;
   readOnly: boolean;
   inputBase: string;
