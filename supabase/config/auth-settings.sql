@@ -48,8 +48,14 @@
 --
 -- Additional redirect URLs (add all of these):
 --   https://www.wynnglobal360.com/advisors
+--   https://www.wynnglobal360.com/reset-password
+--   https://www.wynnglobal360.com/accept-invite
 --   https://www.wynnglobal360.com/api/auth/callback
+--   https://wynnglobal360.vercel.app/reset-password
+--   https://wynnglobal360.vercel.app/accept-invite
 --   http://localhost:3000/advisors          ← keep for local dev
+--   http://localhost:3000/reset-password    ← keep for local dev
+--   http://localhost:3000/accept-invite     ← keep for local dev
 --   http://localhost:3000/api/auth/callback ← keep for local dev
 --
 -- Notes:

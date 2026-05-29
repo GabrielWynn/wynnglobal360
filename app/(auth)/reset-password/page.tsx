@@ -45,6 +45,23 @@ export default function ResetPasswordPage() {
   // session in case the page is refreshed after the hash is consumed.
   // ------------------------------------------------------------------
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(
+      window.location.hash.replace(/^#/, "")
+    );
+    const errorCode =
+      params.get("error_code") ?? hashParams.get("error_code");
+    const hasAuthError =
+      errorCode === "otp_expired" ||
+      params.get("error") === "access_denied" ||
+      hashParams.get("error") === "access_denied";
+
+    if (hasAuthError) {
+      setStatus("invalid");
+      window.history.replaceState({}, "", "/reset-password");
+      return;
+    }
+
     // Check whether a recovery session is already present (page refresh)
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) setStatus("ready");

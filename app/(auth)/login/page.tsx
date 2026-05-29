@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserClient } from "@/lib/supabase";
 
@@ -56,6 +56,46 @@ function LoginContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resetSent, setResetSent] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Supabase redirects here when a reset/invite link is invalid or expired.
+  useEffect(() => {
+    const hashParams = new URLSearchParams(
+      window.location.hash.replace(/^#/, "")
+    );
+    const errorCode =
+      searchParams.get("error_code") ?? hashParams.get("error_code");
+    const errorDescription =
+      searchParams.get("error_description") ??
+      hashParams.get("error_description");
+    const success = searchParams.get("success");
+
+    if (success) {
+      setSuccessMessage(success.replace(/\+/g, " "));
+    }
+
+    if (errorCode === "otp_expired") {
+      setMode("forgot");
+      setError(
+        "This reset link has expired or was already used. Request a new link below — use the latest email only, and click the link once."
+      );
+    } else if (searchParams.get("error") || hashParams.get("error")) {
+      setMode("forgot");
+      setError(
+        errorDescription?.replace(/\+/g, " ") ??
+          "This sign-in link is invalid. Please request a new reset email."
+      );
+    }
+
+    if (
+      errorCode ||
+      searchParams.get("error") ||
+      hashParams.get("error") ||
+      success
+    ) {
+      window.history.replaceState({}, "", "/login");
+    }
+  }, [searchParams]);
 
   function switchMode(next: Mode) {
     setMode(next);
@@ -109,9 +149,13 @@ function LoginContent() {
     setLoading(true);
     setError(null);
 
+    // Use the current origin so the email link returns to the same deployment
+    // the user requested the reset from (localhost, Vercel preview, production).
+    const redirectOrigin = window.location.origin || siteUrl;
+
     const { error: resetError } =
       await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${siteUrl}/reset-password`,
+        redirectTo: `${redirectOrigin}/reset-password`,
       });
 
     if (resetError) {
@@ -250,6 +294,13 @@ function LoginContent() {
                 : "We'll send a reset link to your email address"}
             </p>
           </div>
+
+          {/* Success banner (e.g. after password update) */}
+          {successMessage && (
+            <div className="mb-5 px-4 py-3 rounded-lg border border-emerald-200 bg-emerald-50">
+              <p className="text-sm text-emerald-700">{successMessage}</p>
+            </div>
+          )}
 
           {/* Error banner */}
           {error && (

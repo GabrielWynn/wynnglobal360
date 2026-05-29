@@ -70,6 +70,58 @@ export async function requireAuth(request: Request): Promise<string | null> {
 // Returns the userId on success, null otherwise.
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// requireIFARecord
+// Validates token then returns { userId, ifaId, role } from the ifas table.
+// Used by financial-planner routes to scope data to the requesting IFA.
+// Returns null when the token is missing, invalid, or no matching ifas row.
+// ---------------------------------------------------------------------------
+
+export interface IFARecord {
+  userId: string;
+  ifaId: string;
+  role: "admin" | "ifa";
+}
+
+export async function requireIFARecord(request: Request): Promise<IFARecord | null> {
+  const token = extractToken(request);
+  if (!token) return null;
+
+  const userId = await validateToken(token);
+  if (!userId) return null;
+
+  const { data: byUserId } = await supabaseAdmin
+    .from("ifas")
+    .select("id, role")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (byUserId) {
+    return {
+      userId,
+      ifaId: (byUserId as { id: string; role: string }).id,
+      role: (byUserId as { id: string; role: string }).role as "admin" | "ifa",
+    };
+  }
+
+  const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(userId);
+  const email = authUser?.user?.email;
+  if (!email) return null;
+
+  const { data: byEmail } = await supabaseAdmin
+    .from("ifas")
+    .select("id, role")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (!byEmail) return null;
+  return {
+    userId,
+    ifaId: (byEmail as { id: string; role: string }).id,
+    role: (byEmail as { id: string; role: string }).role as "admin" | "ifa",
+  };
+}
+
 export async function requireAdmin(request: Request): Promise<string | null> {
   const token = extractToken(request);
   if (!token) return null;

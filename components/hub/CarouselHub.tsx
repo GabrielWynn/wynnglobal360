@@ -77,25 +77,22 @@ function buildCards(navigate: (path: string) => void, showToast: () => void): Ca
       onClick: () => navigate("/commission"),
     },
 
-    // ── Card 2: Financial Planner (Coming Soon) ──────────────────────────
+    // ── Card 2: Financial Planner (Live) ────────────────────────────────
     {
-      category: "Coming Soon",
+      category: "Live",
       title: "Financial Planner",
       description: "Comprehensive financial planning tools for advisors",
       background: (
-        <div className="absolute inset-0">
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
-            }}
-          />
-          <ComingSoonOverlay />
-        </div>
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
+          }}
+        />
       ),
-      extra: <ComingSoonBadge />,
-      onClick: showToast,
+      extra: <LiveBadge />,
+      onClick: () => navigate("/financial-planner"),
     },
 
     // ── Card 3: Model Portfolio (Live) ──────────────────────────────────
