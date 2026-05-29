@@ -40,10 +40,6 @@ export default async function FactFindWizardPage({
   const factFind = await getFactFindById(params.id, ifaId);
   if (!factFind) notFound();
 
-  if (factFind.status === "completed") {
-    redirect(`/financial-planner/admin/fact-finds/${params.id}`);
-  }
-
   const sections = await getFormVersionWithContent(factFind.form_version_id);
   const answers = await getAnswersForFactFind(params.id);
 

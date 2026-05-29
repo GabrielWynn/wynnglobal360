@@ -180,15 +180,11 @@ export default async function ClientDetailPage({
                     </span>
                   </div>
                   <Link
-                    href={
-                      ff.status === "completed"
-                        ? `/financial-planner/admin/fact-finds/${ff.id}`
-                        : `/financial-planner/fact-find/${ff.id}`
-                    }
+                    href={`/financial-planner/fact-find/${ff.id}`}
                     className="text-xs font-semibold px-3 py-1.5 rounded-lg transition-opacity hover:opacity-80"
                     style={{ background: "var(--wgi-navy)", color: "white" }}
                   >
-                    {ff.status === "completed" ? "View" : "Continue"}
+                    {ff.status === "completed" ? "Review" : "Continue"}
                   </Link>
                 </div>
               );

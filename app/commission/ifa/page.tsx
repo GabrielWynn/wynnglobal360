@@ -81,21 +81,24 @@ export default function IFAPortal() {
   useEffect(() => {
     // linkIFAOnLogin is idempotent — runs on every load to catch OAuth sign-ins
     // (Microsoft Azure) that bypass the login page and land directly here.
-    linkIFAOnLogin().then(() => getIFADetails()).then(async ifaDetails => {
-      if (!ifaDetails) { router.push('/login'); return }
-      if (ifaDetails.role === 'admin') { router.push('/commission/admin'); return }
-      setIFA(ifaDetails)
+    linkIFAOnLogin()
+      .then(() => getIFADetails())
+      .then(async ifaDetails => {
+        if (!ifaDetails) { router.push('/login'); return }
+        if (ifaDetails.role === 'admin') { router.push('/commission/admin'); return }
+        setIFA(ifaDetails)
 
-      // Fetch balance via service-role API (avoids RLS + ifa_id mismatch issues)
-      const authHeaders = await getAuthHeaders()
-      const res = await fetch('/api/commission/ifa/balance', { headers: authHeaders })
-      if (res.ok) {
-        const data = await res.json()
-        setBalance(data)
-      }
+        // Fetch balance via service-role API (avoids RLS + ifa_id mismatch issues)
+        const authHeaders = await getAuthHeaders()
+        const res = await fetch('/api/commission/ifa/balance', { headers: authHeaders })
+        if (res.ok) {
+          const data = await res.json()
+          setBalance(data)
+        }
 
-      setLoading(false)
-    })
+        setLoading(false)
+      })
+      .catch(() => { router.push('/login') })
   }, [router])
 
   // ── Fetch transactions via service-role API ──────────────────────────────────

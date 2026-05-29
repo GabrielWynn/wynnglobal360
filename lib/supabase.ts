@@ -142,10 +142,13 @@ export async function getIFADetails(): Promise<IFADetails | null> {
   const headers = await getAuthHeaders();
   if (!headers.Authorization) return null;
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  // Relative URL works in the browser; server-side needs an absolute URL.
+  const base =
+    typeof window !== "undefined"
+      ? ""
+      : (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000");
 
-  const res = await fetch(`${siteUrl}/api/auth/me`, {
+  const res = await fetch(`${base}/api/auth/me`, {
     headers,
     cache: "no-store",
   });
@@ -194,10 +197,12 @@ export async function linkIFAOnLogin(): Promise<void> {
   const headers = await getAuthHeaders();
   if (!headers.Authorization) return;
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const base =
+    typeof window !== "undefined"
+      ? ""
+      : (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000");
 
-  await fetch(`${siteUrl}/api/auth/link-ifa`, {
+  await fetch(`${base}/api/auth/link-ifa`, {
     method: "POST",
     headers: { ...headers, "Content-Type": "application/json" },
     cache: "no-store",

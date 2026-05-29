@@ -58,7 +58,9 @@ export default function FactFindWizard({
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [submitted, setSubmitted] = useState(factFind.status === "completed");
+  const isCompleted = factFind.status === "completed";
+  const [submitted, setSubmitted] = useState(isCompleted);
+  const [reviewing, setReviewing] = useState(false);
 
   const currentSection = sections[currentIndex];
   const isLastSection = currentIndex === sections.length - 1;
@@ -195,7 +197,7 @@ export default function FactFindWizard({
     }
   }
 
-  if (submitted) {
+  if (submitted && !reviewing) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-6">
         <div
@@ -212,19 +214,49 @@ export default function FactFindWizard({
             ? "La información ha sido guardada exitosamente."
             : "The information has been saved successfully."}
         </p>
-        <button
-          onClick={() => router.push(`/financial-planner/clients/${factFind.client_id}`)}
-          className="px-6 py-2.5 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-90"
-          style={{ background: "var(--wgi-navy)" }}
-        >
-          {language === "es" ? "Volver al Cliente" : "Back to Client"}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setReviewing(true)}
+            className="px-6 py-2.5 rounded-lg text-sm font-medium border transition-colors hover:opacity-80"
+            style={{ borderColor: "var(--wgi-border)", color: "var(--wgi-text)" }}
+          >
+            {language === "es" ? "Revisar y Editar" : "Review & Edit"}
+          </button>
+          <button
+            onClick={() => router.push(`/financial-planner/clients/${factFind.client_id}`)}
+            className="px-6 py-2.5 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-90"
+            style={{ background: "var(--wgi-navy)" }}
+          >
+            {language === "es" ? "Volver al Cliente" : "Back to Client"}
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-full min-h-0">
+    <div className="flex flex-col h-full min-h-0">
+      {/* Review mode banner */}
+      {isCompleted && (
+        <div
+          className="flex items-center justify-between px-6 py-2 text-xs font-medium flex-shrink-0"
+          style={{ background: "#d1fae5", color: "#065f46", borderBottom: "1px solid #a7f3d0" }}
+        >
+          <span>
+            {language === "es"
+              ? "Revisando Fact Find completado — los cambios se guardan automáticamente al navegar"
+              : "Reviewing completed Fact Find — changes are saved automatically as you navigate"}
+          </span>
+          <button
+            onClick={() => router.push(`/financial-planner/clients/${factFind.client_id}`)}
+            className="underline hover:no-underline"
+          >
+            {language === "es" ? "Volver al Cliente" : "Back to Client"}
+          </button>
+        </div>
+      )}
+
+      <div className="flex flex-1 min-h-0">
       {/* Sidebar */}
       <WizardSidebar
         sections={sections}
@@ -309,6 +341,22 @@ export default function FactFindWizard({
                 )}
 
                 {isLastSection ? (
+                  isCompleted ? (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (!currentSection) return;
+                        await saveSection(currentSection.key, currentSection.fields);
+                      }}
+                      disabled={saving}
+                      className="px-6 py-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+                      style={{ background: "var(--wgi-navy)" }}
+                    >
+                      {saving
+                        ? language === "es" ? "Guardando…" : "Saving…"
+                        : language === "es" ? "Guardar Cambios" : "Save Changes"}
+                    </button>
+                  ) : (
                   <button
                     type="button"
                     onClick={handleSubmit}
@@ -320,6 +368,7 @@ export default function FactFindWizard({
                       ? language === "es" ? "Enviando…" : "Submitting…"
                       : language === "es" ? "Enviar Fact Find" : "Submit Fact Find"}
                   </button>
+                  )
                 ) : (
                   <button
                     type="button"
@@ -337,6 +386,7 @@ export default function FactFindWizard({
             </div>
           </>
         )}
+      </div>
       </div>
     </div>
   );
