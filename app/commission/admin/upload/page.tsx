@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase, getAuthHeaders } from '@/lib/supabase'
+import { getAuthHeaders } from '@/lib/supabase'
 import { SUPPORTED_CURRENCIES } from '@/lib/currency'
 import Papa from 'papaparse'
 
@@ -32,6 +32,13 @@ interface CSVRow {
   [key: string]: string
 }
 
+interface RowWarning {
+  row: number
+  field: string
+  message: string
+  severity: 'error' | 'warning'
+}
+
 interface ProcessingResult {
   total: number
   saved: number
@@ -51,6 +58,20 @@ const EMPTY_MAPPING: Omit<ColumnMapping, 'platform_id' | 'id'> = {
   currency_col: '',
   policy_holder_col: '',
   commencement_date_col: '',
+  payment_pct_col: '',
+  default_currency: 'USD',
+}
+
+// PDF extraction emits canonical field names, so the mapping step is skipped
+// and this identity mapping is passed straight to process-upload.
+const PDF_IDENTITY_MAPPING: Omit<ColumnMapping, 'platform_id' | 'id'> = {
+  policy_number_col: 'policy_number',
+  amount_col: 'amount',
+  date_col: 'transaction_date',
+  commission_type_col: 'commission_type',
+  currency_col: 'currency',
+  policy_holder_col: 'policy_holder_name',
+  commencement_date_col: 'commencement_date',
   payment_pct_col: '',
   default_currency: 'USD',
 }
@@ -83,6 +104,13 @@ export default function UploadPage() {
   const [previewRows, setPreviewRows] = useState<CSVRow[]>([])
   const [allRows, setAllRows] = useState<CSVRow[]>([])
   const [parsing, setParsing] = useState(false)
+
+  // PDF extraction (Landing.ai)
+  const isPdf = !!file && /\.pdf$/i.test(file.name)
+  const [extracting, setExtracting] = useState(false)
+  const [extractWarnings, setExtractWarnings] = useState<string[]>([])
+  const [rowWarnings, setRowWarnings] = useState<RowWarning[]>([])
+  const [excludeInvalid, setExcludeInvalid] = useState(true)
 
   // Mapping
   const [savedMapping, setSavedMapping] = useState<ColumnMapping | null>(null)
@@ -133,19 +161,81 @@ export default function UploadPage() {
   }
 
   const selectFile = (f: File) => {
-    if (!f.name.match(/\.(csv)$/i)) { setError('Please upload a CSV file'); return }
+    if (!f.name.match(/\.(csv|pdf)$/i)) { setError('Please upload a CSV or PDF file'); return }
     setFile(f)
     setError('')
     setHeaders([])
     setPreviewRows([])
     setAllRows([])
+    setExtractWarnings([])
+    setRowWarnings([])
+    setExcludeInvalid(true)
     setStep('select')
+  }
+
+  // ── Extract PDF via Landing.ai (server-side) ───────────────────────────────
+  const extractPdfAndContinue = async () => {
+    if (!file || !selectedPlatformId) return
+    setExtracting(true)
+    setError('')
+
+    try {
+      const authHeaders = await getAuthHeaders()
+      const form = new FormData()
+      form.append('platform_id', selectedPlatformId)
+      form.append('file', file)
+
+      const res = await fetch('/api/commission/extract-pdf', {
+        method: 'POST',
+        headers: authHeaders, // no Content-Type — browser sets the multipart boundary
+        body: form,
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'PDF extraction failed')
+
+      const rows: CSVRow[] = data.rows
+      setHeaders(Object.keys(rows[0] ?? {}))
+      setAllRows(rows)
+      setPreviewRows(rows.slice(0, 5))
+      setExtractWarnings(data.warnings ?? [])
+      setRowWarnings(data.row_warnings ?? [])
+      setMapping({ ...PDF_IDENTITY_MAPPING })
+      setStep('preview') // mapping step skipped — keys are already canonical
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'PDF extraction failed')
+    } finally {
+      setExtracting(false)
+    }
+  }
+
+  // 0-based indexes of rows with a failed REQUIRED field (severity 'error')
+  const invalidRowIdx = new Set(rowWarnings.filter(w => w.severity === 'error').map(w => w.row))
+  const rowsToSubmit = isPdf && excludeInvalid
+    ? allRows.filter((_, i) => !invalidRowIdx.has(i))
+    : allRows
+
+  // ── Download extracted rows as CSV (audit + manual-correction fallback) ────
+  const downloadCsv = () => {
+    const csv = Papa.unparse(allRows)
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    const base = (file?.name ?? 'statement').replace(/\.pdf$/i, '')
+    const date = new Date().toISOString().split('T')[0]
+    a.href = url
+    a.download = `${selectedPlatform?.code ?? 'platform'}-${base}-${date}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
   }
 
   // ── Parse CSV ───────────────────────────────────────────────────────────────
   const parseAndContinue = () => {
     if (!file || !selectedPlatformId) {
-      setError('Please select a platform and a CSV file')
+      setError('Please select a platform and a file')
+      return
+    }
+    if (isPdf) {
+      extractPdfAndContinue()
       return
     }
     setParsing(true)
@@ -239,7 +329,7 @@ export default function UploadPage() {
         body: JSON.stringify({
           platform_id: selectedPlatformId,
           filename: file?.name || 'upload.csv',
-          rows: allRows,
+          rows: rowsToSubmit,
           mapping,
         }),
       })
@@ -266,6 +356,9 @@ export default function UploadPage() {
     setError('')
     setStep('select')
     setMapping({ ...EMPTY_MAPPING })
+    setExtractWarnings([])
+    setRowWarnings([])
+    setExcludeInvalid(true)
   }
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -322,7 +415,7 @@ export default function UploadPage() {
         {/* Step indicator */}
         {step !== 'done' && (
           <div className="flex items-center gap-2">
-            {steps.filter(s => !(s.key === 'map' && savedMapping)).map((s, i, arr) => (
+            {steps.filter(s => !(s.key === 'map' && (savedMapping || isPdf))).map((s, i, arr) => (
               <div key={s.key} className="flex items-center gap-2">
                 <div className={`flex items-center gap-1.5 ${i <= currentStepIdx ? 'text-blue-600' : 'text-gray-400'}`}>
                   <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border-2 ${i <= currentStepIdx ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300'}`}>
@@ -373,7 +466,7 @@ export default function UploadPage() {
             {/* File drop */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                CSV File <span className="text-red-500">*</span>
+                CSV or PDF File <span className="text-red-500">*</span>
               </label>
               <div
                 className={`border-2 border-dashed rounded-lg p-10 text-center cursor-pointer transition-colors ${dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}`}
@@ -387,31 +480,44 @@ export default function UploadPage() {
                   <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <p className="text-sm text-gray-600">
-                  {file ? file.name : 'Drop CSV here or click to browse'}
+                  {file ? file.name : 'Drop CSV or PDF here or click to browse'}
                 </p>
                 {file && (
                   <p className="text-xs text-gray-400 mt-1">({(file.size / 1024).toFixed(1)} KB)</p>
                 )}
-                <input id="csv-input" type="file" accept=".csv" className="sr-only" onChange={e => e.target.files?.[0] && selectFile(e.target.files[0])} />
+                <input id="csv-input" type="file" accept=".csv,.pdf" className="sr-only" onChange={e => e.target.files?.[0] && selectFile(e.target.files[0])} />
               </div>
+              {isPdf && (
+                <p className="mt-2 text-xs text-gray-500">
+                  PDF statements are converted to rows automatically via Landing.ai — no column mapping needed.
+                </p>
+              )}
             </div>
 
             <button
               onClick={parseAndContinue}
-              disabled={!file || !selectedPlatformId || parsing}
+              disabled={!file || !selectedPlatformId || parsing || extracting}
               className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {parsing ? 'Parsing…' : 'Continue →'}
+              {extracting ? 'Extracting — this can take 1–2 minutes for long statements…'
+                : parsing ? 'Parsing…'
+                : 'Continue →'}
             </button>
+
+            {extracting && (
+              <p className="text-sm text-center text-gray-500">
+                Parsing the PDF and extracting commission rows. Keep this tab open.
+              </p>
+            )}
 
             {/* Explain why button is disabled */}
             {(!file || !selectedPlatformId) && (
               <p className="text-sm text-center text-red-500">
                 {!selectedPlatformId && !file
-                  ? 'Select a platform and upload a CSV file to continue.'
+                  ? 'Select a platform and upload a CSV or PDF file to continue.'
                   : !selectedPlatformId
                   ? 'Select a platform to continue.'
-                  : 'Upload a CSV file to continue.'}
+                  : 'Upload a CSV or PDF file to continue.'}
               </p>
             )}
           </div>
@@ -499,15 +605,57 @@ export default function UploadPage() {
                 <h2 className="text-lg font-semibold text-gray-900">Confirm & Process</h2>
                 <p className="text-sm text-gray-500 mt-1">
                   {file?.name} · <strong>{allRows.length} rows</strong> · {selectedPlatform?.name}
+                  {isPdf && ' · extracted from PDF'}
                 </p>
               </div>
-              <button
-                onClick={() => setStep('map')}
-                className="text-sm text-blue-600 hover:underline"
-              >
-                ← Change mapping
-              </button>
+              <div className="flex items-center gap-4">
+                {isPdf && (
+                  <button onClick={downloadCsv} className="text-sm text-blue-600 hover:underline">
+                    ⬇ Download CSV
+                  </button>
+                )}
+                {!isPdf && (
+                  <button
+                    onClick={() => setStep('map')}
+                    className="text-sm text-blue-600 hover:underline"
+                  >
+                    ← Change mapping
+                  </button>
+                )}
+              </div>
             </div>
+
+            {/* PDF extraction warnings */}
+            {isPdf && (extractWarnings.length > 0 || rowWarnings.length > 0) && (
+              <div className="bg-amber-50 border border-amber-200 rounded-md p-4 space-y-2 text-sm text-amber-800">
+                <p className="font-semibold">Extraction warnings — review before processing:</p>
+                {extractWarnings.length > 0 && (
+                  <ul className="space-y-0.5">
+                    {extractWarnings.map((w, i) => <li key={i}>• {w}</li>)}
+                  </ul>
+                )}
+                {rowWarnings.length > 0 && (
+                  <ul className="space-y-0.5 max-h-32 overflow-y-auto">
+                    {rowWarnings.slice(0, 15).map((w, i) => (
+                      <li key={i}>• Row {w.row + 1} — {w.message}</li>
+                    ))}
+                    {rowWarnings.length > 15 && <li>… and {rowWarnings.length - 15} more</li>}
+                  </ul>
+                )}
+                {invalidRowIdx.size > 0 && (
+                  <label className="flex items-center gap-2 pt-1 cursor-pointer font-medium">
+                    <input
+                      type="checkbox"
+                      checked={excludeInvalid}
+                      onChange={e => setExcludeInvalid(e.target.checked)}
+                      className="rounded border-amber-400 text-amber-600"
+                    />
+                    Exclude {invalidRowIdx.size} row{invalidRowIdx.size === 1 ? '' : 's'} with missing required
+                    fields (fix them via Download CSV and re-upload through the CSV flow)
+                  </label>
+                )}
+              </div>
+            )}
 
             {/* Mapping summary */}
             <div className="bg-blue-50 rounded-md p-4 text-sm">
@@ -542,7 +690,7 @@ export default function UploadPage() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100">
                   {previewRows.map((row, i) => (
-                    <tr key={i}>
+                    <tr key={i} className={isPdf && invalidRowIdx.has(i) ? 'bg-red-50' : undefined}>
                       <td className="px-3 py-2 font-mono">{row[mapping.policy_number_col] || '—'}</td>
                       <td className="px-3 py-2">{mapping.policy_holder_col ? (row[mapping.policy_holder_col] || '—') : '—'}</td>
                       <td className="px-3 py-2">{mapping.date_col ? (row[mapping.date_col] || '—') : '—'}</td>
@@ -561,9 +709,10 @@ export default function UploadPage() {
               </button>
               <button
                 onClick={processUpload}
-                className="flex-1 bg-green-600 text-white py-2 rounded-md text-sm font-medium hover:bg-green-700"
+                disabled={processing || rowsToSubmit.length === 0}
+                className="flex-1 bg-green-600 text-white py-2 rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                Process {allRows.length} Rows →
+                Process {rowsToSubmit.length} Rows →
               </button>
             </div>
           </div>
@@ -573,7 +722,7 @@ export default function UploadPage() {
         {step === 'processing' && (
           <div className="bg-white rounded-lg shadow p-12 text-center">
             <div className="animate-spin mx-auto h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full mb-4" />
-            <p className="text-lg font-medium text-gray-700">Processing {allRows.length} rows…</p>
+            <p className="text-lg font-medium text-gray-700">Processing {rowsToSubmit.length} rows…</p>
             <p className="text-sm text-gray-500 mt-1">Querying Azure SQL and saving to database</p>
           </div>
         )}

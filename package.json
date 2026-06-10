@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test:commission-e2e": "node scripts/commission-e2e-regression.mjs",
+    "test:pdf-extraction": "tsx scripts/pdf-extraction.test.ts",
     "db:push": "supabase db push",
     "db:pull": "supabase db pull",
     "db:new": "supabase migration new",

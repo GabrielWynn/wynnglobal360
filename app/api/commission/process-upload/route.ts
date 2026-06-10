@@ -9,6 +9,7 @@ import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
 import { bulkLookupIFAs } from '@/lib/azure'
 import { parseAmount } from '@/lib/currency'
+import { normalizeDate, normalizeCommissionType } from '@/lib/commission/normalize'
 import { requireAdmin, unauthorised } from '@/lib/auth-guard'
 
 const supabaseAdmin = createClient(
@@ -33,64 +34,10 @@ interface CSVRow {
   [key: string]: string
 }
 
-/**
- * Normalise a date string to YYYY-MM-DD so PostgreSQL DATE columns accept it.
- * Handles:
- *   DD/MM/YYYY  →  2025-11-13  (British / European — most common in this app)
- *   DD-MM-YYYY  →  2025-11-13
- *   MM/DD/YYYY  →  detected when day > 12
- *   YYYY-MM-DD  →  unchanged   (already ISO)
- * Returns null if the string is empty or unrecognised.
- */
-function normalizeDate(raw: string): string | null {
-  if (!raw) return null
-  const s = raw.trim()
-
-  // Already ISO
-  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s
-
-  // DD/MM/YYYY or D/M/YYYY (slash separator) — treat as DD/MM/YYYY
-  const dmy = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
-  if (dmy) {
-    const [, d, m, y] = dmy
-    return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`
-  }
-
-  // DD-MM-YYYY (dash separator, day first)
-  const dmyDash = s.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/)
-  if (dmyDash) {
-    const [, d, m, y] = dmyDash
-    return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`
-  }
-
-  // Unrecognised format — return null so the upload-date fallback fires and
-  // the row is flagged with a date_warning rather than sending an invalid
-  // string to the Postgres DATE column (which would error the whole chunk).
-  return null
-}
+// Date + commission-type normalisation lives in lib/commission/normalize.ts,
+// shared with the PDF extraction path (/api/commission/extract-pdf).
 
 const CHUNK = 200 // rows per batch insert
-
-/**
- * Map raw platform commission type strings to canonical codes.
- * Platforms send inconsistent labels ("Initial Commission", "INIT", "Trail Fee", etc.)
- * We normalise to the 4 canonical codes stored in the commission_types seed table.
- * Returns null for truly unknown types so they can be identified and mapped later.
- */
-function normalizeCommissionType(raw: string): string | null {
-  if (!raw) return null
-  const s = raw.trim().toLowerCase()
-
-  if (/\binitial\b/.test(s) || s === 'init' || s === 'first year') return 'Initial'
-  if (/\btrail\b/.test(s) || /\btrailing\b/.test(s) || s === 'renewal trail') return 'Trail'
-  if (/\brenewal\b/.test(s) || s === 'renew' || s === 'subsequent') return 'Renewal'
-  if (/\bother\b/.test(s) || s === 'misc' || s === 'miscellaneous' || s === 'override') return 'Other'
-
-  // Return raw (truncated) for unrecognised values — keeps data visible rather than silently discarding.
-  // KPI queries group by this column so unrecognised values will surface as their own bucket.
-  // `|| null` converts a whitespace-only input to null rather than storing an empty string.
-  return raw.slice(0, 255) || null
-}
 
 export async function POST(request: Request) {
   const userId = await requireAdmin(request)
