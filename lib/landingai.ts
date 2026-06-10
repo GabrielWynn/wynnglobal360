@@ -12,8 +12,8 @@
 
 const ADE_BASE_URL = process.env.LANDINGAI_BASE_URL || 'https://api.va.landing.ai/v1/ade'
 
-/** Latest stable parse model (Document Pre-trained Transformer v2). */
-const PARSE_MODEL = 'dpt-2-latest'
+/** Parse model — overridable via env (e.g. 'dpt-2-mini' for faster parsing). */
+const PARSE_MODEL = process.env.LANDINGAI_PARSE_MODEL || 'dpt-2-latest'
 /** Latest stable extraction model. */
 const EXTRACT_MODEL = 'extract-latest'
 
@@ -48,9 +48,9 @@ async function readErrorDetail(res: Response): Promise<string> {
 }
 
 /**
- * Parse a PDF into Markdown via ADE Parse.
- * Multi-page statements can take minutes — callers must run in a route with a
- * generous `maxDuration`.
+ * Parse a PDF into Markdown via ADE Parse (synchronous).
+ * NOTE: real statements regularly exceed serverless time limits — prefer the
+ * async Parse Jobs flow (createParseJob + getParseJob) in API routes.
  */
 export async function parsePdf(buffer: ArrayBuffer, filename: string): Promise<string> {
   const form = new FormData()
@@ -72,6 +72,94 @@ export async function parsePdf(buffer: ArrayBuffer, filename: string): Promise<s
     throw new LandingAIError('Landing.ai parse returned no Markdown content for this document', 502)
   }
   return data.markdown
+}
+
+// ---------------------------------------------------------------------------
+// Parse Jobs (asynchronous) — submit, then poll until completed.
+// Docs: https://docs.landing.ai/ade/ade-parse-async
+// ---------------------------------------------------------------------------
+
+/** Submit a PDF for async parsing. Returns the Landing.ai job id immediately. */
+export async function createParseJob(buffer: ArrayBuffer, filename: string): Promise<string> {
+  const form = new FormData()
+  form.append('document', new Blob([buffer], { type: 'application/pdf' }), filename)
+  form.append('model', PARSE_MODEL)
+
+  const res = await fetch(`${ADE_BASE_URL}/parse/jobs`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${getApiKey()}` },
+    body: form,
+  })
+
+  if (!res.ok) {
+    throw new LandingAIError(
+      `Landing.ai parse job submission failed (${res.status}): ${await readErrorDetail(res)}`,
+      res.status
+    )
+  }
+
+  const data = await res.json()
+  if (typeof data?.job_id !== 'string' || !data.job_id) {
+    throw new LandingAIError('Landing.ai did not return a job_id for the parse job', 502)
+  }
+  return data.job_id
+}
+
+export interface ParseJobStatus {
+  /** 'completed' | 'failed' | anything else = still processing */
+  status: string
+  /** Present only when status === 'completed'. */
+  markdown?: string
+  /** Failure detail when status === 'failed'. */
+  error?: string
+}
+
+/**
+ * Poll a parse job. When completed, the Markdown comes either inline
+ * (`data.markdown`) or via a presigned `output_url` (payloads > 1 MB).
+ */
+export async function getParseJob(jobId: string): Promise<ParseJobStatus> {
+  const res = await fetch(`${ADE_BASE_URL}/parse/jobs/${encodeURIComponent(jobId)}`, {
+    headers: { Authorization: `Bearer ${getApiKey()}` },
+  })
+
+  if (!res.ok) {
+    throw new LandingAIError(`Landing.ai parse job status failed (${res.status}): ${await readErrorDetail(res)}`, res.status)
+  }
+
+  const data = await res.json()
+  const status = typeof data?.status === 'string' ? data.status : 'unknown'
+
+  if (status === 'failed') {
+    const detail = data?.error || data?.detail || 'Landing.ai reported the parse job as failed'
+    return { status, error: typeof detail === 'string' ? detail : JSON.stringify(detail) }
+  }
+
+  if (status !== 'completed') return { status }
+
+  // Completed — markdown inline or behind a presigned URL
+  let markdown: string | undefined =
+    typeof data?.data?.markdown === 'string' ? data.data.markdown : undefined
+
+  if (!markdown && typeof data?.output_url === 'string' && data.output_url) {
+    const out = await fetch(data.output_url)
+    if (!out.ok) {
+      throw new LandingAIError(`Failed to download parse output (${out.status})`, 502)
+    }
+    // output_url returns a JSON document containing the markdown
+    const body = await out.text()
+    try {
+      const parsed = JSON.parse(body)
+      markdown = typeof parsed?.markdown === 'string' ? parsed.markdown : typeof parsed?.data?.markdown === 'string' ? parsed.data.markdown : undefined
+    } catch {
+      markdown = body // some outputs are raw markdown
+    }
+  }
+
+  if (!markdown || !markdown.trim()) {
+    throw new LandingAIError('Landing.ai parse job completed but returned no Markdown content', 502)
+  }
+  return { status, markdown }
 }
 
 export interface ExtractResult {

@@ -173,7 +173,35 @@ export default function UploadPage() {
     setStep('select')
   }
 
-  // ── Extract PDF via Landing.ai (server-side) ───────────────────────────────
+  // ── Extract PDF via Landing.ai (server-side, async parse job) ──────────────
+  // POST submits the parse job, then we poll GET until parsing + extraction
+  // complete. Long statements can take several minutes — each poll request is
+  // short, so Vercel function timeouts no longer apply to the parse itself.
+  interface ExtractPollResponse {
+    status?: string
+    rows?: CSVRow[]
+    warnings?: string[]
+    row_warnings?: RowWarning[]
+    error?: string
+  }
+
+  /** Vercel timeouts / platform errors return plain text, not JSON — never assume. */
+  const parseJsonResponse = async (res: Response): Promise<ExtractPollResponse> => {
+    const text = await res.text()
+    try {
+      return JSON.parse(text)
+    } catch {
+      throw new Error(
+        res.status === 504 || /timeout/i.test(text)
+          ? 'The server timed out — please retry.'
+          : `PDF extraction failed (HTTP ${res.status}): ${text.slice(0, 200)}`
+      )
+    }
+  }
+
+  const EXTRACT_POLL_MS = 10_000
+  const EXTRACT_MAX_WAIT_MS = 20 * 60_000 // give up after 20 minutes
+
   const extractPdfAndContinue = async () => {
     if (!file || !selectedPlatformId) return
     setExtracting(true)
@@ -185,15 +213,37 @@ export default function UploadPage() {
       form.append('platform_id', selectedPlatformId)
       form.append('file', file)
 
-      const res = await fetch('/api/commission/extract-pdf', {
+      // 1) Submit the parse job
+      const submitRes = await fetch('/api/commission/extract-pdf', {
         method: 'POST',
         headers: authHeaders, // no Content-Type — browser sets the multipart boundary
         body: form,
       })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'PDF extraction failed')
+      const submitData = (await parseJsonResponse(submitRes)) as ExtractPollResponse & { job_id?: string }
+      if (!submitRes.ok) throw new Error(submitData.error || 'PDF extraction failed')
+      if (!submitData.job_id) throw new Error('Server did not return a parse job id')
 
-      const rows: CSVRow[] = data.rows
+      // 2) Poll until completed (or failure / timeout)
+      const deadline = Date.now() + EXTRACT_MAX_WAIT_MS
+      let data: ExtractPollResponse
+      for (;;) {
+        await new Promise(r => setTimeout(r, EXTRACT_POLL_MS))
+        if (Date.now() > deadline) {
+          throw new Error('PDF extraction is taking too long — please try again later.')
+        }
+
+        const pollHeaders = await getAuthHeaders() // refresh token on long waits
+        const pollRes = await fetch(
+          `/api/commission/extract-pdf?job_id=${encodeURIComponent(submitData.job_id)}&platform_id=${encodeURIComponent(selectedPlatformId)}`,
+          { headers: pollHeaders }
+        )
+        data = await parseJsonResponse(pollRes)
+        if (!pollRes.ok) throw new Error(data.error || 'PDF extraction failed')
+        if (data.status === 'completed') break
+        // any other status → still parsing, poll again
+      }
+
+      const rows: CSVRow[] = data.rows ?? []
       setHeaders(Object.keys(rows[0] ?? {}))
       setAllRows(rows)
       setPreviewRows(rows.slice(0, 5))
@@ -241,7 +291,7 @@ export default function UploadPage() {
     setParsing(true)
     setError('')
 
-    Papa.parse(file as any, {
+    Papa.parse(file as unknown as Papa.LocalFile, {
       header: true,
       skipEmptyLines: true,
       complete: (results: Papa.ParseResult<CSVRow>) => {
@@ -338,8 +388,8 @@ export default function UploadPage() {
       if (!res.ok) throw new Error(data.error || 'Processing failed')
       setResult(data)
       setStep('done')
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Processing failed')
       setStep('preview')
     } finally {
       setProcessing(false)
@@ -499,7 +549,7 @@ export default function UploadPage() {
               disabled={!file || !selectedPlatformId || parsing || extracting}
               className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {extracting ? 'Extracting — this can take 1–2 minutes for long statements…'
+              {extracting ? 'Extracting — long statements can take several minutes…'
                 : parsing ? 'Parsing…'
                 : 'Continue →'}
             </button>
