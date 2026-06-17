@@ -2,8 +2,8 @@
  * POST /api/model-portfolio/admin/fundamentals/sync
  *
  * Fetches look-through data (asset allocation, world regions, sectors,
- * country exposure, top holdings) from the EODHD Fundamentals API for
- * every fund that has a resolved ticker, then upserts into mp_fund_fundamentals.
+ * Fetches look-through data for every fund and upserts into mp_fund_fundamentals.
+ * Currently disabled — EODHD was removed; existing snapshots are preserved.
  *
  * Requires an active authenticated admin session.
  */

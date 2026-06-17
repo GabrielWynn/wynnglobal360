@@ -3,6 +3,7 @@ import Link from "next/link";
 import { IconChevronLeft } from "@tabler/icons-react";
 import { supabaseAdmin } from "@/lib/supabase";
 import { formatReturn, returnColor } from "@/lib/model-portfolio";
+import { parseFundIdentifier } from "@/lib/fund-identifiers";
 
 interface PageProps {
   params: { isin: string };
@@ -12,11 +13,15 @@ interface PageProps {
 // Data
 // ---------------------------------------------------------------------------
 
-async function getFundData(isin: string) {
+async function getFundData(raw: string) {
+  const decoded = decodeURIComponent(raw);
+  const parsed  = parseFundIdentifier(decoded);
+  const storageKey = parsed?.storageKey ?? decoded.toUpperCase();
+
   const { data: fund } = await supabaseAdmin
     .from("mp_funds")
-    .select("id, isin, display_name, currency, eodhd_ticker, eodhd_exchange")
-    .eq("isin", isin.toUpperCase())
+    .select("id, isin, display_name, currency, ft_symbol, yahoo_symbol")
+    .eq("isin", storageKey)
     .maybeSingle();
 
   if (!fund) return null;
@@ -141,9 +146,9 @@ export default async function FundDrilldownPage({ params }: PageProps) {
                 No live price data
               </p>
             )}
-            {fund.eodhd_ticker && (
+            {(fund.ft_symbol || fund.yahoo_symbol) && (
               <p className="text-xs mt-1 font-mono" style={{ color: "var(--wgi-text-muted)" }}>
-                {fund.eodhd_ticker}.{fund.eodhd_exchange}
+                {fund.ft_symbol ? `FT ${fund.ft_symbol}` : `Yahoo ${fund.yahoo_symbol}`}
               </p>
             )}
           </div>

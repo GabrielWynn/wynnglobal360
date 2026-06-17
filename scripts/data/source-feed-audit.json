@@ -1,0 +1,1103 @@
+{
+  "auditedAt": "2026-06-15T21:19:03.334Z",
+  "rows": [
+    {
+      "isin": "GB0003210027",
+      "name": "JPMorgan Pacific Technology USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": false,
+        "detail": "No Yahoo symbol for ISIN"
+      },
+      "ft": {
+        "ok": false,
+        "detail": "FT tearsheet not found"
+      },
+      "route": "none"
+    },
+    {
+      "isin": "GB0005027221",
+      "name": "Janus Henderson Global Sustainable Equity GBP",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P00000DWQ.L",
+        "latestDate": "2026-06-15",
+        "latestClose": 6.931000232696533
+      },
+      "ft": {
+        "ok": false,
+        "detail": "FT tearsheet not found"
+      },
+      "route": "yahoo"
+    },
+    {
+      "isin": "GB00B1FH3G96",
+      "name": "JPMorgan Asian Smaller Companies USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": false,
+        "detail": "No Yahoo symbol for ISIN"
+      },
+      "ft": {
+        "ok": false,
+        "detail": "FT tearsheet not found"
+      },
+      "route": "none"
+    },
+    {
+      "isin": "GB00B7FQHJ97",
+      "name": "Fidelity Funds - Global Dividend Fund A Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000V5N4.L",
+        "latestDate": "2026-06-15",
+        "latestClose": 4.543000221252441
+      },
+      "ft": {
+        "ok": true,
+        "detail": "129271490",
+        "latestDate": "2026-06-15",
+        "latestClose": 454.3
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "IE0003924739",
+      "name": "BNY Mellon Global Bond",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "FH77.MU",
+        "latestDate": "2026-06-15",
+        "latestClose": 1.7549999952316284
+      },
+      "ft": {
+        "ok": true,
+        "detail": "154509",
+        "latestDate": "2026-06-15",
+        "latestClose": 2.05
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "IE00B2Q91V27",
+      "name": "Guinness Global Energy C Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000CUV5",
+        "latestDate": "2026-06-12",
+        "latestClose": 12.496500015258789
+      },
+      "ft": {
+        "ok": true,
+        "detail": "28308366",
+        "latestDate": "2026-06-12",
+        "latestClose": 12.5
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "IE00B3BRDK12",
+      "name": "Canaccord Opportunity A Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000J3CU",
+        "latestDate": "2026-06-12",
+        "latestClose": 3.660799980163574
+      },
+      "ft": {
+        "ok": true,
+        "detail": "13416550",
+        "latestDate": "2026-06-12",
+        "latestClose": 3.66
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "IE00B3BRDM36",
+      "name": "CGWM Diversity USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000J3CZ",
+        "latestDate": "2026-06-12",
+        "latestClose": 2.157900094985962
+      },
+      "ft": {
+        "ok": true,
+        "detail": "13425697",
+        "latestDate": "2026-06-12",
+        "latestClose": 2.16
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "IE00B3K7XK29",
+      "name": "PIMCO Global Investment Grade Credit E Acc USD I",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000J4CL",
+        "latestDate": "2026-06-12",
+        "latestClose": 19.729999542236328
+      },
+      "ft": {
+        "ok": true,
+        "detail": "28308993",
+        "latestDate": "2026-06-12",
+        "latestClose": 19.73
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "IE00B3KYRN47",
+      "name": "PIMCO Global Investment Grade Credit E Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000J4CO",
+        "latestDate": "2026-06-12",
+        "latestClose": 21.15999984741211
+      },
+      "ft": {
+        "ok": true,
+        "detail": "34542037",
+        "latestDate": "2026-06-12",
+        "latestClose": 21.16
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "IE00B3NLTK32",
+      "name": "Polar Capital Healthcare Opportunities R USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "PO42.MU",
+        "latestDate": "2026-06-15",
+        "latestClose": 72.0979995727539
+      },
+      "ft": {
+        "ok": true,
+        "detail": "18067126",
+        "latestDate": "2026-06-12",
+        "latestClose": 86.05
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "IE00B3XLHR60",
+      "name": "Polar Capital Biotechnology R USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": false,
+        "detail": "IE00B3XLHR60.SG — no daily close in chart"
+      },
+      "ft": {
+        "ok": true,
+        "detail": "69001056",
+        "latestDate": "2026-06-12",
+        "latestClose": 67.3
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "IE00B433M743",
+      "name": "Polar Capital Global Technology Fund R Income",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000M88X",
+        "latestDate": "2026-06-12",
+        "latestClose": 276.2699890136719
+      },
+      "ft": {
+        "ok": true,
+        "detail": "20699867",
+        "latestDate": "2026-06-12",
+        "latestClose": 276.27
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "IE00BMF77083",
+      "name": "DWS Noor Precious Metals Securities A Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": false,
+        "detail": "No Yahoo symbol for ISIN"
+      },
+      "ft": {
+        "ok": false,
+        "detail": "FT tearsheet not found"
+      },
+      "route": "none"
+    },
+    {
+      "isin": "IE00BQXX3F31",
+      "name": "Guinness Global Innovators C Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P00014JQA",
+        "latestDate": "2026-06-12",
+        "latestClose": 33.77899932861328
+      },
+      "ft": {
+        "ok": true,
+        "detail": "81062474",
+        "latestDate": "2026-06-12",
+        "latestClose": 33.78
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "IE00BVYPNW00",
+      "name": "Guinness Global Equity Income C Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P00015HVX",
+        "latestDate": "2026-06-12",
+        "latestClose": 25.36009979248047
+      },
+      "ft": {
+        "ok": true,
+        "detail": "85675069",
+        "latestDate": "2026-06-12",
+        "latestClose": 25.36
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0006277684",
+      "name": "UBS (Lux) Money Market USD Sustainable",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "UG72.F",
+        "latestDate": "2026-06-15",
+        "latestClose": 1844.845947265625
+      },
+      "ft": {
+        "ok": false,
+        "detail": "symbol 904 — no NAV rows"
+      },
+      "route": "yahoo"
+    },
+    {
+      "isin": "LU0049014870",
+      "name": "Aberdeen Standard Liquidity (Lux)",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "ABDE.MU",
+        "latestDate": "2026-06-15",
+        "latestClose": 3339.070068359375
+      },
+      "ft": {
+        "ok": false,
+        "detail": "symbol 2179 — no NAV rows"
+      },
+      "route": "yahoo"
+    },
+    {
+      "isin": "LU0053666078",
+      "name": "JPM America Equity A Dis USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "JPJA.F",
+        "latestDate": "2026-06-15",
+        "latestClose": 457.8290100097656
+      },
+      "ft": {
+        "ok": true,
+        "detail": "129532270",
+        "latestDate": "2026-06-15",
+        "latestClose": 536.01
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0055631609",
+      "name": "BGF World Gold A2 Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": false,
+        "detail": "LU0055631609-USD.LU — no daily close in chart"
+      },
+      "ft": {
+        "ok": true,
+        "detail": "2481",
+        "latestDate": "2026-06-12",
+        "latestClose": 91.97
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0056508442",
+      "name": "BlackRock GF World Technology A2 Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": false,
+        "detail": "LU0056508442-USD.LU — no daily close in chart"
+      },
+      "ft": {
+        "ok": true,
+        "detail": "11264231",
+        "latestDate": "2026-06-15",
+        "latestClose": 156.74
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0069063385",
+      "name": "AB Sustainable Global Thematic Portfolio",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "AXB3.F",
+        "latestDate": "2026-06-15",
+        "latestClose": 38.66699981689453
+      },
+      "ft": {
+        "ok": true,
+        "detail": "129361202",
+        "latestDate": "2026-06-12",
+        "latestClose": 44.39
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0070214290",
+      "name": "JP Morgan US Select Equity Fund USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "FH5N.F",
+        "latestDate": "2026-06-15",
+        "latestClose": 807.6430053710938
+      },
+      "ft": {
+        "ok": true,
+        "detail": "28285216",
+        "latestDate": "2026-06-15",
+        "latestClose": 949.31
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0070215933",
+      "name": "JPM US Bond A Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "IH59.MU",
+        "latestDate": "2026-06-15",
+        "latestClose": 219.99000549316406
+      },
+      "ft": {
+        "ok": true,
+        "detail": "28285220",
+        "latestDate": "2026-06-15",
+        "latestClose": 256.46
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0070992663",
+      "name": "Janus Henderson Horizon Global Technology Leaders A2 Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": false,
+        "detail": "No Yahoo symbol for ISIN"
+      },
+      "ft": {
+        "ok": true,
+        "detail": "129514850",
+        "latestDate": "2026-06-15",
+        "latestClose": 360.14
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0106252389",
+      "name": "Schroder ISF Emerging Markets A Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P00000AO7",
+        "latestDate": "2026-06-12",
+        "latestClose": 30.163999557495117
+      },
+      "ft": {
+        "ok": true,
+        "detail": "5087",
+        "latestDate": "2026-06-15",
+        "latestClose": 31.42
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0107464264",
+      "name": "Aberdeen Standard SICAV I - Technology Equity",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "AEFJ.MU",
+        "latestDate": "2026-06-15",
+        "latestClose": 9.276000022888184
+      },
+      "ft": {
+        "ok": true,
+        "detail": "5177",
+        "latestDate": "2026-06-15",
+        "latestClose": 10.82
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0109394709",
+      "name": "Franklin Biotechnology Discovery",
+      "currency": "USD",
+      "yahoo": {
+        "ok": false,
+        "detail": "No Yahoo symbol for ISIN"
+      },
+      "ft": {
+        "ok": true,
+        "detail": "28294755",
+        "latestDate": "2026-06-12",
+        "latestClose": 61.88
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0124384867",
+      "name": "BGF Sustainable Energy",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "ERDK.F",
+        "latestDate": "2026-06-15",
+        "latestClose": 21.6560001373291
+      },
+      "ft": {
+        "ok": true,
+        "detail": "7708",
+        "latestDate": "2026-06-15",
+        "latestClose": 25.43
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0128522744",
+      "name": "Templeton Emerging Markets",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "TEP3.F",
+        "latestDate": "2026-06-15",
+        "latestClose": 78.06700134277344
+      },
+      "ft": {
+        "ok": true,
+        "detail": "28295025",
+        "latestDate": "2026-06-12",
+        "latestClose": 88.38
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0133082254",
+      "name": "T. Rowe Price Global High Yield Bond",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P00000SSA",
+        "latestDate": "2026-06-12",
+        "latestClose": 39.56999969482422
+      },
+      "ft": {
+        "ok": true,
+        "detail": "28297417",
+        "latestDate": "2026-06-15",
+        "latestClose": 39.69
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0136043808",
+      "name": "Schroder ISF US Dollar Liquidity",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P00000LLP",
+        "latestDate": "2026-06-12",
+        "latestClose": 129.3975067138672
+      },
+      "ft": {
+        "ok": true,
+        "detail": "8904",
+        "latestDate": "2026-06-15",
+        "latestClose": 129.42
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0201322137",
+      "name": "Schroder Strategic Bond",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "XR56.F",
+        "latestDate": "2026-06-15",
+        "latestClose": 147.97900390625
+      },
+      "ft": {
+        "ok": true,
+        "detail": "12877",
+        "latestDate": "2026-06-15",
+        "latestClose": 172.96
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0210529656",
+      "name": "JPM Emerging Markets Equity A Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": false,
+        "detail": "No Yahoo symbol for ISIN"
+      },
+      "ft": {
+        "ok": true,
+        "detail": "129532493",
+        "latestDate": "2026-06-15",
+        "latestClose": 52.48
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0210533765",
+      "name": "JPM Global Growth",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P000019C1",
+        "latestDate": "2026-06-12",
+        "latestClose": 37.869998931884766
+      },
+      "ft": {
+        "ok": true,
+        "detail": "28302766",
+        "latestDate": "2026-06-15",
+        "latestClose": 38.95
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0261947682",
+      "name": "Fidelity US Dollar Bond",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "FPI7.MU",
+        "latestDate": "2026-06-15",
+        "latestClose": 15.649999618530273
+      },
+      "ft": {
+        "ok": true,
+        "detail": "6178958",
+        "latestDate": "2026-06-15",
+        "latestClose": 18.21
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0261950470",
+      "name": "Fidelity Emerging Markets USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "FPII.F",
+        "latestDate": "2026-06-15",
+        "latestClose": 30.07200050354004
+      },
+      "ft": {
+        "ok": true,
+        "detail": "6178953",
+        "latestDate": "2026-06-15",
+        "latestClose": 35.41
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0261952922",
+      "name": "Fidelity Funds US Dollar Cash",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "XC4E.F",
+        "latestDate": "2026-06-15",
+        "latestClose": 11.557000160217285
+      },
+      "ft": {
+        "ok": true,
+        "detail": "6178977",
+        "latestDate": "2026-06-15",
+        "latestClose": 13.44
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0266512127",
+      "name": "JPM Global Natural Resources A Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "JP5B.MU",
+        "latestDate": "2026-06-15",
+        "latestClose": 19.42799949645996
+      },
+      "ft": {
+        "ok": true,
+        "detail": "28305779",
+        "latestDate": "2026-06-15",
+        "latestClose": 22.73
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0300038618",
+      "name": "Jupiter Global Ecology Growth USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": false,
+        "detail": "No Yahoo symbol for ISIN"
+      },
+      "ft": {
+        "ok": false,
+        "detail": "FT tearsheet not found"
+      },
+      "route": "none"
+    },
+    {
+      "isin": "LU0302445910",
+      "name": "Schroder Global Climate Change Equity USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "ZJPN.F",
+        "latestDate": "2026-06-15",
+        "latestClose": 27.9689998626709
+      },
+      "ft": {
+        "ok": true,
+        "detail": "9074639",
+        "latestDate": "2026-06-15",
+        "latestClose": 32.89
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0323239441",
+      "name": "HSBC GIF Global Equity Climate Change AC Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "S6G0.MU",
+        "latestDate": "2026-06-15",
+        "latestClose": 13.640000343322754
+      },
+      "ft": {
+        "ok": true,
+        "detail": "28307844",
+        "latestDate": "2026-06-15",
+        "latestClose": 15.92
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0345758782",
+      "name": "Ninety One GSF US Dollar Money",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P00000R8D",
+        "latestDate": "2026-06-12",
+        "latestClose": 20.203100204467773
+      },
+      "ft": {
+        "ok": true,
+        "detail": "129532256",
+        "latestDate": "2026-06-12",
+        "latestClose": 20.2
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0426412945",
+      "name": "Ninety One GSF Global Franchise A Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000KL1E",
+        "latestDate": "2026-06-12",
+        "latestClose": 96.94999694824219
+      },
+      "ft": {
+        "ok": true,
+        "detail": "129283540",
+        "latestDate": "2026-06-12",
+        "latestClose": 96.95
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0594300849",
+      "name": "Fidelity Sustainable Strategic Bond USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000SMCZ",
+        "latestDate": "2026-06-12",
+        "latestClose": 12.09000015258789
+      },
+      "ft": {
+        "ok": true,
+        "detail": "52251991",
+        "latestDate": "2026-06-15",
+        "latestClose": 12.1
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0651986225",
+      "name": "Harmony Portfolios US Dollar Balanced",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000TT0D",
+        "latestDate": "2026-06-11",
+        "latestClose": 1.8487999439239502
+      },
+      "ft": {
+        "ok": true,
+        "detail": "535661198",
+        "latestDate": "2026-06-12",
+        "latestClose": 1.86
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0651986654",
+      "name": "Harmony Portfolios US Dollar Growth C Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000XKGX",
+        "latestDate": "2026-06-11",
+        "latestClose": 2.0515999794006348
+      },
+      "ft": {
+        "ok": true,
+        "detail": "66839208",
+        "latestDate": "2026-06-12",
+        "latestClose": 2.08
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0651986738",
+      "name": "Harmony Portfolios US Dollar Growth C Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000TT0F",
+        "latestDate": "2026-06-11",
+        "latestClose": 2.3798999786376953
+      },
+      "ft": {
+        "ok": true,
+        "detail": "43684443",
+        "latestDate": "2026-06-12",
+        "latestClose": 2.41
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0772969993",
+      "name": "Fidelity Global Dividend",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "FPI4.MU",
+        "latestDate": "2026-06-15",
+        "latestClose": 30.042999267578125
+      },
+      "ft": {
+        "ok": true,
+        "detail": "67753688",
+        "latestDate": "2026-06-15",
+        "latestClose": 35.25
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0853555463",
+      "name": "Jupiter Dynamic Bond",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000Z8JQ",
+        "latestDate": "2026-06-12",
+        "latestClose": 14.680000305175781
+      },
+      "ft": {
+        "ok": true,
+        "detail": "408544676",
+        "latestDate": "2026-06-15",
+        "latestClose": 14.75
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0889564273",
+      "name": "Franklin US Government",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000Y5QC",
+        "latestDate": "2026-06-12",
+        "latestClose": 11.470000267028809
+      },
+      "ft": {
+        "ok": true,
+        "detail": "535638184",
+        "latestDate": "2026-06-12",
+        "latestClose": 11.47
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0900828681",
+      "name": "JP Morgan Natural Resources",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0000Z0ZX.L",
+        "latestDate": "2026-06-12",
+        "latestClose": 213.25999450683594
+      },
+      "ft": {
+        "ok": true,
+        "detail": "535639249",
+        "latestDate": "2026-06-15",
+        "latestClose": 212.95
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0905233846",
+      "name": "Fidelity Funds Global Multi Asset Income A Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "FJ2K.MU",
+        "latestDate": "2026-06-15",
+        "latestClose": 13.5600004196167
+      },
+      "ft": {
+        "ok": true,
+        "detail": "535657492",
+        "latestDate": "2026-06-15",
+        "latestClose": 16.01
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU0945454980",
+      "name": "JPM USD Money Market VNAV",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P00013BWY",
+        "latestDate": "2026-06-12",
+        "latestClose": 124.61000061035156
+      },
+      "ft": {
+        "ok": true,
+        "detail": "535630454",
+        "latestDate": "2026-06-15",
+        "latestClose": 124.64
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU1046421795",
+      "name": "Fidelity Global Technology USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "2C80.MU",
+        "latestDate": "2026-06-15",
+        "latestClose": 72.60399627685547
+      },
+      "ft": {
+        "ok": true,
+        "detail": "74117488",
+        "latestDate": "2026-06-15",
+        "latestClose": 85.81
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU1762220934",
+      "name": "Invesco Global Founders & Owners",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0001CT35",
+        "latestDate": "2026-06-12",
+        "latestClose": 21.200000762939453
+      },
+      "ft": {
+        "ok": true,
+        "detail": "535688801",
+        "latestDate": "2026-06-15",
+        "latestClose": 21.44
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU1775947762",
+      "name": "Invesco Bond",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0001DJU8",
+        "latestDate": "2026-06-12",
+        "latestClose": 22.979999542236328
+      },
+      "ft": {
+        "ok": true,
+        "detail": "121434447",
+        "latestDate": "2026-06-15",
+        "latestClose": 23.06
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU1775948141",
+      "name": "Invesco Bond Fund",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0001DJUC",
+        "latestDate": "2026-06-12",
+        "latestClose": 11.1899995803833
+      },
+      "ft": {
+        "ok": true,
+        "detail": "121434452",
+        "latestDate": "2026-06-15",
+        "latestClose": 11.23
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU1775948224",
+      "name": "Invesco Bond",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0001DJUD",
+        "latestDate": "2026-06-12",
+        "latestClose": 23.989999771118164
+      },
+      "ft": {
+        "ok": true,
+        "detail": "121434450",
+        "latestDate": "2026-06-15",
+        "latestClose": 24.08
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU1775952176",
+      "name": "Invesco Global Health Care",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0001DK29",
+        "latestDate": "2026-06-12",
+        "latestClose": 244.94000244140625
+      },
+      "ft": {
+        "ok": true,
+        "detail": "120545652",
+        "latestDate": "2026-06-15",
+        "latestClose": 245.43
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU1775982595",
+      "name": "Invesco Global Healthcare",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "0P0001DK2B",
+        "latestDate": "2026-06-12",
+        "latestClose": 204.88999938964844
+      },
+      "ft": {
+        "ok": true,
+        "detail": "120584014",
+        "latestDate": "2026-06-15",
+        "latestClose": 205.29
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU1864957219",
+      "name": "CT (Lux) Global Select",
+      "currency": "USD",
+      "yahoo": {
+        "ok": true,
+        "detail": "FV2R.MU",
+        "latestDate": "2026-06-15",
+        "latestClose": 5.392000198364258
+      },
+      "ft": {
+        "ok": true,
+        "detail": "125284341",
+        "latestDate": "2026-06-12",
+        "latestClose": 6.22
+      },
+      "route": "ft"
+    },
+    {
+      "isin": "LU2145461914",
+      "name": "RobecoSAM Smart Energy Equities D Acc USD",
+      "currency": "USD",
+      "yahoo": {
+        "ok": false,
+        "detail": "No Yahoo symbol for ISIN"
+      },
+      "ft": {
+        "ok": true,
+        "detail": "627041143",
+        "latestDate": "2026-06-12",
+        "latestClose": 126.85
+      },
+      "route": "ft"
+    }
+  ]
+}

@@ -33,7 +33,7 @@ export async function GET() {
   // ── 1. All funds ──────────────────────────────────────────────────────────
   const { data: funds, error } = await supabaseAdmin
     .from("mp_funds")
-    .select("id, isin, display_name, currency, eodhd_ticker, eodhd_exchange")
+    .select("id, isin, display_name, currency, ft_symbol, yahoo_symbol")
     .order("display_name");
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -107,7 +107,7 @@ export async function GET() {
     const prices = priceMap.get(f.id);
 
     const tickerStatus: "resolved" | "unresolved" =
-      f.eodhd_ticker ? "resolved" : "unresolved";
+      f.ft_symbol || f.yahoo_symbol ? "resolved" : "unresolved";
 
     const priceStatus: "ok" | "stale" | "empty" =
       !prices
@@ -121,8 +121,8 @@ export async function GET() {
       isin:          f.isin,
       name:          f.display_name,
       currency:      f.currency,
-      ticker:        f.eodhd_ticker ?? null,
-      exchange:      f.eodhd_exchange ?? null,
+      ticker:        f.ft_symbol ?? f.yahoo_symbol ?? null,
+      exchange:      null,
       isActive:      activeFundIds.has(f.id),
       platforms:     usage ? [...usage.platforms].sort() : [],
       compositions:  usage?.compositionCount ?? 0,

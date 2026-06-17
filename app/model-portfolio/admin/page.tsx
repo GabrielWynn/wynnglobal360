@@ -3,6 +3,7 @@ import { createServerClient, supabaseAdmin } from "@/lib/supabase";
 import Link from "next/link";
 import { IconChevronLeft } from "@tabler/icons-react";
 import AdminHistorySection    from "@/components/model-portfolio/AdminHistorySection";
+import CoverageAuditPanel     from "@/components/model-portfolio/CoverageAuditPanel";
 import FundDatabase           from "@/components/model-portfolio/FundDatabase";
 import FundamentalsSyncButton from "@/components/model-portfolio/FundamentalsSyncButton";
 
@@ -47,7 +48,7 @@ export default async function ModelPortfolioAdminPage() {
   const [{ data: platforms }, { data: profiles }, { data: funds }] =
     await Promise.all([
       supabaseAdmin.from("mp_platforms").select("id, name, slug").order("name"),
-      supabaseAdmin.from("mp_risk_profiles").select("id, label, name").order("risk_level"),
+      supabaseAdmin.from("mp_risk_profiles").select("id, label, name, risk_level").order("risk_level"),
       supabaseAdmin
         .from("mp_funds")
         .select("id, isin, display_name")
@@ -87,7 +88,7 @@ export default async function ModelPortfolioAdminPage() {
 
       {/* Portfolio history + composition management */}
       <AdminHistorySection
-        profiles={platforms ? profiles ?? [] : []}
+        profiles={profiles ?? []}
         platforms={platforms ?? []}
         funds={(funds ?? []).map((f) => ({
           id:           f.id,
@@ -95,6 +96,12 @@ export default async function ModelPortfolioAdminPage() {
           display_name: f.display_name,
         }))}
       />
+
+      {/* Divider */}
+      <div className="h-px" style={{ background: "var(--wgi-border)" }} />
+
+      {/* Price coverage audit */}
+      <CoverageAuditPanel />
 
       {/* Divider */}
       <div className="h-px" style={{ background: "var(--wgi-border)" }} />
@@ -123,9 +130,9 @@ export default async function ModelPortfolioAdminPage() {
             Look-Through Data
           </h2>
           <p className="text-sm mt-1" style={{ color: "var(--wgi-text-muted)" }}>
-            Fetch asset allocation, world regions, stock sectors, country exposure,
-            and top holdings from the EODHD Fundamentals API for every fund
-            with a resolved ticker. Data is displayed on each portfolio profile page.
+            Look-through data (asset allocation, regions, sectors, holdings) was previously
+            sourced from EODHD and is no longer refreshed automatically. Existing stored
+            snapshots remain on profile pages until a new provider is configured.
           </p>
         </div>
         <FundamentalsSyncButton />

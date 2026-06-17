@@ -5,6 +5,11 @@ import {
   IconPlus, IconEdit, IconTrash,
   IconCheck, IconX, IconLoader2, IconSearch,
 } from "@tabler/icons-react";
+import {
+  parseFundIdentifier,
+  isValidFundIdentifier,
+  formatFundIdentifier,
+} from "@/lib/fund-identifiers";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -36,7 +41,12 @@ interface Props {
   platforms: Plat[];
   profiles:  Prof[];
   funds:     Array<{ id: string; isin: string; display_name: string }>;
-  onSaved?:  () => void;  // called after any successful add/edit/delete
+  onSaved?:  () => void;
+  /** Pre-select platform/profile when opened from history view */
+  initialPlatformId?:    string;
+  initialProfileId?:     string;
+  initialCompositionId?: string;
+  autoOpenForm?:         boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -48,13 +58,11 @@ function fmt(d: string | null) {
   return new Date(d).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 }
 
-const ISIN_RE = /^[A-Z]{2}[A-Z0-9]{9}[0-9]$/;
-
 // ---------------------------------------------------------------------------
-// Individual ISIN row with live lookup
+// Individual holding row — ISIN or ETF ticker with live lookup
 // ---------------------------------------------------------------------------
 
-function ISINRow({
+function HoldingIdentifierRow({
   row, onChange, onRemove,
 }: {
   row: HoldingRow;
@@ -63,35 +71,48 @@ function ISINRow({
 }) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  async function lookupISIN(isin: string) {
-    if (!ISIN_RE.test(isin.toUpperCase())) return;
-    onChange({ ...row, isin: isin.toUpperCase(), status: "loading", name: "", fundId: null });
+  async function lookupIdentifier(raw: string) {
+    const parsed = parseFundIdentifier(raw);
+    if (!parsed) return;
+    onChange({ ...row, isin: parsed.value, status: "loading", name: "", fundId: null });
 
     try {
-      const res  = await fetch(`/api/model-portfolio/admin/funds/lookup?isin=${isin.toUpperCase()}`);
+      const res  = await fetch(`/api/model-portfolio/admin/funds/lookup?q=${encodeURIComponent(parsed.value)}`);
       const data = await res.json();
       if (data.found) {
-        onChange({ ...row, isin: isin.toUpperCase(), status: "found", name: data.fund.display_name, fundId: data.fund.id });
+        onChange({
+          ...row,
+          isin:   formatFundIdentifier(data.fund.isin),
+          status: "found",
+          name:   data.fund.display_name,
+          fundId: data.fund.id,
+        });
       } else {
         onChange({
           ...row,
-          isin:   isin.toUpperCase(),
+          isin:   parsed.value,
           status: "new",
           name:   data.suggestion?.name ?? "",
           fundId: null,
         });
       }
     } catch {
-      onChange({ ...row, isin: isin.toUpperCase(), status: "error", name: "", fundId: null });
+      onChange({ ...row, isin: parsed.value, status: "error", name: "", fundId: null });
     }
   }
 
-  function handleISINChange(val: string) {
+  function handleIdentifierChange(val: string) {
     const upper = val.toUpperCase();
     onChange({ ...row, isin: upper, status: "idle", name: "", fundId: null });
     if (timer.current) clearTimeout(timer.current);
-    if (upper.length === 12) {
-      timer.current = setTimeout(() => lookupISIN(upper), 400);
+
+    const parsed = parseFundIdentifier(upper);
+    if (!parsed) return;
+
+    if (parsed.type === "isin" && upper.length === 12) {
+      timer.current = setTimeout(() => lookupIdentifier(upper), 400);
+    } else if (parsed.type === "ticker" && upper.length >= 2) {
+      timer.current = setTimeout(() => lookupIdentifier(upper), 600);
     }
   }
 
@@ -111,9 +132,9 @@ function ISINRow({
           <input
             type="text"
             value={row.isin}
-            onChange={(e) => handleISINChange(e.target.value)}
-            placeholder="ISIN (e.g. IE00B3BRDK12)"
-            maxLength={12}
+            onChange={(e) => handleIdentifierChange(e.target.value)}
+            placeholder="ISIN or ticker (e.g. IE00B3BRDK12, VOO)"
+            maxLength={20}
             className="w-full text-xs border rounded-lg px-3 py-2 font-mono uppercase pr-8"
             style={{ borderColor, color: "var(--wgi-text)" }}
           />
@@ -156,7 +177,7 @@ function ISINRow({
         </p>
       )}
       {row.status === "error" && (
-        <p className="text-[11px] pl-1 text-red-400">Lookup failed — check the ISIN</p>
+        <p className="text-[11px] pl-1 text-red-400">Lookup failed — check the ISIN or ticker</p>
       )}
     </div>
   );
@@ -169,22 +190,26 @@ function ISINRow({
 function CompositionForm({
   platforms, profiles,
   initial,
+  presetPlatformId,
+  presetProfileId,
   onSave, onCancel,
 }: {
   platforms: Plat[];
   profiles:  Prof[];
   initial?: { composition: CompositionRecord; platformId: string; profileId: string };
+  presetPlatformId?: string;
+  presetProfileId?:  string;
   onSave:   () => void;
   onCancel: () => void;
 }) {
-  const [platformId,    setPlatformId]    = useState(initial?.platformId ?? "");
-  const [profileId,     setProfileId]     = useState(initial?.profileId  ?? "");
+  const [platformId,    setPlatformId]    = useState(initial?.platformId ?? presetPlatformId ?? "");
+  const [profileId,     setProfileId]     = useState(initial?.profileId  ?? presetProfileId  ?? "");
   const [effectiveFrom, setEffectiveFrom] = useState(initial?.composition.effective_from ?? "");
   const [notes,         setNotes]         = useState(initial?.composition.notes ?? "");
   const [holdings,      setHoldings]      = useState<HoldingRow[]>(() => {
     if (!initial) return [{ isin: "", name: "", fundId: null, weight: 0, status: "idle" }];
     return initial.composition.mp_composition_holdings.map((h) => ({
-      isin:   h.mp_funds?.isin ?? "",
+      isin:   formatFundIdentifier(h.mp_funds?.isin ?? ""),
       name:   h.mp_funds?.display_name ?? "",
       fundId: h.fund_id,
       weight: h.weight,
@@ -195,6 +220,12 @@ function CompositionForm({
   const [currentComp,  setCurrentComp]  = useState<string | null>(null); // label of composition being superseded
   const [saving,       setSaving]        = useState(false);
   const [error,        setError]         = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initial) return;
+    if (presetPlatformId) setPlatformId(presetPlatformId);
+    if (presetProfileId)  setProfileId(presetProfileId);
+  }, [presetPlatformId, presetProfileId, initial]);
 
   // When platform+profile+date change, look up whether there's an active composition to supersede
   useEffect(() => {
@@ -214,11 +245,11 @@ function CompositionForm({
     if (!platformId || !profileId || !effectiveFrom) {
       setError("Platform, profile and effective date are required."); return;
     }
-    if (holdings.some((h) => h.isin.length !== 12)) {
-      setError("All ISIN fields must be exactly 12 characters."); return;
+    if (holdings.some((h) => !isValidFundIdentifier(h.isin))) {
+      setError("Each holding must be a valid ISIN or ETF ticker."); return;
     }
     if (holdings.some((h) => h.status === "loading")) {
-      setError("Please wait for ISIN lookups to complete."); return;
+      setError("Please wait for fund lookups to complete."); return;
     }
     if (!weightOk) {
       setError(`Weights sum to ${(totalWeight * 100).toFixed(1)}% — must equal 100%.`); return;
@@ -238,7 +269,7 @@ function CompositionForm({
             body:    JSON.stringify({ isin: h.isin, displayName: h.name || undefined }),
           });
           const data = await res.json();
-          if (!data.fund?.id) throw new Error(`Could not register ISIN ${h.isin}`);
+          if (!data.fund?.id) throw new Error(`Could not register ${h.isin}`);
           return { fundId: data.fund.id, weight: h.weight };
         })
       );
@@ -343,13 +374,13 @@ function CompositionForm({
             className="text-xs flex items-center gap-1 px-2.5 py-1.5 rounded-lg border transition-colors hover:bg-slate-50"
             style={{ borderColor: "var(--wgi-border)", color: "var(--wgi-text-muted)" }}
           >
-            <IconPlus size={12} /> Add ISIN
+            <IconPlus size={12} /> Add holding
           </button>
         </div>
 
         <div className="space-y-3">
           {holdings.map((row, i) => (
-            <ISINRow
+            <HoldingIdentifierRow
               key={i}
               row={row}
               onChange={(updated) => setHoldings((h) => h.map((x, j) => j === i ? updated : x))}
@@ -382,13 +413,45 @@ function CompositionForm({
 // Main component
 // ---------------------------------------------------------------------------
 
-export default function CompositionManager({ platforms, profiles, onSaved }: Props) {
-  const [selectedPlatform, setSelectedPlatform] = useState(platforms[0]?.id ?? "");
-  const [selectedProfile,  setSelectedProfile]  = useState(profiles[0]?.id  ?? "");
+export default function CompositionManager({
+  platforms, profiles, onSaved,
+  initialPlatformId,
+  initialProfileId,
+  initialCompositionId,
+  autoOpenForm,
+}: Props) {
+  const [selectedPlatform, setSelectedPlatform] = useState(initialPlatformId ?? platforms[0]?.id ?? "");
+  const [selectedProfile,  setSelectedProfile]  = useState(initialProfileId ?? profiles[0]?.id  ?? "");
   const [compositions,     setCompositions]      = useState<CompositionRecord[]>([]);
   const [loading,          setLoading]           = useState(false);
-  const [showForm,         setShowForm]          = useState(false);
+  const [showForm,         setShowForm]          = useState(autoOpenForm ?? false);
   const [editTarget,       setEditTarget]        = useState<CompositionRecord | null>(null);
+
+  useEffect(() => {
+    if (initialPlatformId) setSelectedPlatform(initialPlatformId);
+    if (initialProfileId)  setSelectedProfile(initialProfileId);
+  }, [initialPlatformId, initialProfileId]);
+
+  useEffect(() => {
+    if (autoOpenForm) setShowForm(true);
+  }, [autoOpenForm]);
+
+  useEffect(() => {
+    if (!initialCompositionId || !selectedPlatform || !selectedProfile) return;
+    (async () => {
+      const res  = await fetch(
+        `/api/model-portfolio/admin/compositions?platform=${selectedPlatform}&profile=${selectedProfile}`
+      );
+      const data = await res.json();
+      const match = Array.isArray(data)
+        ? data.find((c: CompositionRecord) => c.id === initialCompositionId)
+        : null;
+      if (match) {
+        setEditTarget(match);
+        setShowForm(false);
+      }
+    })();
+  }, [initialCompositionId, selectedPlatform, selectedProfile]);
 
   const loadCompositions = useCallback(async () => {
     if (!selectedPlatform || !selectedProfile) return;
@@ -447,6 +510,8 @@ export default function CompositionManager({ platforms, profiles, onSaved }: Pro
       {(showForm || editTarget) && (
         <CompositionForm
           platforms={platforms} profiles={profiles}
+          presetPlatformId={selectedPlatform}
+          presetProfileId={selectedProfile}
           initial={editTarget
             ? { composition: editTarget, platformId: selectedPlatform, profileId: selectedProfile }
             : undefined}
@@ -470,7 +535,7 @@ export default function CompositionManager({ platforms, profiles, onSaved }: Pro
           </div>
         ) : compositions.length === 0 ? (
           <div className="px-5 py-10 text-center text-sm" style={{ background: "white", color: "var(--wgi-text-muted)" }}>
-            No compositions found. Run <code className="px-1 py-0.5 rounded bg-slate-100 text-xs">npx tsx scripts/migrate-to-compositions.ts</code> or add one above.
+            No compositions for this platform and profile. Use <strong>New Composition</strong> above to add one.
           </div>
         ) : (
           <div className="overflow-x-auto" style={{ background: "white" }}>
@@ -500,7 +565,7 @@ export default function CompositionManager({ platforms, profiles, onSaved }: Pro
                         {c.mp_composition_holdings.slice(0, 3).map((h) => (
                           <div key={h.id} className="flex items-center gap-2 text-xs">
                             <span className="font-mono" style={{ color: "var(--wgi-text-muted)" }}>
-                              {h.mp_funds?.isin ?? "?"}
+                              {formatFundIdentifier(h.mp_funds?.isin ?? "?")}
                             </span>
                             <span style={{ color: "var(--wgi-text)" }}>
                               {(h.weight * 100).toFixed(0)}%

@@ -8,8 +8,8 @@ interface Fund {
   id: string;
   isin: string;
   display_name: string;
-  eodhd_ticker: string | null;
-  eodhd_exchange: string | null;
+  ft_symbol:    string | null;
+  yahoo_symbol: string | null;
 }
 
 interface Benchmark { id: string; name: string; ticker: string }
@@ -186,8 +186,8 @@ function FundRegistrySection({ funds }: { funds: Fund[] }) {
   const [filter, setFilter] = useState<"all" | "resolved" | "unresolved">("all");
 
   const filtered = funds.filter((f) => {
-    if (filter === "resolved")   return !!f.eodhd_ticker;
-    if (filter === "unresolved") return !f.eodhd_ticker;
+    if (filter === "resolved")   return !!(f.ft_symbol || f.yahoo_symbol);
+    if (filter === "unresolved") return !(f.ft_symbol || f.yahoo_symbol);
     return true;
   });
 
@@ -198,7 +198,7 @@ function FundRegistrySection({ funds }: { funds: Fund[] }) {
         <div>
           <p className="text-base font-bold" style={{ color: "var(--wgi-text)" }}>Fund Registry</p>
           <p className="text-xs mt-0.5" style={{ color: "var(--wgi-text-muted)" }}>
-            All ISINs known to the system · {funds.filter(f => f.eodhd_ticker).length}/{funds.length} tickers resolved
+            All ISINs known to the system · {funds.filter(f => f.ft_symbol || f.yahoo_symbol).length}/{funds.length} price sources resolved
           </p>
         </div>
         <div className="flex rounded-lg border overflow-hidden text-xs font-semibold"
@@ -224,7 +224,7 @@ function FundRegistrySection({ funds }: { funds: Fund[] }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b" style={{ borderColor: "var(--wgi-border)" }}>
-              {["Fund", "ISIN", "EODHD Ticker", "Exchange", "Status"].map((h) => (
+              {["Fund", "ISIN", "FT Symbol", "Yahoo Symbol", "Status"].map((h) => (
                 <th key={h} className="px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider"
                     style={{ color: "var(--wgi-text-muted)" }}>{h}</th>
               ))}
@@ -241,13 +241,13 @@ function FundRegistrySection({ funds }: { funds: Fund[] }) {
                   {fund.isin}
                 </td>
                 <td className="px-4 py-2.5 font-mono text-xs" style={{ color: "var(--wgi-text)" }}>
-                  {fund.eodhd_ticker ?? "—"}
+                  {fund.ft_symbol ?? "—"}
                 </td>
-                <td className="px-4 py-2.5 text-xs" style={{ color: "var(--wgi-text-muted)" }}>
-                  {fund.eodhd_exchange ?? "—"}
+                <td className="px-4 py-2.5 font-mono text-xs" style={{ color: "var(--wgi-text)" }}>
+                  {fund.yahoo_symbol ?? "—"}
                 </td>
                 <td className="px-4 py-2.5">
-                  {fund.eodhd_ticker ? (
+                  {fund.ft_symbol || fund.yahoo_symbol ? (
                     <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
                           style={{ background: "#ecfdf5", color: "#065f46" }}>
                       <IconCheck size={10} /> Resolved

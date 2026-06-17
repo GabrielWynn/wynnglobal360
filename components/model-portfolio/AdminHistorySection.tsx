@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   IconRefresh, IconDatabase, IconLoader2, IconCheck, IconX,
 } from "@tabler/icons-react";
 import PortfolioHistoryView from "@/components/model-portfolio/PortfolioHistoryView";
 import CompositionManager   from "@/components/model-portfolio/CompositionManager";
+import PlatformManager      from "@/components/model-portfolio/PlatformManager";
 
 interface Props {
   profiles:  Array<{ id: string; label: string; name: string }>;
@@ -14,10 +16,6 @@ interface Props {
 }
 
 type SyncState = "idle" | "loading" | "ok" | "error";
-
-// ---------------------------------------------------------------------------
-// Compact sync toolbar
-// ---------------------------------------------------------------------------
 
 function SyncToolbar() {
   const [syncState, setSyncState] = useState<SyncState>("idle");
@@ -33,7 +31,11 @@ function SyncToolbar() {
       if (res.ok) {
         setSyncState("ok");
         const f = data.results?.funds ?? {};
-        setSyncMsg(`${f.active ?? 0} active funds · ${f.updated ?? 0} updated`);
+        const yahoo = f.yahooUpdated ? ` · Yahoo ${f.yahooUpdated}` : "";
+        setSyncMsg(
+          `${f.active ?? 0} active · FT ${f.ftUpdated ?? 0}${yahoo}` +
+          (f.skipped ? ` · ${f.skipped} skipped` : "")
+        );
       } else {
         setSyncState("error"); setSyncMsg(data.error ?? "Failed");
       }
@@ -67,7 +69,6 @@ function SyncToolbar() {
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      {/* Sync today */}
       <div className="flex items-center gap-2">
         <button
           onClick={runSync}
@@ -86,7 +87,6 @@ function SyncToolbar() {
         )}
       </div>
 
-      {/* Seed active periods */}
       <div className="flex items-center gap-2">
         <button
           onClick={runSeed}
@@ -108,77 +108,78 @@ function SyncToolbar() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Main section
-// ---------------------------------------------------------------------------
+type ManagerContext = {
+  platformId: string;
+  profileId: string;
+  compositionId?: string;
+  mode: "add" | "edit";
+};
 
 export default function AdminHistorySection({ profiles, platforms, funds }: Props) {
+  const router = useRouter();
   const [selectedProfileId, setSelectedProfileId] = useState(profiles[0]?.id ?? "");
   const [historyKey,        setHistoryKey]         = useState(0);
-  const [showManager,       setShowManager]        = useState(false);
+  const [managerContext,    setManagerContext]     = useState<ManagerContext | null>(null);
 
-  function handleEditOrAdd() {
-    setShowManager(true);
+  function scrollToForm() {
     setTimeout(() => {
       document.getElementById("composition-form")
         ?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 50);
   }
 
+  function handleAddComp(platformId: string, profileId: string) {
+    setManagerContext({ platformId, profileId, mode: "add" });
+    scrollToForm();
+  }
+
+  function handleEditComp(compositionId: string, platformId: string, profileId: string) {
+    setManagerContext({ platformId, profileId, compositionId, mode: "edit" });
+    scrollToForm();
+  }
+
   function handleSaved() {
-    setHistoryKey((k) => k + 1); // refresh history grid
+    setHistoryKey((k) => k + 1);
+    setManagerContext(null);
   }
 
   return (
     <div className="space-y-5">
-      {/* Top bar: sync actions on the right */}
+      <PlatformManager platforms={platforms} onCreated={() => router.refresh()} />
+
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <p className="text-xs" style={{ color: "var(--wgi-text-muted)" }}>
-          Prices sync daily via cron. Use these buttons to sync or backfill manually.
+          Prices sync daily via cron (FT Markets first, Yahoo Finance fallback). Use these buttons to sync or backfill manually.
         </p>
         <SyncToolbar />
       </div>
 
-      {/* Portfolio history grid */}
       <PortfolioHistoryView
         key={historyKey}
         profiles={profiles}
         profileId={selectedProfileId}
         onProfileChange={setSelectedProfileId}
-        onEditComp={handleEditOrAdd}
-        onAddComp={handleEditOrAdd}
+        onEditComp={handleEditComp}
+        onAddComp={handleAddComp}
       />
 
-      {/* Composition manager — inline, revealed on demand */}
-      {showManager && (
+      {managerContext && (
         <div
           id="composition-form"
           className="rounded-2xl border"
-          style={{ borderColor: "var(--wgi-border)", background: "var(--wgi-bg)" }}
+          style={{ borderColor: "var(--wgi-border)", background: "white" }}
         >
-          <div
-            className="flex items-center justify-between px-5 py-4 border-b"
-            style={{ borderColor: "var(--wgi-border)", background: "white", borderRadius: "1rem 1rem 0 0" }}
-          >
-            <p className="text-base font-bold" style={{ color: "var(--wgi-text)" }}>
-              Add / Edit Composition
-            </p>
-            <button
-              onClick={() => setShowManager(false)}
-              className="text-xs px-3 py-1.5 rounded-lg border transition-colors hover:bg-slate-50"
-              style={{ borderColor: "var(--wgi-border)", color: "var(--wgi-text-muted)" }}
-            >
-              Close
-            </button>
-          </div>
-          <div className="p-5">
-            <CompositionManager
-              platforms={platforms}
-              profiles={profiles}
-              funds={funds}
-              onSaved={handleSaved}
-            />
-          </div>
+          <CompositionManager
+            key={`${managerContext.platformId}-${managerContext.profileId}-${managerContext.compositionId ?? "new"}`}
+            profiles={profiles}
+            platforms={platforms}
+            funds={funds}
+            initialPlatformId={managerContext.platformId}
+            initialProfileId={managerContext.profileId}
+            initialCompositionId={managerContext.compositionId}
+            autoOpenForm={managerContext.mode === "add"}
+            onSaved={handleSaved}
+          />
         </div>
       )}
     </div>

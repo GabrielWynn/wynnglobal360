@@ -9,6 +9,7 @@ import {
   computeAnnualReturns,
 } from "@/lib/portfolio-compositions";
 import { getPortfolioFundamentals } from "@/lib/portfolio-fundamentals";
+import { profileColor, profileToSlug, slugToProfileLabel } from "@/lib/mp-profiles";
 
 import PerformanceSummaryCards from "@/components/model-portfolio/PerformanceSummaryCards";
 import InteractiveChart        from "@/components/model-portfolio/InteractiveChart";
@@ -23,24 +24,39 @@ interface PageProps {
   params: { platform: string; profile: string };
 }
 
-const PROFILE_COLORS: Record<string, string> = {
-  A: "#10b981", B: "#3b82f6", C: "#f59e0b", D: "#ef4444",
-};
-const PROFILE_TABS = ["A", "B", "C", "D"];
-
 // ---------------------------------------------------------------------------
 // Data fetching
 // ---------------------------------------------------------------------------
 
 async function getData(platformSlug: string, profileSlug: string) {
-  const profileLabel = profileSlug.toUpperCase();
-  if (!PROFILE_TABS.includes(profileLabel)) return null;
+  const profileLabel = slugToProfileLabel(profileSlug);
 
   const [{ data: platform }, { data: profile }] = await Promise.all([
     supabaseAdmin.from("mp_platforms").select("id, name, slug").eq("slug", platformSlug).maybeSingle(),
     supabaseAdmin.from("mp_risk_profiles").select("id, label, name").eq("label", profileLabel).maybeSingle(),
   ]);
   if (!platform || !profile) return null;
+
+  const { data: platformCompositions } = await supabaseAdmin
+    .from("mp_portfolio_compositions")
+    .select("profile_id, mp_risk_profiles(label, risk_level)")
+    .eq("platform_id", platform.id);
+
+  const profileTabs = [...new Map(
+    (platformCompositions ?? [])
+      .map((row) => {
+        const rp = Array.isArray(row.mp_risk_profiles)
+          ? row.mp_risk_profiles[0]
+          : row.mp_risk_profiles;
+        return rp as { label: string; risk_level: number } | null;
+      })
+      .filter((rp): rp is { label: string; risk_level: number } => Boolean(rp))
+      .map((rp) => [rp.label, rp] as const)
+  ).values()]
+    .sort((a, b) => a.risk_level - b.risk_level)
+    .map((rp) => rp.label);
+
+  if (!profileTabs.includes(profile.label)) return null;
 
   // Fetch compositions (the new model)
   const compositions = await fetchCompositions(platform.id, profile.id);
@@ -96,6 +112,7 @@ async function getData(platformSlug: string, profileSlug: string) {
   return {
     platform,
     profile,
+    profileTabs,
     compositions,
     chartSeries,
     standardRet,
@@ -112,8 +129,8 @@ export default async function ProfileDetailPage({ params }: PageProps) {
   const data = await getData(params.platform, params.profile);
   if (!data) notFound();
 
-  const { platform, profile, compositions, chartSeries, standardRet, annualRet, fundamentals } = data;
-  const profileColor = PROFILE_COLORS[profile.label] ?? "#64748b";
+  const { platform, profile, profileTabs, compositions, chartSeries, standardRet, annualRet, fundamentals } = data;
+  const activeProfileColor = profileColor(profile.label);
 
   return (
     <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 space-y-6">
@@ -136,7 +153,7 @@ export default async function ProfileDetailPage({ params }: PageProps) {
         <div className="flex items-center gap-3">
           <span
             className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-lg font-bold"
-            style={{ background: profileColor }}
+            style={{ background: activeProfileColor }}
           >
             {profile.label}
           </span>
@@ -150,17 +167,18 @@ export default async function ProfileDetailPage({ params }: PageProps) {
 
         {/* Profile tabs */}
         <div className="flex rounded-xl border overflow-hidden" style={{ borderColor: "var(--wgi-border)" }}>
-          {PROFILE_TABS.map((label) => {
+          {profileTabs.map((label, index) => {
             const active = label === profile.label;
+            const tabColor = profileColor(label);
             return (
               <Link
                 key={label}
-                href={`/model-portfolio/${platform.slug}/${label.toLowerCase()}`}
+                href={`/model-portfolio/${platform.slug}/${profileToSlug(label)}`}
                 className="px-4 py-2 text-sm font-semibold transition-colors"
                 style={{
-                  background:  active ? profileColor : "white",
+                  background:  active ? tabColor : "white",
                   color:       active ? "white" : "var(--wgi-text-muted)",
-                  borderRight: label !== "D" ? "1px solid var(--wgi-border)" : undefined,
+                  borderRight: index < profileTabs.length - 1 ? "1px solid var(--wgi-border)" : undefined,
                 }}
               >
                 {label}
@@ -178,7 +196,7 @@ export default async function ProfileDetailPage({ params }: PageProps) {
         series={chartSeries}
         compositions={compositions}
         profileLabel={profile.label}
-        profileColor={profileColor}
+        profileColor={profileColor(profile.label)}
       />
 
       {/* ── Annual Performance ──────────────────────────────────────── */}
@@ -190,7 +208,7 @@ export default async function ProfileDetailPage({ params }: PageProps) {
       {/* ── Disclaimer ─────────────────────────────────────────────── */}
       <p className="text-xs text-center pb-4" style={{ color: "var(--wgi-text-muted)" }}>
         Past performance is not indicative of future results.
-        Returns are calculated from daily closing NAV prices sourced from EODHD.
+        Returns are calculated from daily closing NAV prices (FT Markets / Yahoo Finance).
       </p>
     </div>
   );

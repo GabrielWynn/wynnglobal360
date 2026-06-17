@@ -15,12 +15,10 @@ import {
 
 export const dynamic = "force-dynamic";
 
-const VALID_PROFILES = ["A", "B", "C", "D"];
-
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const platformSlug = searchParams.get("platform")?.toLowerCase();
-  const profileSlug  = searchParams.get("profile")?.toUpperCase();
+  const profileSlug  = searchParams.get("profile");
 
   if (!platformSlug || !profileSlug) {
     return NextResponse.json(
@@ -29,9 +27,7 @@ export async function GET(request: Request) {
     );
   }
 
-  if (!VALID_PROFILES.includes(profileSlug)) {
-    return NextResponse.json({ error: "Invalid profile" }, { status: 400 });
-  }
+  const profileLabel = decodeURIComponent(profileSlug).toUpperCase();
 
   // Resolve platform
   const { data: platform } = await supabaseAdmin
@@ -48,7 +44,7 @@ export async function GET(request: Request) {
   const { data: profile } = await supabaseAdmin
     .from("mp_risk_profiles")
     .select("id, label, name")
-    .eq("label", profileSlug)
+    .eq("label", profileLabel)
     .maybeSingle();
 
   if (!profile) {

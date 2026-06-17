@@ -39,7 +39,7 @@ export async function GET() {
       id, platform_id, profile_id,
       mp_platforms(name),
       mp_risk_profiles(label),
-      mp_composition_holdings(fund_id, mp_funds(id, isin, display_name, eodhd_ticker))
+      mp_composition_holdings(fund_id, mp_funds(id, isin, display_name, ft_symbol, yahoo_symbol))
     `)
     .is("effective_to", null);
 
@@ -52,7 +52,8 @@ export async function GET() {
     fundId:    string;
     isin:      string;
     name:      string;
-    hasTicker: boolean;
+    hasFtSymbol:    boolean;
+    hasYahooSymbol: boolean;
     platforms: string[];
   };
 
@@ -78,7 +79,8 @@ export async function GET() {
           fundId,
           isin:      fund.isin,
           name:      fund.display_name,
-          hasTicker: !!fund.eodhd_ticker,
+          hasFtSymbol:    !!fund.ft_symbol,
+          hasYahooSymbol: !!fund.yahoo_symbol,
           platforms: [label],
         });
       } else if (!entry.platforms.includes(label)) {
@@ -116,9 +118,10 @@ export async function GET() {
   const coverage = [...fundMap.values()].map((f) => {
     const stats = statsMap.get(f.fundId);
 
-    let status: "ok" | "stale" | "empty" | "no_ticker" = "empty";
-    if (!f.hasTicker) {
-      status = "no_ticker";
+    let status: "ok" | "stale" | "empty" | "no_source" = "empty";
+    const hasSource = f.hasFtSymbol || f.hasYahooSymbol;
+    if (!hasSource) {
+      status = "no_source";
     } else if (stats) {
       status = stats.last >= staleThreshold ? "ok" : "stale";
     }
@@ -127,7 +130,8 @@ export async function GET() {
       fundId:     f.fundId,
       isin:       f.isin,
       name:       f.name,
-      hasTicker:  f.hasTicker,
+      hasFtSymbol:    f.hasFtSymbol,
+      hasYahooSymbol: f.hasYahooSymbol,
       platforms:  f.platforms.sort(),
       firstPrice: stats?.first ?? null,
       lastPrice:  stats?.last  ?? null,
@@ -138,7 +142,7 @@ export async function GET() {
   });
 
   // Sort: no_ticker first (needs attention), then stale, then ok
-  const order: Record<string, number> = { no_ticker: 0, stale: 1, empty: 2, ok: 3 };
+  const order: Record<string, number> = { no_source: 0, stale: 1, empty: 2, ok: 3 };
   coverage.sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9));
 
   return NextResponse.json(coverage);

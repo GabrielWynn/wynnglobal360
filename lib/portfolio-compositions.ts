@@ -4,8 +4,8 @@
  * The new data model: a "composition" is a set of fund ISINs + weights that
  * is valid from `effective_from` until `effective_to` (null = still active).
  *
- * All performance is calculated entirely from daily EODHD prices — no
- * imported return figures from the CSV.
+ * All performance is calculated from daily NAV prices (FT Markets / Yahoo Finance),
+ * not from imported return figures in the CSV.
  */
 
 import { supabaseAdmin } from "@/lib/supabase";

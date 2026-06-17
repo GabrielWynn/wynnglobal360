@@ -1,22 +1,50 @@
 import { supabaseAdmin } from "@/lib/supabase";
+import { PROFILE_COLORS } from "@/lib/mp-profiles";
 
-const PROFILE_COLORS: Record<string, string> = {
-  A: "#10b981", // emerald
-  B: "#3b82f6", // blue
-  C: "#f59e0b", // amber
-  D: "#ef4444", // red
-};
+type PlatformRow = { id: string; name: string; slug: string };
+type ProfileChip = { label: string; risk_level: number };
+
+async function getPlatformProfileMap(): Promise<Map<string, ProfileChip[]>> {
+  const { data } = await supabaseAdmin
+    .from("mp_portfolio_compositions")
+    .select("platform_id, mp_risk_profiles(label, risk_level)");
+
+  const map = new Map<string, Map<string, ProfileChip>>();
+
+  for (const row of data ?? []) {
+    const rp = Array.isArray(row.mp_risk_profiles)
+      ? row.mp_risk_profiles[0]
+      : row.mp_risk_profiles;
+    if (!rp?.label) continue;
+
+    const platformId = row.platform_id as string;
+    if (!map.has(platformId)) map.set(platformId, new Map());
+    map.get(platformId)!.set(rp.label, {
+      label: rp.label,
+      risk_level: rp.risk_level,
+    });
+  }
+
+  const result = new Map<string, ProfileChip[]>();
+  for (const [platformId, labels] of map) {
+    result.set(
+      platformId,
+      [...labels.values()].sort((a, b) => a.risk_level - b.risk_level)
+    );
+  }
+  return result;
+}
 
 export default async function ModelPortfolioPage() {
-  const { data: platforms } = await supabaseAdmin
-    .from("mp_platforms")
-    .select("id, name, slug")
-    .order("name");
-
-  const { data: profiles } = await supabaseAdmin
-    .from("mp_risk_profiles")
-    .select("id, label, name, risk_level")
-    .order("risk_level");
+  const [{ data: platforms }, { data: profiles }, platformProfileMap] =
+    await Promise.all([
+      supabaseAdmin.from("mp_platforms").select("id, name, slug").order("name"),
+      supabaseAdmin
+        .from("mp_risk_profiles")
+        .select("id, label, name, risk_level")
+        .order("risk_level"),
+      getPlatformProfileMap(),
+    ]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 md:px-10 py-10">
@@ -48,54 +76,57 @@ export default async function ModelPortfolioPage() {
 
       {/* Platform cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {(platforms ?? []).map((platform) => (
-          <a
-            key={platform.id}
-            href={`/model-portfolio/${platform.slug}`}
-            className="group block rounded-2xl border p-6 transition-shadow hover:shadow-lg"
-            style={{
-              background: "white",
-              borderColor: "var(--wgi-border)",
-            }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <span
-                className="text-lg font-bold"
-                style={{ color: "var(--wgi-navy)" }}
-              >
-                {platform.name}
-              </span>
-              <span
-                className="text-xs font-medium px-2 py-1 rounded-full"
-                style={{
-                  background: "var(--wgi-bg)",
-                  color: "var(--wgi-text-muted)",
-                }}
-              >
-                4 profiles
-              </span>
-            </div>
-
-            <div className="flex gap-2">
-              {["A", "B", "C", "D"].map((label) => (
-                <span
-                  key={label}
-                  className="flex-1 text-center py-1.5 rounded-lg text-xs font-bold text-white"
-                  style={{ background: PROFILE_COLORS[label] }}
-                >
-                  {label}
-                </span>
-              ))}
-            </div>
-
-            <p
-              className="mt-4 text-xs group-hover:underline"
-              style={{ color: "var(--wgi-accent)" }}
+        {(platforms ?? []).map((platform: PlatformRow) => {
+          const chips = platformProfileMap.get(platform.id) ?? [];
+          return (
+            <a
+              key={platform.id}
+              href={`/model-portfolio/${platform.slug}`}
+              className="group block rounded-2xl border p-6 transition-shadow hover:shadow-lg"
+              style={{
+                background: "white",
+                borderColor: "var(--wgi-border)",
+              }}
             >
-              View performance →
-            </p>
-          </a>
-        ))}
+              <div className="flex items-center justify-between mb-4">
+                <span
+                  className="text-lg font-bold"
+                  style={{ color: "var(--wgi-navy)" }}
+                >
+                  {platform.name}
+                </span>
+                <span
+                  className="text-xs font-medium px-2 py-1 rounded-full"
+                  style={{
+                    background: "var(--wgi-bg)",
+                    color: "var(--wgi-text-muted)",
+                  }}
+                >
+                  {chips.length} profile{chips.length === 1 ? "" : "s"}
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {chips.map(({ label }) => (
+                  <span
+                    key={label}
+                    className="min-w-[2.5rem] text-center py-1.5 px-2 rounded-lg text-xs font-bold text-white"
+                    style={{ background: PROFILE_COLORS[label] ?? "#64748b" }}
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+
+              <p
+                className="mt-4 text-xs group-hover:underline"
+                style={{ color: "var(--wgi-accent)" }}
+              >
+                View performance →
+              </p>
+            </a>
+          );
+        })}
       </div>
     </div>
   );

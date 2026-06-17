@@ -7,17 +7,11 @@ import {
   buildDailyReturns,
   computeStandardReturns,
 } from "@/lib/portfolio-compositions";
+import { PROFILE_META, profileToSlug } from "@/lib/mp-profiles";
 
 interface PageProps {
   params: { platform: string };
 }
-
-const PROFILE_META: Record<string, { color: string; bg: string; desc: string }> = {
-  A: { color: "#10b981", bg: "#ecfdf5", desc: "Conservative"        },
-  B: { color: "#3b82f6", bg: "#eff6ff", desc: "Moderate"            },
-  C: { color: "#f59e0b", bg: "#fffbeb", desc: "Moderate Aggressive" },
-  D: { color: "#ef4444", bg: "#fef2f2", desc: "Aggressive"          },
-};
 
 function fmt(v: number | null): string {
   if (v === null) return "—";
@@ -83,8 +77,16 @@ async function getPlatformData(slug: string) {
     page++;
   }
 
+  const profileIdsWithCompositions = new Set(
+    (allCompositions ?? []).map((c) => c.profile_id as string)
+  );
+
+  const activeProfiles = (profiles ?? []).filter((p) =>
+    profileIdsWithCompositions.has(p.id)
+  );
+
   const profileSummaries = await Promise.all(
-    (profiles ?? []).map(async (prof) => {
+    activeProfiles.map(async (prof) => {
       const compositions = await fetchCompositions(platform.id, prof.id);
       const daily        = buildDailyReturns(compositions, priceRows ?? []);
       const std          = computeStandardReturns(daily);
@@ -127,7 +129,7 @@ export default async function PlatformPage({ params }: PageProps) {
           return (
             <Link
               key={prof.id}
-              href={`/model-portfolio/${platform.slug}/${prof.label.toLowerCase()}`}
+              href={`/model-portfolio/${platform.slug}/${profileToSlug(prof.label)}`}
               className="group block rounded-2xl border p-6 transition-all hover:shadow-md"
               style={{ background: "white", borderColor: "var(--wgi-border)" }}
             >

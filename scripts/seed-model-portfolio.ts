@@ -118,7 +118,7 @@ const PLATFORM_SLUG: Record<string, string> = {
 
 function profileLabel(raw: string | undefined): string | null {
   if (!raw) return null;
-  const m = raw.trim().match(/Perfil\s+([A-D])/i);
+  const m = raw.trim().match(/Perfil\s+(A|B|C|C\+|D|D\+)/i);
   return m ? m[1].toUpperCase() : null;
 }
 

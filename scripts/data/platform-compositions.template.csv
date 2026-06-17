@@ -1,0 +1,4 @@
+platform_slug,profile,isin,fund_name,weight_pct,effective_from
+new-life-co,A,LU0000000000,Example Fund A,100,2026-01-01
+new-life-co,B,LU0000000001,Example Fund B,50,2026-01-01
+new-life-co,B,LU0000000002,Example Fund C,50,2026-01-01

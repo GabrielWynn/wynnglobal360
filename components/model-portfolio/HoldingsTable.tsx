@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { formatReturn, returnColor, type HoldingRow } from "@/lib/model-portfolio";
+import { formatFundIdentifier } from "@/lib/fund-identifiers";
 
 interface Props {
   holdings:    HoldingRow[];
@@ -41,7 +42,7 @@ export default function HoldingsTable({ holdings, periodLabel }: Props) {
             >
               {[
                 ["Fund", "w-[38%]"],
-                ["ISIN", "w-[14%]"],
+                ["ISIN / Ticker", "w-[14%]"],
                 ["Weight", "w-[10%] text-right"],
                 ["Initial Price", "w-[12%] text-right"],
                 ["Final Price", "w-[12%] text-right"],
@@ -72,7 +73,7 @@ export default function HoldingsTable({ holdings, periodLabel }: Props) {
                 {/* Fund name — links to drill-down */}
                 <td className="px-4 py-3">
                   <Link
-                    href={`/model-portfolio/funds/${h.isin}`}
+                    href={`/model-portfolio/funds/${encodeURIComponent(h.isin)}`}
                     className="font-medium text-sm leading-tight hover:underline"
                     style={{ color: "var(--wgi-text)" }}
                   >
@@ -89,7 +90,7 @@ export default function HoldingsTable({ holdings, periodLabel }: Props) {
                       background: "var(--wgi-bg)",
                     }}
                   >
-                    {h.isin}
+                    {formatFundIdentifier(h.isin)}
                   </span>
                 </td>
 

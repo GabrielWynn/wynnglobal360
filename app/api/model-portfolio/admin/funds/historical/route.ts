@@ -2,15 +2,14 @@
  * POST /api/model-portfolio/admin/funds/historical
  *
  * One-time (re-runnable) seeder that fetches daily NAV history for all
- * funds that have a resolved EODHD ticker, going back to the earliest
- * portfolio period start date.
+ * funds, going back to the earliest portfolio period start date.
  *
  * Requires authenticated admin session.
  */
 
 import { NextResponse } from "next/server";
 import { createServerClient, supabaseAdmin } from "@/lib/supabase";
-import { getHistoricalPrices } from "@/lib/eodhd";
+import { fetchFundPriceHistory } from "@/lib/fund-price-sources";
 
 export const dynamic     = "force-dynamic";
 export const maxDuration = 60;
@@ -37,7 +36,6 @@ export async function POST() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  // Date range: earliest portfolio period → today
   const { data: earliest } = await supabaseAdmin
     .from("mp_portfolio_periods")
     .select("start_date")
@@ -48,36 +46,35 @@ export async function POST() {
   const fromDate = earliest?.start_date ?? "2020-01-01";
   const toDate   = new Date().toISOString().slice(0, 10);
 
-  // Only funds with a resolved ticker
   const { data: funds } = await supabaseAdmin
     .from("mp_funds")
-    .select("id, isin, display_name, eodhd_ticker, eodhd_exchange")
-    .not("eodhd_ticker", "is", null)
-    .not("eodhd_exchange", "is", null);
+    .select("id, isin, display_name, currency, ft_symbol, yahoo_symbol");
 
   if (!funds?.length) {
-    return NextResponse.json({ ok: true, message: "No resolved tickers found", inserted: 0 });
+    return NextResponse.json({ ok: true, message: "No funds found", inserted: 0 });
   }
 
   const results: Array<{
-    fund: string; ticker: string; inserted: number; error?: string;
+    fund: string; isin: string; inserted: number; error?: string;
   }> = [];
 
   for (const fund of funds) {
-    const ticker = `${fund.eodhd_ticker}.${fund.eodhd_exchange}`;
     try {
-      const bars = await getHistoricalPrices(ticker, fromDate, toDate);
+      const bars = await fetchFundPriceHistory(fund, fromDate, toDate);
 
       if (!bars.length) {
-        results.push({ fund: fund.display_name, ticker, inserted: 0, error: "No data from EODHD" });
+        results.push({
+          fund: fund.display_name, isin: fund.isin, inserted: 0,
+          error: "No data from FT or Yahoo",
+        });
         continue;
       }
 
       const rows = bars.map((b) => ({
         fund_id: fund.id,
         date:    b.date,
-        price:   b.adjusted_close ?? b.close,
-        source:  "eodhd",
+        price:   b.price,
+        source:  b.source,
       }));
 
       const CHUNK = 500;
@@ -89,11 +86,11 @@ export async function POST() {
         if (!error) inserted += Math.min(CHUNK, rows.length - i);
       }
 
-      results.push({ fund: fund.display_name, ticker, inserted });
+      results.push({ fund: fund.display_name, isin: fund.isin, inserted });
     } catch (err) {
       results.push({
         fund:     fund.display_name,
-        ticker,
+        isin:     fund.isin,
         inserted: 0,
         error:    err instanceof Error ? err.message : "Unknown error",
       });

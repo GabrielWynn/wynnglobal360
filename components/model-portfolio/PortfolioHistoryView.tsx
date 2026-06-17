@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { IconLoader2, IconEdit, IconPlus } from "@tabler/icons-react";
+import { profileColor } from "@/lib/mp-profiles";
+import { formatFundIdentifier } from "@/lib/fund-identifiers";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -96,7 +98,7 @@ function CompositionCard({
           <thead>
             <tr style={{ borderBottom: "1px solid var(--wgi-border)" }}>
               <th className="px-3 py-1.5 text-left text-[10px] font-semibold uppercase tracking-wider"
-                  style={{ color: "var(--wgi-text-muted)" }}>ISIN</th>
+                  style={{ color: "var(--wgi-text-muted)" }}>ISIN / Ticker</th>
               <th className="px-3 py-1.5 text-right text-[10px] font-semibold uppercase tracking-wider"
                   style={{ color: "var(--wgi-text-muted)" }}>Dist.</th>
             </tr>
@@ -110,7 +112,7 @@ function CompositionCard({
               >
                 <td className="px-3 py-2">
                   <p className="font-mono text-[11px] font-semibold" style={{ color: "var(--wgi-navy)" }}>
-                    {h.mp_funds?.isin ?? "—"}
+                    {formatFundIdentifier(h.mp_funds?.isin ?? "—")}
                   </p>
                   <p className="text-[10px] truncate max-w-[140px] mt-0.5" style={{ color: "var(--wgi-text-muted)" }}>
                     {h.mp_funds?.display_name ?? "Unknown fund"}
@@ -170,20 +172,17 @@ export default function PortfolioHistoryView({
       <div className="flex items-center gap-3">
         <span className="text-xs font-semibold" style={{ color: "var(--wgi-text-muted)" }}>Profile:</span>
         <div className="flex rounded-xl border overflow-hidden" style={{ borderColor: "var(--wgi-border)" }}>
-          {profiles.map((p) => {
+          {profiles.map((p, idx) => {
             const active = p.id === profileId;
-            const colors: Record<string, string> = {
-              A: "#10b981", B: "#3b82f6", C: "#f59e0b", D: "#ef4444",
-            };
             return (
               <button
                 key={p.id}
                 onClick={() => onProfileChange(p.id)}
                 className="px-4 py-2 text-sm font-semibold transition-colors"
                 style={{
-                  background:  active ? (colors[p.label] ?? "var(--wgi-navy)") : "white",
+                  background:  active ? profileColor(p.label) : "white",
                   color:       active ? "white" : "var(--wgi-text-muted)",
-                  borderRight: p.label !== "D" ? "1px solid var(--wgi-border)" : undefined,
+                  borderRight: idx < profiles.length - 1 ? "1px solid var(--wgi-border)" : undefined,
                 }}
               >
                 {p.label}
@@ -232,10 +231,19 @@ export default function PortfolioHistoryView({
               {/* Composition cards stacked oldest → newest */}
               {compositions.length === 0 ? (
                 <div
-                  className="rounded-xl border p-4 text-center text-xs"
+                  className="rounded-xl border p-4 text-center text-xs space-y-2"
                   style={{ borderColor: "var(--wgi-border)", color: "var(--wgi-text-muted)" }}
                 >
-                  No compositions
+                  <p>No compositions for this profile yet.</p>
+                  {onAddComp && (
+                    <button
+                      onClick={() => onAddComp(platform.id, profileId)}
+                      className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border transition-colors hover:bg-slate-50"
+                      style={{ borderColor: "var(--wgi-border)", color: "var(--wgi-accent)" }}
+                    >
+                      <IconPlus size={11} /> Add first composition
+                    </button>
+                  )}
                 </div>
               ) : (
                 compositions.map((comp) => (
@@ -254,8 +262,7 @@ export default function PortfolioHistoryView({
 
       {groups.length === 0 && !loading && (
         <p className="text-sm text-center py-8" style={{ color: "var(--wgi-text-muted)" }}>
-          No composition history found for this profile.
-          Run <code className="px-1 py-0.5 rounded bg-slate-100 text-xs">npx tsx scripts/migrate-to-compositions.ts</code> to populate.
+          No platforms configured yet. Add a life company platform above, then create compositions for each profile.
         </p>
       )}
     </div>

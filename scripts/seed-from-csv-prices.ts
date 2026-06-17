@@ -1,5 +1,5 @@
 /**
- * Hybrid price seeder — CSV anchors + EODHD bridge
+ * Hybrid price seeder — CSV anchors + live price bridge
  *
  * Strategy:
  *  1. Read real observed NAV prices from mp_portfolio_holdings archive
@@ -7,7 +7,7 @@
  *  2. Build a chronological anchor chain per fund.
  *  3. Between consecutive anchors, generate daily prices using compound
  *     interpolation: price[d] = P0 × (P1/P0)^(d/N).
- *  4. Upsert with ignoreDuplicates=true so existing EODHD real prices
+ *  4. Upsert with ignoreDuplicates=true so existing live prices
  *     are never overwritten — they take precedence for recent dates.
  *
  * Usage:  npx tsx scripts/seed-from-csv-prices.ts
@@ -81,7 +81,7 @@ function interpolate(
 // ---------------------------------------------------------------------------
 
 async function main() {
-  console.log(`\nHybrid Price Seeder — CSV anchors + EODHD bridge`);
+  console.log(`\nHybrid Price Seeder — CSV anchors + live prices`);
   console.log("─".repeat(70));
 
   // ── 1. Pull all price anchors from archive tables ────────────────────────
@@ -180,7 +180,7 @@ async function main() {
 
     if (!pricePoints.length) continue;
 
-    // Upsert — ignoreDuplicates=true means real EODHD prices are preserved
+    // Upsert — ignoreDuplicates=true means real FT/Yahoo prices are preserved
     const rows = pricePoints.map((p) => ({
       fund_id: fundId,
       date:    p.date,
@@ -195,7 +195,7 @@ async function main() {
         .from("mp_fund_prices")
         .upsert(rows.slice(i, i + CHUNK), {
           onConflict:       "fund_id,date",
-          ignoreDuplicates: true, // never overwrite real EODHD prices
+          ignoreDuplicates: true, // never overwrite real synced prices
         });
       if (!error) inserted += Math.min(CHUNK, rows.length - i);
     }
@@ -220,9 +220,9 @@ async function main() {
 
   if (stats?.length) {
     const csvRows  = stats.filter((r) => r.source === "csv_interpolated").length;
-    const eodhRows = stats.filter((r) => r.source === "eodhd").length;
+    const liveRows = stats.filter((r) => r.source === "ft" || r.source === "yahoo" || r.source === "eodhd").length;
     console.log(`   CSV interpolated           : ${csvRows.toLocaleString()}`);
-    console.log(`   EODHD real prices          : ${eodhRows.toLocaleString()}`);
+    console.log(`   Live synced prices         : ${liveRows.toLocaleString()}`);
     console.log(`   Total in mp_fund_prices    : ${stats.length.toLocaleString()}`);
     console.log(`   Date range                 : ${stats[0].date} → ${stats[stats.length - 1].date}`);
   }

@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { formatReturn, returnColor, type StandardReturns, type ChartPoint } from "@/lib/model-portfolio";
+import { profileToSlug } from "@/lib/mp-profiles";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -129,7 +130,7 @@ function Selector({
         >
           <option value="">— Profile —</option>
           {profiles.map((p) => (
-            <option key={p.id} value={p.label.toLowerCase()}>
+            <option key={p.id} value={profileToSlug(p.label)}>
               Perfil {p.label} — {p.name}
             </option>
           ))}
@@ -238,7 +239,7 @@ export default function CompareView({ platforms, profiles }: Props) {
       setLoading(side);
       try {
         const res = await fetch(
-          `/api/model-portfolio/performance?platform=${platform}&profile=${profile}`
+          `/api/model-portfolio/performance?platform=${encodeURIComponent(platform)}&profile=${encodeURIComponent(profile)}`
         );
         if (!res.ok) throw new Error("fetch failed");
         const data: PerformanceData = await res.json();

@@ -5,18 +5,14 @@
  *
  * For each fund that appears in any composition, determines the exact
  * date range it is active (min effective_from → max effective_to or today),
- * then fetches EODHD prices only for that window.
- *
- * This is far more efficient than fetching all-time history for all 61 funds:
- *  - Inactive funds (dropped from portfolios) are not re-fetched
- *  - EODHD API calls are scoped to useful date ranges only
+ * then fetches FT Markets / Yahoo Finance prices for that window.
  *
  * Requires authenticated admin session.
  */
 
 import { NextResponse } from "next/server";
 import { createServerClient, supabaseAdmin } from "@/lib/supabase";
-import { getHistoricalPrices, resolveISINToTicker } from "@/lib/eodhd";
+import { fetchFundPriceHistory } from "@/lib/fund-price-sources";
 
 export const dynamic     = "force-dynamic";
 export const maxDuration = 60;
@@ -43,14 +39,12 @@ export async function POST() {
 
   const today = new Date().toISOString().slice(0, 10);
 
-  // ── Step 1: derive per-fund active date ranges from compositions ──────────
-
   const { data: raw } = await supabaseAdmin
     .from("mp_composition_holdings")
     .select(`
       fund_id,
       mp_portfolio_compositions!inner(effective_from, effective_to),
-      mp_funds!inner(id, isin, display_name, eodhd_ticker, eodhd_exchange)
+      mp_funds!inner(id, isin, display_name, currency, ft_symbol, yahoo_symbol)
     `);
 
   if (!raw?.length) {
@@ -58,14 +52,15 @@ export async function POST() {
   }
 
   type FundRange = {
-    fundId:    string;
-    isin:      string;
-    name:      string;
-    ticker:    string | null;
-    exchange:  string | null;
-    from:      string;
-    to:        string;  // today if any composition is still active
-    isActive:  boolean; // has at least one active composition
+    fundId:       string;
+    isin:         string;
+    name:         string;
+    currency:     string;
+    ft_symbol:    string | null;
+    yahoo_symbol: string | null;
+    from:         string;
+    to:           string;
+    isActive:     boolean;
   };
 
   const fundMap = new Map<string, FundRange>();
@@ -83,7 +78,10 @@ export async function POST() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ? (row as any).mp_funds[0]
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      : (row as any).mp_funds) as { id: string; isin: string; display_name: string; eodhd_ticker: string | null; eodhd_exchange: string | null };
+      : (row as any).mp_funds) as {
+      id: string; isin: string; display_name: string; currency: string;
+      ft_symbol: string | null; yahoo_symbol: string | null;
+    };
 
     if (!comp || !fund) continue;
 
@@ -96,16 +94,16 @@ export async function POST() {
     if (!existing) {
       fundMap.set(fundId, {
         fundId,
-        isin:     fund.isin,
-        name:     fund.display_name,
-        ticker:   fund.eodhd_ticker,
-        exchange: fund.eodhd_exchange,
-        from:     compFrom,
-        to:       compTo,
-        isActive: compStillOn,
+        isin:         fund.isin,
+        name:         fund.display_name,
+        currency:     fund.currency ?? "USD",
+        ft_symbol:    fund.ft_symbol,
+        yahoo_symbol: fund.yahoo_symbol,
+        from:         compFrom,
+        to:           compTo,
+        isActive:     compStillOn,
       });
     } else {
-      // Expand date range to cover all compositions this fund appears in
       if (compFrom < existing.from) existing.from = compFrom;
       if (compStillOn || compTo > existing.to) {
         existing.to       = compStillOn ? today : compTo;
@@ -114,44 +112,36 @@ export async function POST() {
     }
   }
 
-  // ── Step 2: for each fund, fetch EODHD prices for its active range ────────
-
   const results: Array<{
     fund: string; isin: string; from: string; to: string; inserted: number; error?: string;
   }> = [];
 
   for (const range of fundMap.values()) {
-    // Resolve ticker if missing
-    let ticker = range.ticker && range.exchange
-      ? `${range.ticker}.${range.exchange}`
-      : null;
-
-    if (!ticker) {
-      const resolved = await resolveISINToTicker(range.isin);
-      if (!resolved) {
-        results.push({ fund: range.name, isin: range.isin, from: range.from, to: range.to, inserted: 0, error: "Ticker not found on EODHD" });
-        continue;
-      }
-      ticker = resolved.ticker;
-      // Persist ticker so future syncs don't need to resolve again
-      await supabaseAdmin.from("mp_funds").update({
-        eodhd_ticker:   resolved.ticker.split(".")[0],
-        eodhd_exchange: resolved.exchange,
-      }).eq("id", range.fundId);
-    }
-
     try {
-      const bars = await getHistoricalPrices(ticker, range.from, range.to);
+      const bars = await fetchFundPriceHistory(
+        {
+          id:           range.fundId,
+          isin:         range.isin,
+          currency:     range.currency,
+          ft_symbol:    range.ft_symbol,
+          yahoo_symbol: range.yahoo_symbol,
+        },
+        range.from,
+        range.to
+      );
       if (!bars.length) {
-        results.push({ fund: range.name, isin: range.isin, from: range.from, to: range.to, inserted: 0, error: "No data from EODHD" });
+        results.push({
+          fund: range.name, isin: range.isin, from: range.from, to: range.to,
+          inserted: 0, error: "No data from FT or Yahoo",
+        });
         continue;
       }
 
       const rows = bars.map((b) => ({
         fund_id: range.fundId,
         date:    b.date,
-        price:   b.adjusted_close ?? b.close,
-        source:  "eodhd",
+        price:   b.price,
+        source:  b.source,
       }));
 
       let inserted = 0;
