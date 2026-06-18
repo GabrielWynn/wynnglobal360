@@ -14,7 +14,7 @@ function fmt(value: number | null): string {
 
 function color(value: number | null): string {
   if (value === null) return "var(--wgi-text-muted)";
-  return value >= 0 ? "#10b981" : "#ef4444";
+  return value >= 0 ? "var(--mp-gain, #00873E)" : "var(--mp-loss, #CC0000)";
 }
 
 const PERIODS: Array<{ key: keyof StandardReturns; label: string }> = [
@@ -26,7 +26,7 @@ const PERIODS: Array<{ key: keyof StandardReturns; label: string }> = [
 
 export default function PerformanceSummaryCards({ returns }: Props) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mp-summary-strip">
       {PERIODS.map(({ key, label }) => {
         const value = returns[key];
         return (
@@ -41,7 +41,7 @@ export default function PerformanceSummaryCards({ returns }: Props) {
             >
               {label}
             </p>
-            <p className="text-2xl font-bold" style={{ color: color(value) }}>
+            <p className="text-2xl font-bold tabular-nums" style={{ color: color(value) }}>
               {fmt(value)}
             </p>
           </div>

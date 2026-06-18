@@ -36,7 +36,7 @@ export default function AnnualPerformance({ returns }: Props) {
     >
       {/* Header */}
       <div
-        className="px-5 py-4 border-b"
+        className="px-5 py-4 border-b mp-panel-header"
         style={{ background: "white", borderColor: "var(--wgi-border)" }}
       >
         <p className="text-base font-bold" style={{ color: "var(--wgi-text)" }}>
@@ -52,7 +52,7 @@ export default function AnnualPerformance({ returns }: Props) {
         {[...returns].reverse().map(({ year, return: ret }) => {
           const positive = ret >= 0;
           const pct      = `${positive ? "+" : ""}${(ret * 100).toFixed(2)}%`;
-          const barColor = positive ? "#10b981" : "#ef4444";
+          const barColor = positive ? "var(--mp-gain, #00873E)" : "var(--mp-loss, #CC0000)";
           const w        = bar(ret);
 
           return (

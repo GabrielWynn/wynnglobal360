@@ -119,9 +119,9 @@ function HoldingIdentifierRow({
   const borderColor = {
     idle:    "var(--wgi-border)",
     loading: "var(--wgi-border)",
-    found:   "#10b981",
+    found:   "var(--mp-gain, #00873E)",
     new:     "#f59e0b",
-    error:   "#ef4444",
+    error:   "var(--mp-loss, #CC0000)",
   }[row.status];
 
   return (
@@ -168,7 +168,7 @@ function HoldingIdentifierRow({
 
       {/* Fund name / status hint */}
       {row.status === "found" && row.name && (
-        <p className="text-[11px] pl-1" style={{ color: "#10b981" }}>✓ {row.name}</p>
+        <p className="text-[11px] pl-1" style={{ color: "var(--mp-gain, #00873E)" }}>✓ {row.name}</p>
       )}
       {row.status === "new" && (
         <p className="text-[11px] pl-1" style={{ color: "#f59e0b" }}>
@@ -357,13 +357,13 @@ function CompositionForm({
                   className="h-full rounded-full transition-all"
                   style={{
                     width: `${Math.min(totalWeight * 100, 100)}%`,
-                    background: weightOk ? "#10b981" : totalWeight > 1 ? "#ef4444" : "#f59e0b",
+                    background: weightOk ? "var(--mp-gain, #00873E)" : totalWeight > 1 ? "var(--mp-loss, #CC0000)" : "#f59e0b",
                   }}
                 />
               </div>
               <span
                 className="text-xs font-semibold"
-                style={{ color: weightOk ? "#10b981" : totalWeight > 1 ? "#ef4444" : "#f59e0b" }}
+                style={{ color: weightOk ? "var(--mp-gain, #00873E)" : totalWeight > 1 ? "var(--mp-loss, #CC0000)" : "#f59e0b" }}
               >
                 {(totalWeight * 100).toFixed(1)}%
               </span>
@@ -557,7 +557,7 @@ export default function CompositionManager({
                       {fmt(c.effective_from)}
                     </td>
                     <td className="px-5 py-3 text-sm font-semibold"
-                        style={{ color: c.effective_to ? "var(--wgi-text)" : "#10b981" }}>
+                        style={{ color: c.effective_to ? "var(--wgi-text)" : "var(--mp-gain, #00873E)" }}>
                       {c.effective_to ? fmt(c.effective_to) : "Current"}
                     </td>
                     <td className="px-5 py-3">

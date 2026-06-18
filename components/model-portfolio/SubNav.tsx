@@ -65,6 +65,7 @@ export default function ModelPortfolioSubNav({ isAdmin }: Props) {
             style={{
               background: active ? "var(--wgi-navy)" : "transparent",
               color:      active ? "white" : "var(--wgi-text-muted)",
+              boxShadow:  active ? "inset 0 -2px 0 var(--wgi-gold)" : undefined,
             }}
           >
             <Icon size={13} stroke={active ? 2.2 : 1.75} />

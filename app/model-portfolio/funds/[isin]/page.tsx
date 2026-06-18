@@ -3,6 +3,7 @@ import Link from "next/link";
 import { IconChevronLeft } from "@tabler/icons-react";
 import { supabaseAdmin } from "@/lib/supabase";
 import { formatReturn, returnColor } from "@/lib/model-portfolio";
+import { profileColor } from "@/lib/mp-profiles";
 import { parseFundIdentifier } from "@/lib/fund-identifiers";
 
 interface PageProps {
@@ -87,8 +88,7 @@ export default async function FundDrilldownPage({ params }: PageProps) {
       {/* Breadcrumb */}
       <Link
         href="/model-portfolio"
-        className="inline-flex items-center gap-1 text-sm transition-opacity hover:opacity-70"
-        style={{ color: "var(--wgi-accent)" }}
+        className="inline-flex items-center gap-1 text-sm transition-opacity hover:opacity-70 mp-text-link"
       >
         <IconChevronLeft size={15} />
         Model Portfolio
@@ -232,10 +232,7 @@ export default async function FundDrilldownPage({ params }: PageProps) {
                       <span
                         className="text-xs font-bold px-2 py-0.5 rounded-full text-white"
                         style={{
-                          background:
-                            profile?.label === "A" ? "#10b981" :
-                            profile?.label === "B" ? "#3b82f6" :
-                            profile?.label === "C" ? "#f59e0b" : "#ef4444",
+                          background: profileColor(profile?.label ?? ""),
                         }}
                       >
                         {profile?.label ?? "—"}

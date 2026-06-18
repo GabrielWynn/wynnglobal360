@@ -272,7 +272,7 @@ export default function PerformanceChart({
               type="monotone"
               dataKey="benchmarkReturn"
               name={benchmarkName}
-              stroke="#ef4444"
+              stroke="var(--mp-loss, #CC0000)"
               strokeWidth={1.5}
               strokeDasharray="4 3"
               dot={false}

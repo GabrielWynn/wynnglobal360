@@ -14,12 +14,12 @@ export default function HoldingsTable({ holdings, periodLabel }: Props) {
 
   return (
     <div
-      className="rounded-2xl border overflow-hidden"
+      className="rounded-2xl border overflow-hidden mp-holdings-table"
       style={{ borderColor: "var(--wgi-border)" }}
     >
       {/* Table header */}
       <div
-        className="px-5 py-3 border-b flex items-center justify-between"
+        className="px-5 py-3 border-b flex items-center justify-between mp-panel-header"
         style={{
           background: "white",
           borderColor: "var(--wgi-border)",

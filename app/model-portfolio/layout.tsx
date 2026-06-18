@@ -1,8 +1,16 @@
 import { redirect } from "next/navigation";
+import { Raleway } from "next/font/google";
 import Navbar from "@/components/hub/Navbar";
 import SessionTimeout from "@/components/SessionTimeout";
 import SubNav from "@/components/model-portfolio/SubNav";
 import { createServerClient, supabaseAdmin } from "@/lib/supabase";
+import "./model-portfolio.css";
+
+const mpFont = Raleway({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
 
 export default async function ModelPortfolioLayout({
   children,
@@ -45,7 +53,10 @@ export default async function ModelPortfolioLayout({
       {/* 40 px sub-nav sits directly below the 64 px main navbar */}
       <SubNav isAdmin={isAdmin} />
       {/* pt-[104px] = 64 px navbar + 40 px sub-nav */}
-      <div className="pt-[104px] min-h-screen" style={{ background: "var(--wgi-bg)" }}>
+      <div
+        className={`mp-shell pt-[104px] min-h-screen ${mpFont.className}`}
+        style={{ background: "var(--wgi-bg)" }}
+      >
         {children}
       </div>
     </>

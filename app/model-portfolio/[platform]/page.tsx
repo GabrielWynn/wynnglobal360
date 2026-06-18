@@ -21,7 +21,7 @@ function fmt(v: number | null): string {
 
 function color(v: number | null): string {
   if (v === null) return "var(--wgi-text-muted)";
-  return v >= 0 ? "#10b981" : "#ef4444";
+  return v >= 0 ? "var(--mp-gain, #00873E)" : "var(--mp-loss, #CC0000)";
 }
 
 async function getPlatformData(slug: string) {
@@ -107,8 +107,7 @@ export default async function PlatformPage({ params }: PageProps) {
     <div className="max-w-5xl mx-auto px-6 md:px-10 py-10">
       <Link
         href="/model-portfolio"
-        className="inline-flex items-center gap-1 text-sm mb-6 transition-opacity hover:opacity-70"
-        style={{ color: "var(--wgi-accent)" }}
+        className="inline-flex items-center gap-1 text-sm mb-6 transition-opacity hover:opacity-70 mp-text-link"
       >
         <IconChevronLeft size={15} />
         All Platforms
@@ -135,8 +134,8 @@ export default async function PlatformPage({ params }: PageProps) {
             >
               <div className="flex items-center gap-3 mb-5">
                 <span
-                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-lg font-bold flex-shrink-0"
-                  style={{ background: meta.color }}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
+                  style={{ background: meta.bg, color: meta.color, border: "1px solid var(--wgi-border)" }}
                 >
                   {prof.label}
                 </span>
@@ -163,7 +162,7 @@ export default async function PlatformPage({ params }: PageProps) {
                 ))}
               </div>
 
-              <p className="mt-4 text-xs group-hover:underline" style={{ color: "var(--wgi-accent)" }}>
+              <p className="mt-4 text-xs group-hover:underline mp-text-link">
                 View details →
               </p>
             </Link>

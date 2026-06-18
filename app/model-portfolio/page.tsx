@@ -52,7 +52,7 @@ export default async function ModelPortfolioPage() {
       <div className="mb-8">
         <h1
           className="text-2xl md:text-3xl font-bold"
-          style={{ color: "var(--wgi-text)" }}
+          style={{ color: "var(--wgi-navy)" }}
         >
           Model Portfolio
         </h1>
@@ -118,10 +118,7 @@ export default async function ModelPortfolioPage() {
                 ))}
               </div>
 
-              <p
-                className="mt-4 text-xs group-hover:underline"
-                style={{ color: "var(--wgi-accent)" }}
-              >
+              <p className="mt-4 text-xs group-hover:underline mp-text-link">
                 View performance →
               </p>
             </a>

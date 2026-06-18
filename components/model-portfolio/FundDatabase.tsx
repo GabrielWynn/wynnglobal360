@@ -51,7 +51,7 @@ function ActivityBadge({ active }: { active: boolean }) {
     >
       <span
         className="w-1.5 h-1.5 rounded-full"
-        style={{ background: active ? "#10b981" : "#94a3b8" }}
+        style={{ background: active ? "var(--mp-gain, #00873E)" : "#94a3b8" }}
       />
       {active ? "Active" : "Inactive"}
     </span>
@@ -116,11 +116,11 @@ function StatsBar({ funds }: { funds: FundRow[] }) {
     <div className="flex flex-wrap gap-6 px-5 py-4 rounded-xl border"
          style={{ background: "white", borderColor: "var(--wgi-border)" }}>
       {stat("Total Funds",   total,    "var(--wgi-navy)")}
-      {stat("Active",        active,   "#10b981")}
+      {stat("Active",        active,   "var(--mp-gain, #00873E)")}
       {stat("Inactive",      inactive, "#94a3b8")}
-      {stat("No Ticker",     noTicker, noTicker  > 0 ? "#f59e0b" : "#10b981")}
-      {stat("No Prices",     noPrices, noPrices  > 0 ? "#ef4444" : "#10b981")}
-      {stat("Stale Prices",  stale,    stale     > 0 ? "#f59e0b" : "#10b981")}
+      {stat("No Ticker",     noTicker, noTicker  > 0 ? "#f59e0b" : "var(--mp-gain, #00873E)")}
+      {stat("No Prices",     noPrices, noPrices  > 0 ? "var(--mp-loss, #CC0000)" : "var(--mp-gain, #00873E)")}
+      {stat("Stale Prices",  stale,    stale     > 0 ? "#f59e0b" : "var(--mp-gain, #00873E)")}
     </div>
   );
 }

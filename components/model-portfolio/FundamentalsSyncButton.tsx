@@ -8,7 +8,7 @@ export default function FundamentalsSyncButton() {
       <button
         disabled
         className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold opacity-60 cursor-not-allowed"
-        style={{ background: "var(--wgi-accent)", color: "white" }}
+        style={{ background: "var(--wgi-navy)", color: "white" }}
       >
         Sync Look-Through Data
       </button>

@@ -14,8 +14,7 @@ export default async function ComparePage() {
       {/* Breadcrumb */}
       <Link
         href="/model-portfolio"
-        className="inline-flex items-center gap-1 text-sm transition-opacity hover:opacity-70"
-        style={{ color: "var(--wgi-accent)" }}
+        className="inline-flex items-center gap-1 text-sm transition-opacity hover:opacity-70 mp-text-link"
       >
         <IconChevronLeft size={15} />
         All Platforms

@@ -66,11 +66,12 @@ async function getData(platformSlug: string, profileSlug: string) {
   // Fund IDs across all compositions
   const fundIds = [...new Set(compositions.flatMap((c) => c.holdings.map((h) => h.fundId)))];
 
-  const thirteenMonthsAgo = (() => {
-    const d = new Date();
-    d.setMonth(d.getMonth() - 13);
-    return d.toISOString().slice(0, 10);
-  })();
+  // Lower bound = earliest composition inception, so "Max / since inception"
+  // navigation always has the full history available (not just a trailing window).
+  const earliestFrom = compositions.reduce(
+    (min, c) => (c.effectiveFrom < min ? c.effectiveFrom : min),
+    compositions[0].effectiveFrom
+  );
 
   // Paginate the price query to bypass Supabase's server-side max_rows cap.
   // Each page fetches 900 rows; we stop when a page returns fewer than 900.
@@ -82,7 +83,7 @@ async function getData(platformSlug: string, profileSlug: string) {
       .from("mp_fund_prices")
       .select("fund_id, date, price")
       .in("fund_id", fundIds)
-      .gte("date", thirteenMonthsAgo)
+      .gte("date", earliestFrom)
       .order("date")
       .range(page * PAGE, page * PAGE + PAGE - 1);
 
@@ -130,18 +131,17 @@ export default async function ProfileDetailPage({ params }: PageProps) {
   if (!data) notFound();
 
   const { platform, profile, profileTabs, compositions, chartSeries, standardRet, annualRet, fundamentals } = data;
-  const activeProfileColor = profileColor(profile.label);
 
   return (
     <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 space-y-6">
 
       {/* ── Breadcrumb ─────────────────────────────────────────────────── */}
       <div className="flex items-center gap-2 text-sm" style={{ color: "var(--wgi-text-muted)" }}>
-        <Link href="/model-portfolio" className="hover:underline" style={{ color: "var(--wgi-accent)" }}>
+        <Link href="/model-portfolio" className="hover:underline mp-text-link">
           Model Portfolio
         </Link>
         <span>/</span>
-        <Link href={`/model-portfolio/${platform.slug}`} className="hover:underline" style={{ color: "var(--wgi-accent)" }}>
+        <Link href={`/model-portfolio/${platform.slug}`} className="hover:underline mp-text-link">
           {platform.name}
         </Link>
         <span>/</span>
@@ -153,7 +153,7 @@ export default async function ProfileDetailPage({ params }: PageProps) {
         <div className="flex items-center gap-3">
           <span
             className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-lg font-bold"
-            style={{ background: activeProfileColor }}
+            style={{ background: "var(--wgi-navy)" }}
           >
             {profile.label}
           </span>
@@ -166,18 +166,15 @@ export default async function ProfileDetailPage({ params }: PageProps) {
         </div>
 
         {/* Profile tabs */}
-        <div className="flex rounded-xl border overflow-hidden" style={{ borderColor: "var(--wgi-border)" }}>
+        <div className="flex rounded-xl border overflow-hidden mp-profile-tabs" style={{ borderColor: "var(--wgi-border)" }}>
           {profileTabs.map((label, index) => {
             const active = label === profile.label;
-            const tabColor = profileColor(label);
             return (
               <Link
                 key={label}
                 href={`/model-portfolio/${platform.slug}/${profileToSlug(label)}`}
-                className="px-4 py-2 text-sm font-semibold transition-colors"
+                className={`px-4 py-2 text-sm font-semibold transition-colors${active ? " mp-tab-active" : ""}`}
                 style={{
-                  background:  active ? tabColor : "white",
-                  color:       active ? "white" : "var(--wgi-text-muted)",
                   borderRight: index < profileTabs.length - 1 ? "1px solid var(--wgi-border)" : undefined,
                 }}
               >

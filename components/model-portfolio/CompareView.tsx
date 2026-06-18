@@ -77,7 +77,7 @@ const PERIODS: Array<{ key: keyof StandardReturns; label: string }> = [
 ];
 
 const LEFT_COLOR  = "#1B2D45"; // wgi-navy
-const RIGHT_COLOR = "#f59e0b"; // amber
+const RIGHT_COLOR = "#2C4F7C"; // wgi-navy-500
 
 // ---------------------------------------------------------------------------
 // Side selector

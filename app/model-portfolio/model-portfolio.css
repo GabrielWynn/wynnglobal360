@@ -1,0 +1,111 @@
+/**
+ * Model Portfolio — Yahoo Finance layout skin × Wynn Global brand.
+ * Visual-only overrides; no structural changes.
+ */
+
+.mp-shell {
+  --wgi-bg: #f4f4f5;
+  --wgi-border: #e5e7eb;
+  --wgi-text: #111827;
+  --wgi-text-muted: #6b7280;
+  --mp-gain: #00873e;
+  --mp-loss: #cc0000;
+  --mp-link: var(--wgi-navy);
+  --mp-gold-bg: #fbf7f0;
+  --mp-panel-head: #fafafa;
+}
+
+/* Softer finance-native panels (same DOM, tighter radius) */
+.mp-shell .rounded-2xl {
+  border-radius: 10px;
+}
+
+.mp-shell .rounded-xl {
+  border-radius: 8px;
+}
+
+/* Summary KPI row → connected strip (Yahoo headline stats) */
+.mp-summary-strip {
+  gap: 0 !important;
+  border: 1px solid var(--wgi-border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--wgi-surface);
+}
+
+.mp-summary-strip > div {
+  border-radius: 0 !important;
+  border: none !important;
+  border-right: 1px solid var(--wgi-border) !important;
+  background: var(--wgi-surface) !important;
+}
+
+.mp-summary-strip > div:last-child {
+  border-right: none !important;
+}
+
+/* Platform / profile cards */
+.mp-shell a.group.block.rounded-2xl:hover {
+  border-color: var(--wgi-gold) !important;
+}
+
+/* Dense holdings table (Yahoo) */
+.mp-holdings-table thead tr {
+  background: var(--mp-panel-head);
+}
+
+.mp-holdings-table thead th {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.mp-holdings-table tbody tr:hover td {
+  background: #f9fafb !important;
+}
+
+.mp-holdings-table tbody td a {
+  color: var(--wgi-navy) !important;
+  font-weight: 700;
+}
+
+.mp-holdings-table tbody td a:hover {
+  color: var(--wgi-gold) !important;
+}
+
+/* Panel section headers */
+.mp-panel-header {
+  background: var(--mp-panel-head) !important;
+}
+
+/* Chart range pills — gold active state */
+.mp-range-group button.mp-range-active {
+  background: var(--mp-gold-bg) !important;
+  color: var(--wgi-navy) !important;
+  box-shadow: inset 0 0 0 1px var(--wgi-gold);
+}
+
+.mp-range-group button:not(.mp-range-active):hover {
+  color: var(--wgi-navy) !important;
+}
+
+/* Profile tab row on detail page */
+.mp-profile-tabs a.mp-tab-active {
+  background: var(--wgi-navy) !important;
+  color: #fff !important;
+}
+
+.mp-profile-tabs a:not(.mp-tab-active) {
+  background: #fff !important;
+  color: var(--wgi-text-muted) !important;
+}
+
+/* Breadcrumb / back links */
+.mp-shell .mp-text-link {
+  color: var(--mp-link);
+  font-weight: 600;
+}
+
+.mp-shell .mp-text-link:hover {
+  color: var(--wgi-gold);
+}

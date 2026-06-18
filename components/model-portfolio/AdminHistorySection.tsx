@@ -81,7 +81,7 @@ function SyncToolbar() {
           {icon(syncState)}
         </button>
         {syncMsg && (
-          <span className="text-[11px]" style={{ color: syncState === "error" ? "#ef4444" : "#10b981" }}>
+          <span className="text-[11px]" style={{ color: syncState === "error" ? "var(--mp-loss, #CC0000)" : "var(--mp-gain, #00873E)" }}>
             {syncMsg}
           </span>
         )}
@@ -99,7 +99,7 @@ function SyncToolbar() {
           {icon(seedState)}
         </button>
         {seedMsg && (
-          <span className="text-[11px]" style={{ color: seedState === "error" ? "#ef4444" : "#10b981" }}>
+          <span className="text-[11px]" style={{ color: seedState === "error" ? "var(--mp-loss, #CC0000)" : "var(--mp-gain, #00873E)" }}>
             {seedMsg}
           </span>
         )}

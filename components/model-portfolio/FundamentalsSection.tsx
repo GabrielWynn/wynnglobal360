@@ -7,10 +7,10 @@ import type { PortfolioFundamentals, TopHolding } from "@/lib/portfolio-fundamen
 // ---------------------------------------------------------------------------
 
 const COLORS = {
-  asset:   "#0d9488",  // teal
-  region:  "#3b82f6",  // blue
-  sector:  "#7c3aed",  // violet
-  country: "#d97706",  // amber
+  asset:   "#1B2D45",
+  region:  "#2C4F7C",
+  sector:  "#C8A96E",
+  country: "#64748B",
 };
 
 // ---------------------------------------------------------------------------
@@ -32,7 +32,7 @@ function SectionCard({
       style={{ borderColor: "var(--wgi-border)" }}
     >
       <div
-        className="px-5 py-4 border-b"
+        className="px-5 py-4 border-b mp-panel-header"
         style={{ background: "white", borderColor: "var(--wgi-border)" }}
       >
         <p className="text-base font-bold" style={{ color: "var(--wgi-text)" }}>

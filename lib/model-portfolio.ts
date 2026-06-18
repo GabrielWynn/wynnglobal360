@@ -225,5 +225,5 @@ export function formatReturn(value: number | null, decimals = 2): string {
 
 export function returnColor(value: number | null): string {
   if (value === null) return "var(--wgi-text-muted)";
-  return value >= 0 ? "#10b981" : "#ef4444";
+  return value >= 0 ? "var(--mp-gain, #00873E)" : "var(--mp-loss, #CC0000)";
 }

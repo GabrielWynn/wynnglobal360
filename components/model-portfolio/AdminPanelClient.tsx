@@ -110,7 +110,7 @@ function PriceSyncSection({ benchmarkPriceRows }: { benchmarkPriceRows: number }
           title="Sync Today's Prices"
           desc="Fetches today's NAV for every fund currently active in a composition. Inactive funds are skipped."
           btnLabel="Sync Now"
-          btnColor="var(--wgi-navy)"
+          btnColor="#1B2D45"
           state={syncState}
           msg={syncMsg}
           icon={<IconRefresh size={15} />}
@@ -134,7 +134,7 @@ function PriceSyncSection({ benchmarkPriceRows }: { benchmarkPriceRows: number }
           title="Seed Benchmark History"
           desc={`Fetches historical prices for all benchmarks (S&P 500, MSCI World, etc.). ${benchmarkPriceRows > 0 ? `${benchmarkPriceRows.toLocaleString()} rows stored.` : "Not yet seeded."}`}
           btnLabel={benchmarkPriceRows > 0 ? "Re-seed Benchmarks" : "Seed Benchmarks"}
-          btnColor="#10b981"
+          btnColor="#1B2D45"
           state={benchState}
           msg={benchMsg}
           icon={<IconDatabase size={15} />}
@@ -170,7 +170,7 @@ function Card({
         <StatusIcon state={state} />
       </button>
       {msg && (
-        <p className="text-xs" style={{ color: state === "error" ? "#ef4444" : "#10b981" }}>
+        <p className="text-xs" style={{ color: state === "error" ? "var(--mp-loss, #CC0000)" : "var(--mp-gain, #00873E)" }}>
           {msg}
         </p>
       )}

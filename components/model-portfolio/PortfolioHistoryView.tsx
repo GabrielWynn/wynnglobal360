@@ -60,7 +60,7 @@ function CompositionCard({
     <div
       className="rounded-xl border overflow-hidden"
       style={{
-        borderColor: isCurrent ? "#10b981" : "var(--wgi-border)",
+        borderColor: isCurrent ? "var(--wgi-gold)" : "var(--wgi-border)",
         borderWidth:  isCurrent ? "1.5px" : "1px",
       }}
     >
@@ -238,8 +238,8 @@ export default function PortfolioHistoryView({
                   {onAddComp && (
                     <button
                       onClick={() => onAddComp(platform.id, profileId)}
-                      className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border transition-colors hover:bg-slate-50"
-                      style={{ borderColor: "var(--wgi-border)", color: "var(--wgi-accent)" }}
+                      className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-lg border transition-colors hover:bg-slate-50 mp-text-link"
+                      style={{ borderColor: "var(--wgi-border)" }}
                     >
                       <IconPlus size={11} /> Add first composition
                     </button>
