@@ -32,6 +32,7 @@ async function revalidateModelPortfolioPages(
       revalidatePath(`/model-portfolio/${platform.slug}/${profileToSlug(profile.label)}`);
     }
   }
+  revalidatePath("/model-portfolio/admin");
 }
 
 // ---------------------------------------------------------------------------

@@ -40,6 +40,8 @@ async function getAdminUser() {
 // Page
 // ---------------------------------------------------------------------------
 
+export const dynamic = "force-dynamic";
+
 export default async function ModelPortfolioAdminPage() {
   const adminUser = await getAdminUser();
   if (!adminUser) redirect("/model-portfolio");

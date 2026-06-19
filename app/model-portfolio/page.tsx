@@ -109,15 +109,24 @@ export default async function ModelPortfolioPage() {
               </div>
 
               <div className="flex flex-wrap gap-2">
-                {chips.map(({ label }) => (
+                {chips.length === 0 ? (
                   <span
-                    key={label}
-                    className="min-w-[2.5rem] text-center py-1.5 px-2 rounded-lg text-xs font-bold text-white"
-                    style={{ background: PROFILE_COLORS[label] ?? "#64748b" }}
+                    className="text-xs px-2 py-1 rounded-lg"
+                    style={{ background: "#fef3c7", color: "#92400e" }}
                   >
-                    {label}
+                    No profiles yet — add compositions in Admin
                   </span>
-                ))}
+                ) : (
+                  chips.map(({ label }) => (
+                    <span
+                      key={label}
+                      className="min-w-[2.5rem] text-center py-1.5 px-2 rounded-lg text-xs font-bold text-white"
+                      style={{ background: PROFILE_COLORS[label] ?? "#64748b" }}
+                    >
+                      {label}
+                    </span>
+                  ))
+                )}
               </div>
 
               <p className="mt-4 text-xs group-hover:underline mp-text-link">

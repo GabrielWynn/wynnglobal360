@@ -125,7 +125,21 @@ export default async function PlatformPage({ params }: PageProps) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        {profileSummaries.map((prof) => {
+        {profileSummaries.length === 0 ? (
+          <div
+            className="sm:col-span-2 rounded-2xl border p-8 text-center"
+            style={{ background: "white", borderColor: "var(--wgi-border)" }}
+          >
+            <p className="text-base font-semibold" style={{ color: "var(--wgi-text)" }}>
+              No portfolio compositions yet
+            </p>
+            <p className="text-sm mt-2" style={{ color: "var(--wgi-text-muted)" }}>
+              This life company is registered, but no risk-profile compositions have been added.
+              Add compositions in Admin → Portfolio History, then return here.
+            </p>
+          </div>
+        ) : (
+        profileSummaries.map((prof) => {
           const meta = PROFILE_META[prof.label] ?? { color: "#64748b", bg: "#f8fafc", desc: prof.name };
           return (
             <Link
@@ -169,7 +183,8 @@ export default async function PlatformPage({ params }: PageProps) {
               </p>
             </Link>
           );
-        })}
+        })
+        )}
       </div>
     </div>
   );

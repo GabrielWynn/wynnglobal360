@@ -5,6 +5,7 @@
  * POST → create { name, slug? }
  */
 
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { createServerClient, supabaseAdmin } from "@/lib/supabase";
 
@@ -80,6 +81,12 @@ export async function POST(request: Request) {
   if (error) {
     const status = error.code === "23505" ? 409 : 500;
     return NextResponse.json({ error: error.message }, { status });
+  }
+
+  revalidatePath("/model-portfolio");
+  revalidatePath("/model-portfolio/admin");
+  if (data?.slug) {
+    revalidatePath(`/model-portfolio/${data.slug}`);
   }
 
   return NextResponse.json({ ok: true, platform: data });

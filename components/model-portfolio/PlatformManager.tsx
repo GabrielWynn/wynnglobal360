@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IconBuilding, IconLoader2, IconPlus } from "@tabler/icons-react";
 
 interface Platform {
@@ -22,13 +22,24 @@ function slugify(name: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-export default function PlatformManager({ platforms, onCreated }: Props) {
+export default function PlatformManager({ platforms: initialPlatforms, onCreated }: Props) {
+  const [platforms, setPlatforms] = useState(initialPlatforms);
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    setPlatforms(initialPlatforms);
+  }, [initialPlatforms]);
+
+  async function refreshPlatforms() {
+    const res = await fetch("/api/model-portfolio/admin/platforms", { cache: "no-store" });
+    const data = await res.json();
+    if (Array.isArray(data)) setPlatforms(data);
+  }
 
   function handleNameChange(value: string) {
     setName(value);
@@ -57,6 +68,11 @@ export default function PlatformManager({ platforms, onCreated }: Props) {
       setName("");
       setSlug("");
       setSlugTouched(false);
+      setPlatforms((prev) => {
+        if (prev.some((p) => p.id === data.platform.id)) return prev;
+        return [...prev, data.platform].sort((a, b) => a.name.localeCompare(b.name));
+      });
+      await refreshPlatforms();
       onCreated();
     } catch {
       setError("Network error");
