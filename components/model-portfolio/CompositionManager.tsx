@@ -231,7 +231,10 @@ function CompositionForm({
   useEffect(() => {
     if (!platformId || !profileId || !effectiveFrom || initial) { setCurrentComp(null); return; }
     (async () => {
-      const res  = await fetch(`/api/model-portfolio/admin/compositions?platform=${platformId}&profile=${profileId}`);
+      const res  = await fetch(
+        `/api/model-portfolio/admin/compositions?platform=${platformId}&profile=${profileId}`,
+        { cache: "no-store" }
+      );
       const data = await res.json();
       const active = Array.isArray(data) ? data.find((c: CompositionRecord) => !c.effective_to) : null;
       setCurrentComp(active ? `effective from ${fmt(active.effective_from)}` : null);
@@ -440,7 +443,8 @@ export default function CompositionManager({
     if (!initialCompositionId || !selectedPlatform || !selectedProfile) return;
     (async () => {
       const res  = await fetch(
-        `/api/model-portfolio/admin/compositions?platform=${selectedPlatform}&profile=${selectedProfile}`
+        `/api/model-portfolio/admin/compositions?platform=${selectedPlatform}&profile=${selectedProfile}`,
+        { cache: "no-store" }
       );
       const data = await res.json();
       const match = Array.isArray(data)
@@ -456,7 +460,10 @@ export default function CompositionManager({
   const loadCompositions = useCallback(async () => {
     if (!selectedPlatform || !selectedProfile) return;
     setLoading(true);
-    const res  = await fetch(`/api/model-portfolio/admin/compositions?platform=${selectedPlatform}&profile=${selectedProfile}`);
+    const res  = await fetch(
+      `/api/model-portfolio/admin/compositions?platform=${selectedPlatform}&profile=${selectedProfile}`,
+      { cache: "no-store" }
+    );
     const data = await res.json();
     setCompositions(Array.isArray(data) ? data : []);
     setLoading(false);

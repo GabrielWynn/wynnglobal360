@@ -6,7 +6,7 @@ import {
   Tooltip, ResponsiveContainer, ReferenceLine, Brush,
 } from "recharts";
 import type { DailyChartPoint, PortfolioComposition } from "@/lib/portfolio-compositions";
-import { getCompositionAtDate } from "@/lib/portfolio-compositions";
+import { getCompositionAtDate, getCurrentComposition } from "@/lib/portfolio-compositions";
 
 interface Props {
   series:       DailyChartPoint[];
@@ -92,9 +92,9 @@ function HoldingsAtDate({
   compositions: PortfolioComposition[];
   date: string | null;
 }) {
-  const today = new Date().toISOString().slice(0, 10);
-  const targetDate = date ?? today;
-  const comp = getCompositionAtDate(compositions, targetDate);
+  const comp = date
+    ? getCompositionAtDate(compositions, date)
+    : getCurrentComposition(compositions);
 
   const sorted = comp
     ? [...comp.holdings].sort((a, b) => b.weight - a.weight)

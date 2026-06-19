@@ -13,6 +13,8 @@ interface PageProps {
   params: { platform: string };
 }
 
+export const dynamic = "force-dynamic";
+
 function fmt(v: number | null): string {
   if (v === null) return "—";
   const p = (v * 100).toFixed(2);

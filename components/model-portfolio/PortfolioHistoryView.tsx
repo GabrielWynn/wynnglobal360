@@ -157,7 +157,9 @@ export default function PortfolioHistoryView({
   useEffect(() => {
     if (!profileId) return;
     setLoading(true);
-    fetch(`/api/model-portfolio/admin/compositions/history?profile=${profileId}`)
+    fetch(`/api/model-portfolio/admin/compositions/history?profile=${profileId}`, {
+      cache: "no-store",
+    })
       .then((r) => r.json())
       .then(setGroups)
       .catch(console.error)

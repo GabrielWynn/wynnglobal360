@@ -141,6 +141,7 @@ export default function AdminHistorySection({ profiles, platforms, funds }: Prop
   function handleSaved() {
     setHistoryKey((k) => k + 1);
     setManagerContext(null);
+    router.refresh();
   }
 
   return (

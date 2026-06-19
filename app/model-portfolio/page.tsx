@@ -1,6 +1,8 @@
 import { supabaseAdmin } from "@/lib/supabase";
 import { PROFILE_COLORS } from "@/lib/mp-profiles";
 
+export const dynamic = "force-dynamic";
+
 type PlatformRow = { id: string; name: string; slug: string };
 type ProfileChip = { label: string; risk_level: number };
 

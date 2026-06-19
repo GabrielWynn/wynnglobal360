@@ -3,6 +3,7 @@ import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabase";
 import {
   fetchCompositions,
+  getCurrentComposition,
   buildDailyReturns,
   buildChartSeries,
   computeStandardReturns,
@@ -23,6 +24,8 @@ import FundamentalsSection     from "@/components/model-portfolio/FundamentalsSe
 interface PageProps {
   params: { platform: string; profile: string };
 }
+
+export const dynamic = "force-dynamic";
 
 // ---------------------------------------------------------------------------
 // Data fetching
@@ -99,10 +102,7 @@ async function getData(platformSlug: string, profileSlug: string) {
   const standardRet    = computeStandardReturns(dailyReturns);
   const annualRet      = computeAnnualReturns(dailyReturns);
 
-  // Portfolio look-through: use the current (most recent active) composition
-  const activeComposition =
-    compositions.find((c) => c.effectiveTo === null) ??
-    compositions[compositions.length - 1];
+  const activeComposition = getCurrentComposition(compositions);
 
   const fundamentals = activeComposition
     ? await getPortfolioFundamentals(

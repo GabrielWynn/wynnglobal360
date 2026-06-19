@@ -100,6 +100,19 @@ export function getCompositionAtDate(
   );
 }
 
+/** The active composition, or the most recent version if none is open. */
+export function getCurrentComposition(
+  compositions: PortfolioComposition[]
+): PortfolioComposition | null {
+  if (!compositions.length) return null;
+  return (
+    compositions.find((c) => c.effectiveTo === null) ??
+    [...compositions].sort((a, b) =>
+      b.effectiveFrom.localeCompare(a.effectiveFrom)
+    )[0]
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Build daily portfolio return series from compositions + prices
 // ---------------------------------------------------------------------------

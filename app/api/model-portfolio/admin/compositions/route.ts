@@ -9,10 +9,30 @@
  * All routes require an authenticated admin session.
  */
 
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { createServerClient, supabaseAdmin } from "@/lib/supabase";
+import { profileToSlug } from "@/lib/mp-profiles";
 
 export const dynamic = "force-dynamic";
+
+async function revalidateModelPortfolioPages(
+  platformId: string,
+  profileId: string
+): Promise<void> {
+  const [{ data: platform }, { data: profile }] = await Promise.all([
+    supabaseAdmin.from("mp_platforms").select("slug").eq("id", platformId).maybeSingle(),
+    supabaseAdmin.from("mp_risk_profiles").select("label").eq("id", profileId).maybeSingle(),
+  ]);
+
+  revalidatePath("/model-portfolio");
+  if (platform?.slug) {
+    revalidatePath(`/model-portfolio/${platform.slug}`);
+    if (profile?.label) {
+      revalidatePath(`/model-portfolio/${platform.slug}/${profileToSlug(profile.label)}`);
+    }
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Auth helper
@@ -119,6 +139,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: holdErr.message }, { status: 500 });
   }
 
+  await revalidateModelPortfolioPages(platformId, profileId);
   return NextResponse.json({ ok: true, id: comp.id });
 }
 
@@ -135,16 +156,40 @@ export async function PUT(request: Request) {
   const id = searchParams.get("id");
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-  const { holdings, notes, effectiveFrom } = await request.json();
+  const { holdings, notes, effectiveFrom, platformId, profileId } = await request.json();
+
+  const { data: existing, error: fetchErr } = await supabaseAdmin
+    .from("mp_portfolio_compositions")
+    .select("platform_id, profile_id")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (fetchErr || !existing) {
+    return NextResponse.json({ error: fetchErr?.message ?? "Composition not found" }, { status: 404 });
+  }
+
+  const resolvedPlatformId = platformId ?? existing.platform_id;
+  const resolvedProfileId  = profileId  ?? existing.profile_id;
 
   // Update metadata
-  await supabaseAdmin
+  const { error: metaErr } = await supabaseAdmin
     .from("mp_portfolio_compositions")
     .update({ notes, effective_from: effectiveFrom })
     .eq("id", id);
 
+  if (metaErr) {
+    return NextResponse.json({ error: metaErr.message }, { status: 500 });
+  }
+
   // Replace holdings
-  await supabaseAdmin.from("mp_composition_holdings").delete().eq("composition_id", id);
+  const { error: deleteErr } = await supabaseAdmin
+    .from("mp_composition_holdings")
+    .delete()
+    .eq("composition_id", id);
+
+  if (deleteErr) {
+    return NextResponse.json({ error: deleteErr.message }, { status: 500 });
+  }
 
   if (Array.isArray(holdings) && holdings.length) {
     const rows = holdings.map((h: { fundId: string; weight: number }) => ({
@@ -156,6 +201,7 @@ export async function PUT(request: Request) {
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  await revalidateModelPortfolioPages(resolvedPlatformId, resolvedProfileId);
   return NextResponse.json({ ok: true });
 }
 
@@ -172,11 +218,23 @@ export async function DELETE(request: Request) {
   const id = searchParams.get("id");
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
+  const { data: existing, error: fetchErr } = await supabaseAdmin
+    .from("mp_portfolio_compositions")
+    .select("platform_id, profile_id")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (fetchErr || !existing) {
+    return NextResponse.json({ error: fetchErr?.message ?? "Composition not found" }, { status: 404 });
+  }
+
   const { error } = await supabaseAdmin
     .from("mp_portfolio_compositions")
     .delete()
     .eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await revalidateModelPortfolioPages(existing.platform_id, existing.profile_id);
   return NextResponse.json({ ok: true });
 }
