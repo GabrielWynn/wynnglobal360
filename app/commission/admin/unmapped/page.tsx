@@ -175,7 +175,7 @@ export default function UnmappedPage() {
 
         {/* ── Azure retry result ──────────────────────────────────────────── */}
         {retryResult && (
-          <div className="bg-blue-50 border border-blue-200 text-blue-900 px-4 py-3 rounded-md text-sm space-y-1">
+          <div className="bg-[var(--wgi-bg)] border border-[var(--wgi-border)] text-[var(--wgi-navy)] px-4 py-3 rounded-md text-sm space-y-1">
             <p className="font-medium">Azure retry complete</p>
             <p>
               Checked <strong>{retryResult.total_checked}</strong> distinct polic{retryResult.total_checked === 1 ? 'y' : 'ies'} —
@@ -184,7 +184,7 @@ export default function UnmappedPage() {
               still unmapped <strong>{retryResult.still_unmapped}</strong>.
             </p>
             {retryResult.errors.length > 0 && (
-              <ul className="list-disc list-inside text-blue-700 mt-1">
+              <ul className="list-disc list-inside text-[var(--wgi-text-muted)] mt-1">
                 {retryResult.errors.slice(0, 5).map((e, i) => <li key={i}>{e}</li>)}
                 {retryResult.errors.length > 5 && (
                   <li>…and {retryResult.errors.length - 5} more errors</li>
@@ -254,7 +254,7 @@ export default function UnmappedPage() {
                             onChange={e =>
                               setAssignments(prev => ({ ...prev, [p.policy_number]: e.target.value }))
                             }
-                            className="flex-1 text-sm border border-gray-300 rounded-md px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                            className="flex-1 text-sm border border-gray-300 rounded-md px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-[var(--wgi-gold)] bg-white"
                           >
                             <option value="">— Select IFA —</option>
                             {ifas.map(ifa => (

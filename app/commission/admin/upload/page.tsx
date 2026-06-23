@@ -432,7 +432,7 @@ export default function UploadPage() {
       <select
         value={mapping[field] as string}
         onChange={e => setMapping(prev => ({ ...prev, [field]: e.target.value }))}
-        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--wgi-gold)]"
       >
         <option value="">— not mapped —</option>
         {headers.map(h => (
@@ -499,7 +499,7 @@ export default function UploadPage() {
               <select
                 value={selectedPlatformId}
                 onChange={e => setSelectedPlatformId(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--wgi-gold)]"
               >
                 <option value="">— Select platform —</option>
                 {platforms.map(p => (

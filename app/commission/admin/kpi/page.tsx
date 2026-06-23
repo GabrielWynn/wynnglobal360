@@ -152,7 +152,7 @@ export default function KPIDashboard() {
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-700 mx-auto" />
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--wgi-navy)] mx-auto" />
         <p className="mt-3 text-sm text-gray-500">Loading dashboard…</p>
       </div>
     </div>

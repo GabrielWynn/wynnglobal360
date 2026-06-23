@@ -321,7 +321,7 @@ export default function PaymentMatrixPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--wgi-navy)] mx-auto" />
           <p className="mt-4 text-gray-600">Loading payment matrix...</p>
         </div>
       </div>
@@ -396,7 +396,7 @@ export default function PaymentMatrixPage() {
             <select
               value={filterPlatform}
               onChange={e => setFilterPlatform(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[var(--wgi-gold)]"
             >
               <option value="all">All Platforms</option>
               {platforms.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -573,7 +573,7 @@ export default function PaymentMatrixPage() {
                     <select
                       value={form.platform_id}
                       onChange={e => setForm(f => ({ ...f, platform_id: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                     >
                       <option value="">Select platform...</option>
                       {platforms.map(p => (
@@ -589,7 +589,7 @@ export default function PaymentMatrixPage() {
                     <select
                       value={form.ifa_id}
                       onChange={e => setForm(f => ({ ...f, ifa_id: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                     >
                       <option value="">— All IFAs —</option>
                       {ifas.map(i => (
@@ -606,7 +606,7 @@ export default function PaymentMatrixPage() {
                   <select
                     value={form.commission_type_code}
                     onChange={e => setForm(f => ({ ...f, commission_type_code: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                   >
                     <option value="">— All Commission Types —</option>
                     {commissionTypes.map(ct => (
@@ -632,7 +632,7 @@ export default function PaymentMatrixPage() {
                       value={form.ifa_rate_pct || ''}
                       onChange={e => setForm(f => ({ ...f, ifa_rate_pct: parseFloat(e.target.value) || 0 }))}
                       placeholder="e.g. 2.50"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                     />
                   </div>
                   <div>
@@ -645,7 +645,7 @@ export default function PaymentMatrixPage() {
                       value={form.company_rate_pct || ''}
                       onChange={e => setForm(f => ({ ...f, company_rate_pct: parseFloat(e.target.value) || 0 }))}
                       placeholder="e.g. 0.50"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                     />
                   </div>
                 </div>
@@ -672,7 +672,7 @@ export default function PaymentMatrixPage() {
                       type="date"
                       value={form.effective_start_date}
                       onChange={e => setForm(f => ({ ...f, effective_start_date: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                     />
                   </div>
                   <div>
@@ -683,7 +683,7 @@ export default function PaymentMatrixPage() {
                       type="date"
                       value={form.effective_end_date}
                       onChange={e => setForm(f => ({ ...f, effective_end_date: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                     />
                   </div>
                 </div>
@@ -752,7 +752,7 @@ export default function PaymentMatrixPage() {
                                 step="0.01"
                                 value={period.split_pct || ''}
                                 onChange={e => updatePeriod(i, 'split_pct', parseFloat(e.target.value) || 0)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm pr-7 focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm pr-7 focus:ring-2 focus:ring-[var(--wgi-gold)]"
                                 placeholder="e.g. 72.00"
                               />
                               <span className="absolute right-2 top-2.5 text-gray-400 text-xs pointer-events-none">%</span>
@@ -764,7 +764,7 @@ export default function PaymentMatrixPage() {
                                 step="1"
                                 value={period.release_months === 0 && i === 0 ? '0' : period.release_months || ''}
                                 onChange={e => updatePeriod(i, 'release_months', parseInt(e.target.value) || 0)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm pr-8 focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm pr-8 focus:ring-2 focus:ring-[var(--wgi-gold)]"
                                 placeholder="0"
                               />
                               <span className="absolute right-2 top-2.5 text-gray-400 text-xs pointer-events-none">mo</span>

@@ -1537,7 +1537,7 @@ export default function MasterFilePage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--wgi-navy)] mx-auto" />
           <p className="mt-4 text-gray-600">Loading commission records…</p>
         </div>
       </div>
@@ -1551,7 +1551,7 @@ export default function MasterFilePage() {
           <p className="text-red-600 font-semibold text-lg mb-2">Failed to load</p>
           <p className="text-gray-600 text-sm mb-4 font-mono bg-red-50 rounded p-2">{loadError}</p>
           <button onClick={() => { setLoadError(null); loadData() }}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
+            className="px-4 py-2 bg-[var(--wgi-navy)] text-white rounded hover:bg-[var(--wgi-navy-600)] text-sm">
             Retry
           </button>
         </div>

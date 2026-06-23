@@ -197,7 +197,7 @@ export default function ApprovalsPage() {
                 placeholder="Filter by IFA or policy…"
                 value={searchIFA}
                 onChange={e => { setSearchIFA(e.target.value); lastClickedIdx.current = -1 }}
-                className="border border-gray-300 rounded-md px-3 py-2 text-sm w-60 focus:ring-2 focus:ring-blue-500"
+                className="border border-gray-300 rounded-md px-3 py-2 text-sm w-60 focus:ring-2 focus:ring-[var(--wgi-gold)]"
               />
               <div className="flex items-center gap-3 flex-wrap">
                 <span className="text-sm text-gray-500">
@@ -352,7 +352,7 @@ export default function ApprovalsPage() {
                 step="0.01"
                 value={overrideAmount}
                 onChange={e => setOverrideAmount(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--wgi-gold)]"
               />
             </div>
 
@@ -363,7 +363,7 @@ export default function ApprovalsPage() {
                 onChange={e => setOverrideReason(e.target.value)}
                 rows={2}
                 placeholder="Explain the reason for the override…"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--wgi-gold)]"
               />
             </div>
 

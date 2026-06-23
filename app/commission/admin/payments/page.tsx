@@ -198,7 +198,7 @@ export default function PaymentsPage() {
               placeholder="Search IFA name or code…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm w-56 focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded-md px-3 py-2 text-sm w-56 focus:ring-2 focus:ring-[var(--wgi-gold)]"
             />
           </div>
 
@@ -284,12 +284,12 @@ export default function PaymentsPage() {
                           onBlur={() => saveNotes(summary.ifa.code)}
                           placeholder="Thresholds, key details, reminders…"
                           rows={4}
-                          className="w-full text-sm border border-gray-200 rounded-md px-3 py-2 resize-y focus:outline-none focus:ring-2 focus:ring-blue-400 bg-amber-50 placeholder-gray-400"
+                          className="w-full text-sm border border-gray-200 rounded-md px-3 py-2 resize-y focus:outline-none focus:ring-2 focus:ring-[var(--wgi-gold)] bg-amber-50 placeholder-gray-400"
                         />
                         <div className="flex items-center justify-between">
                           <p className="text-xs text-gray-400">Saved automatically on blur</p>
                           {notesState[summary.ifa.code]?.saving && (
-                            <p className="text-xs text-blue-500">Saving…</p>
+                            <p className="text-xs text-[var(--wgi-navy)]">Saving…</p>
                           )}
                         </div>
                       </div>
@@ -422,7 +422,7 @@ export default function PaymentsPage() {
                 value={payRef}
                 onChange={e => setPayRef(e.target.value)}
                 placeholder="Bank ref, wire number, etc."
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--wgi-gold)]"
               />
             </div>
 
