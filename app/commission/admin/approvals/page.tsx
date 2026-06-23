@@ -175,7 +175,7 @@ export default function ApprovalsPage() {
 
         <button
           onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[var(--wgi-navy)] font-medium transition-colors"
         >
           ← Back to Admin
         </button>
@@ -208,7 +208,7 @@ export default function ApprovalsPage() {
                   <button
                     onClick={selectAll}
                     disabled={filtered.length === 0}
-                    className="text-blue-600 hover:underline disabled:opacity-40"
+                    className="text-[var(--wgi-navy)] hover:underline disabled:opacity-40"
                   >
                     Select All
                   </button>
@@ -226,14 +226,14 @@ export default function ApprovalsPage() {
                 <button
                   onClick={() => handleBulk('approve')}
                   disabled={actioning}
-                  className="px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-40"
+                  className="px-4 py-2 bg-[var(--wgi-navy)] text-white rounded-md text-sm font-medium hover:bg-[var(--wgi-navy-600)] disabled:opacity-40"
                 >
                   {actioning ? '…' : `Approve ${selected.size}`}
                 </button>
                 <button
                   onClick={() => handleBulk('reject')}
                   disabled={actioning}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-40"
+                  className="px-4 py-2 bg-white text-[var(--cm-status-rejected-text)] border border-gray-300 rounded-md text-sm font-medium hover:border-[var(--cm-status-rejected-text)] disabled:opacity-40"
                 >
                   {actioning ? '…' : `Reject ${selected.size}`}
                 </button>
@@ -261,7 +261,7 @@ export default function ApprovalsPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 text-sm">
-                <thead className="bg-gray-50">
+                <thead className="bg-[var(--wgi-navy)]">
                   <tr>
                     <th className="px-4 py-3 w-10">
                       <input
@@ -272,7 +272,7 @@ export default function ApprovalsPage() {
                       />
                     </th>
                     {['IFA', 'Policy', 'Holder', 'Type', 'Date', 'Gross', 'IFA Amount', 'Company', 'Actions'].map(h => (
-                      <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th key={h} className="px-4 py-3 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">
                         {h}
                       </th>
                     ))}
@@ -280,7 +280,7 @@ export default function ApprovalsPage() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100">
                   {filtered.map((t, idx) => (
-                    <tr key={t.id} className={selected.has(t.id) ? 'bg-blue-50' : 'hover:bg-gray-50'}>
+                    <tr key={t.id} className={selected.has(t.id) ? 'bg-[#eef3f9]' : 'hover:bg-gray-50'}>
                       <td className="px-4 py-3">
                         <input
                           type="checkbox"
@@ -291,33 +291,33 @@ export default function ApprovalsPage() {
                         />
                       </td>
                       <td className="px-4 py-3 font-medium text-gray-900">
-                        <span className="font-mono text-xs bg-gray-100 px-1 py-0.5 rounded">{t.ifas?.code}</span>
+                        <span className="cm-mono text-xs bg-gray-100 px-1 py-0.5 rounded">{t.ifas?.code}</span>
                         <div className="text-xs text-gray-500">{t.ifas?.name}</div>
                       </td>
-                      <td className="px-4 py-3 font-mono text-xs">{t.policies?.policy_number ?? '—'}</td>
+                      <td className="px-4 py-3 cm-mono text-xs">{t.policies?.policy_number ?? '—'}</td>
                       <td className="px-4 py-3 text-gray-600 text-xs">{t.policies?.policy_holder_name ?? '—'}</td>
                       <td className="px-4 py-3 text-xs text-gray-600">{t.commission_type_code || '—'}</td>
                       <td className="px-4 py-3 text-xs text-gray-500">{t.transaction_date ? new Date(t.transaction_date).toLocaleDateString() : '—'}</td>
-                      <td className="px-4 py-3 font-medium text-gray-900">{fmt(t.gross_amount, t.currency)}</td>
-                      <td className="px-4 py-3 font-medium text-green-700">{fmt(t.ifa_amount, t.currency)}</td>
-                      <td className="px-4 py-3 text-gray-600">{fmt(t.company_amount, t.currency)}</td>
+                      <td className="px-4 py-3 cm-mono font-medium text-gray-900">{fmt(t.gross_amount, t.currency)}</td>
+                      <td className="px-4 py-3 cm-mono font-medium text-[var(--cm-gain)]">{fmt(t.ifa_amount, t.currency)}</td>
+                      <td className="px-4 py-3 cm-mono text-gray-600">{fmt(t.company_amount, t.currency)}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2 whitespace-nowrap">
                           <button
                             onClick={() => handleSingle(t.id, 'approve')}
-                            className="text-xs text-green-600 hover:underline font-medium"
+                            className="text-xs text-[var(--cm-status-approved-text)] hover:underline font-medium"
                           >
                             Approve
                           </button>
                           <button
                             onClick={() => handleSingle(t.id, 'reject')}
-                            className="text-xs text-red-600 hover:underline"
+                            className="text-xs text-[var(--cm-status-rejected-text)] hover:underline"
                           >
                             Reject
                           </button>
                           <button
                             onClick={() => openOverride(t)}
-                            className="text-xs text-blue-600 hover:underline"
+                            className="text-xs text-[var(--wgi-navy)] hover:underline"
                           >
                             Override
                           </button>
@@ -377,7 +377,7 @@ export default function ApprovalsPage() {
               <button
                 onClick={handleOverride}
                 disabled={overrideSaving}
-                className="flex-1 bg-blue-600 text-white py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-40"
+                className="flex-1 bg-[var(--wgi-navy)] text-white py-2 rounded-md text-sm font-medium hover:bg-[var(--wgi-navy-600)] disabled:opacity-40"
               >
                 {overrideSaving ? 'Saving…' : 'Apply Override'}
               </button>

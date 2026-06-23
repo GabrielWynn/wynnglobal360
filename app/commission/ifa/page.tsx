@@ -191,13 +191,14 @@ export default function IFAPortal() {
   // ── Helpers ──────────────────────────────────────────────────────────────────
 
   const statusBadge = (status: string) => {
+    // Commission status palette (DESIGN-COMMISSION.md --cm-status-*).
     const map: Record<string, string> = {
-      approved: 'bg-green-100 text-green-800',
-      paid:     'bg-blue-100 text-blue-800',
-      pending:  'bg-yellow-100 text-yellow-800',
-      cancelled:'bg-red-100 text-red-700',
+      approved: 'bg-[var(--cm-status-approved-bg)]  text-[var(--cm-status-approved-text)]',
+      paid:     'bg-[var(--cm-status-paid-bg)]      text-[var(--cm-status-paid-text)]',
+      pending:  'bg-[var(--cm-status-pending-bg)]   text-[var(--cm-status-pending-text)]',
+      cancelled:'bg-[var(--cm-status-rejected-bg)]  text-[var(--cm-status-rejected-text)]',
     }
-    return map[status] ?? 'bg-gray-100 text-gray-600'
+    return map[status] ?? 'bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)]'
   }
 
   // ── Loading ───────────────────────────────────────────────────────────────────
@@ -224,7 +225,7 @@ export default function IFAPortal() {
           onClick={() => router.push('/advisors')}
           className="flex items-center gap-1.5 text-sm font-medium transition-colors"
           style={{ color: 'var(--wgi-text-muted)' }}
-          onMouseEnter={e => (e.currentTarget.style.color = 'var(--wgi-accent)')}
+          onMouseEnter={e => (e.currentTarget.style.color = 'var(--wgi-navy)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--wgi-text-muted)')}
         >
           ← Back to Hub
@@ -233,10 +234,10 @@ export default function IFAPortal() {
         {/* Balance cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {([
-            { label: 'Available Balance', value: balance?.current_balance   ?? 0, accent: '#059669', note: 'Approved, awaiting payment' },
-            { label: 'Suspended',         value: balance?.suspended_balance ?? 0, accent: '#D97706', note: 'Pending approval' },
-            { label: 'Total Earned',      value: balance?.total_earned      ?? 0, accent: 'var(--wgi-accent)', note: 'All time' },
-            { label: 'Total Paid',        value: balance?.total_paid        ?? 0, accent: '#7C3AED', note: 'Already transferred' },
+            { label: 'Available Balance', value: balance?.current_balance   ?? 0, accent: 'var(--cm-gain)', note: 'Approved, awaiting payment' },
+            { label: 'Suspended',         value: balance?.suspended_balance ?? 0, accent: 'var(--cm-status-suspended-text)', note: 'Pending approval' },
+            { label: 'Total Earned',      value: balance?.total_earned      ?? 0, accent: 'var(--wgi-navy)', note: 'All time' },
+            { label: 'Total Paid',        value: balance?.total_paid        ?? 0, accent: 'var(--wgi-navy)', note: 'Already transferred' },
           ] as const).map(({ label, value, accent, note }) => (
             <div
               key={label}
@@ -244,7 +245,7 @@ export default function IFAPortal() {
               style={{ padding: '18px 20px', borderTop: `4px solid ${accent}` }}
             >
               <p style={{ fontSize: '11px', fontWeight: 600, color: 'var(--wgi-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{label}</p>
-              <p style={{ fontSize: '24px', fontWeight: 700, color: accent, marginTop: '6px', letterSpacing: '-0.02em' }}>{formatCurrency(value, 'USD')}</p>
+              <p style={{ fontSize: '24px', fontWeight: 700, color: accent, marginTop: '6px', letterSpacing: '-0.02em', fontFamily: 'var(--font-jetbrains-mono)', fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(value, 'USD')}</p>
               <p style={{ fontSize: '12px', color: 'var(--wgi-text-light)', marginTop: '4px' }}>{note}</p>
             </div>
           ))}
@@ -329,9 +330,9 @@ export default function IFAPortal() {
                 <div className="overflow-x-auto">
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
                     <thead>
-                      <tr style={{ background: '#F8FAFC', borderBottom: '1px solid var(--wgi-border)' }}>
+                      <tr style={{ background: 'var(--wgi-navy)' }}>
                         {['Date', 'Platform', 'Policy', 'Holder', 'Type', 'Amount', 'APE', 'Status', 'Notes'].map(h => (
-                          <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: '11px', fontWeight: 600, color: 'var(--wgi-text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</th>
+                          <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{h}</th>
                         ))}
                       </tr>
                     </thead>
@@ -342,13 +343,13 @@ export default function IFAPortal() {
                             {t.transaction_date ? new Date(t.transaction_date).toLocaleDateString() : '—'}
                           </td>
                           <td style={{ padding: '10px 14px', color: 'var(--wgi-text-muted)' }}>{t.platform?.name ?? '—'}</td>
-                          <td style={{ padding: '10px 14px', fontFamily: 'monospace', fontSize: '12px' }}>{t.policy_number}</td>
+                          <td style={{ padding: '10px 14px', fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '12px' }}>{t.policy_number}</td>
                           <td style={{ padding: '10px 14px', color: 'var(--wgi-text-muted)' }}>{t.policy_holder_name ?? '—'}</td>
                           <td style={{ padding: '10px 14px', color: 'var(--wgi-text-muted)', fontSize: '12px' }}>{t.commission_type || '—'}</td>
-                          <td style={{ padding: '10px 14px', fontWeight: 600, color: 'var(--wgi-text)', whiteSpace: 'nowrap' }}>
+                          <td style={{ padding: '10px 14px', fontWeight: 600, color: 'var(--cm-gain)', whiteSpace: 'nowrap', fontFamily: 'var(--font-jetbrains-mono), monospace', fontVariantNumeric: 'tabular-nums' }}>
                             {formatCurrency(t.ifa_amount, t.currency || 'USD')}
                           </td>
-                          <td style={{ padding: '10px 14px', color: 'var(--wgi-text)', whiteSpace: 'nowrap' }}>
+                          <td style={{ padding: '10px 14px', color: 'var(--wgi-text)', whiteSpace: 'nowrap', fontFamily: 'var(--font-jetbrains-mono), monospace', fontVariantNumeric: 'tabular-nums' }}>
                             {t.ape != null ? formatCurrency(t.ape, t.currency || 'USD') : <span style={{ color: 'var(--wgi-text-light)' }}>—</span>}
                           </td>
                           <td style={{ padding: '10px 14px' }}>
@@ -412,29 +413,29 @@ export default function IFAPortal() {
                   {/* Total card */}
                   <div style={{ display: 'inline-block', background: 'var(--wgi-navy)', borderRadius: '12px', padding: '16px 24px', marginBottom: '24px' }}>
                     <p style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Total APE — {apeYear}</p>
-                    <p style={{ fontSize: '26px', fontWeight: 700, color: '#fff', marginTop: '4px', letterSpacing: '-0.02em' }}>{formatCurrency(apeTotal, 'USD')}</p>
+                    <p style={{ fontSize: '26px', fontWeight: 700, color: '#fff', marginTop: '4px', letterSpacing: '-0.02em', fontFamily: 'var(--font-jetbrains-mono)', fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(apeTotal, 'USD')}</p>
                   </div>
 
                   {/* Period table */}
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', border: '1px solid var(--wgi-border)', borderRadius: '10px', overflow: 'hidden' }}>
                     <thead>
-                      <tr style={{ background: '#F8FAFC' }}>
-                        <th style={{ padding: '10px 20px', textAlign: 'left', fontSize: '11px', fontWeight: 600, color: 'var(--wgi-text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Period</th>
-                        <th style={{ padding: '10px 20px', textAlign: 'right', fontSize: '11px', fontWeight: 600, color: 'var(--wgi-text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>APE</th>
+                      <tr style={{ background: 'var(--wgi-navy)' }}>
+                        <th style={{ padding: '10px 20px', textAlign: 'left', fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Period</th>
+                        <th style={{ padding: '10px 20px', textAlign: 'right', fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>APE</th>
                       </tr>
                     </thead>
                     <tbody>
                       {apePeriods.map(({ period, ape }, i) => (
                         <tr key={period} style={{ borderTop: '1px solid var(--wgi-border)', background: i % 2 === 0 ? '#fff' : '#FAFBFC' }}>
-                          <td style={{ padding: '10px 20px', fontFamily: 'monospace', fontSize: '13px' }}>{period}</td>
-                          <td style={{ padding: '10px 20px', textAlign: 'right', fontWeight: 600, color: 'var(--wgi-text)' }}>{formatCurrency(ape, 'USD')}</td>
+                          <td style={{ padding: '10px 20px', fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '13px' }}>{period}</td>
+                          <td style={{ padding: '10px 20px', textAlign: 'right', fontWeight: 600, color: 'var(--wgi-text)', fontFamily: 'var(--font-jetbrains-mono), monospace', fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(ape, 'USD')}</td>
                         </tr>
                       ))}
                     </tbody>
                     <tfoot>
                       <tr style={{ borderTop: '2px solid var(--wgi-border)', background: '#F8FAFC' }}>
                         <td style={{ padding: '12px 20px', fontSize: '13px', fontWeight: 600, color: 'var(--wgi-text)' }}>Total</td>
-                        <td style={{ padding: '12px 20px', textAlign: 'right', fontWeight: 700, color: 'var(--wgi-navy)' }}>{formatCurrency(apeTotal, 'USD')}</td>
+                        <td style={{ padding: '12px 20px', textAlign: 'right', fontWeight: 700, color: 'var(--wgi-navy)', fontFamily: 'var(--font-jetbrains-mono), monospace', fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(apeTotal, 'USD')}</td>
                       </tr>
                     </tfoot>
                   </table>
@@ -454,9 +455,9 @@ export default function IFAPortal() {
                 <div className="overflow-x-auto">
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
                     <thead>
-                      <tr style={{ background: '#F8FAFC', borderBottom: '1px solid var(--wgi-border)' }}>
+                      <tr style={{ background: 'var(--wgi-navy)' }}>
                         {['Payment Date', 'Amount', 'Transactions', 'Reference'].map(h => (
-                          <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: '11px', fontWeight: 600, color: 'var(--wgi-text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</th>
+                          <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{h}</th>
                         ))}
                       </tr>
                     </thead>
@@ -464,9 +465,9 @@ export default function IFAPortal() {
                       {payments.map((p, i) => (
                         <tr key={p.id} style={{ borderBottom: '1px solid var(--wgi-border)', background: i % 2 === 0 ? '#fff' : '#FAFBFC' }}>
                           <td style={{ padding: '10px 14px', color: 'var(--wgi-text-muted)' }}>{p.payment_date ? new Date(p.payment_date).toLocaleDateString() : '—'}</td>
-                          <td style={{ padding: '10px 14px', fontWeight: 600, color: '#059669' }}>{formatCurrency(p.total_amount, p.currency || 'USD')}</td>
+                          <td style={{ padding: '10px 14px', fontWeight: 600, color: 'var(--cm-gain)', fontFamily: 'var(--font-jetbrains-mono), monospace', fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(p.total_amount, p.currency || 'USD')}</td>
                           <td style={{ padding: '10px 14px', color: 'var(--wgi-text-muted)' }}>{p.transaction_count}</td>
-                          <td style={{ padding: '10px 14px', fontFamily: 'monospace', fontSize: '12px', color: 'var(--wgi-text-muted)' }}>{p.payment_reference ?? '—'}</td>
+                          <td style={{ padding: '10px 14px', fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '12px', color: 'var(--wgi-text-muted)' }}>{p.payment_reference ?? '—'}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -481,17 +482,17 @@ export default function IFAPortal() {
         <div className="wgi-card" style={{ padding: '20px' }}>
           <h3 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--wgi-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>Your Account</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3" style={{ fontSize: '13px' }}>
-            <div><p style={{ color: 'var(--wgi-text-light)', fontSize: '11px', fontWeight: 500, marginBottom: '4px' }}>IFA Code</p><p style={{ fontFamily: 'monospace', fontWeight: 600 }}>{ifa?.code}</p></div>
+            <div><p style={{ color: 'var(--wgi-text-light)', fontSize: '11px', fontWeight: 500, marginBottom: '4px' }}>IFA Code</p><p style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', fontWeight: 600 }}>{ifa?.code}</p></div>
             <div><p style={{ color: 'var(--wgi-text-light)', fontSize: '11px', fontWeight: 500, marginBottom: '4px' }}>Email</p><p style={{ color: 'var(--wgi-text)' }}>{ifa?.email}</p></div>
             <div>
               <p style={{ color: 'var(--wgi-text-light)', fontSize: '11px', fontWeight: 500, marginBottom: '4px' }}>Status</p>
-              <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${ifa?.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+              <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${ifa?.status === 'active' ? 'bg-[var(--cm-status-approved-bg)] text-[var(--cm-status-approved-text)]' : 'bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)]'}`}>
                 {ifa?.status}
               </span>
             </div>
             <div>
               <p style={{ color: 'var(--wgi-text-light)', fontSize: '11px', fontWeight: 500, marginBottom: '4px' }}>Auth</p>
-              <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${ifa?.user_id ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}`}>
+              <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${ifa?.user_id ? 'bg-[var(--cm-status-paid-bg)] text-[var(--cm-status-paid-text)]' : 'bg-[var(--cm-status-pending-bg)] text-[var(--cm-status-pending-text)]'}`}>
                 {ifa?.user_id ? 'Linked' : 'Pending link'}
               </span>
             </div>
@@ -523,6 +524,6 @@ const filterBtnStyle = (variant: 'primary' | 'secondary' | 'export', disabled: b
     fontFamily: 'inherit', border: 'none', opacity: disabled ? 0.45 : 1,
   }
   if (variant === 'primary')   return { ...base, background: 'var(--wgi-navy)', color: '#fff' }
-  if (variant === 'export')    return { ...base, background: '#059669', color: '#fff' }
+  if (variant === 'export')    return { ...base, background: '#fff', border: '1px solid var(--wgi-border)', color: 'var(--wgi-navy)', fontWeight: 600 }
   return { ...base, background: '#fff', border: '1px solid var(--wgi-border)', color: 'var(--wgi-text)' }
 }

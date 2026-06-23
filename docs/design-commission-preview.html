@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WGI Commission Module — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* WGI brand tokens — inherited from hub */
+    --wgi-navy: #1B2D45;
+    --wgi-navy-700: #172B4D;
+    --wgi-navy-600: #1E3A5F;
+    --wgi-navy-500: #2C4F7C;
+    --wgi-navy-400: #3D6898;
+    --wgi-gold: #C8A96E;
+    --wgi-bg: #F8FAFC;
+    --wgi-surface: #FFFFFF;
+    --wgi-border: #E2E8F0;
+    --wgi-text: #1A202C;
+    --wgi-text-muted: #64748B;
+    --wgi-text-light: #94A3B8;
+    --wgi-accent: #2980D9;
+
+    /* Commission-scoped status tokens */
+    --cm-status-pending-bg: #FEF3C7;
+    --cm-status-pending-text: #78350F;
+    --cm-status-approved-bg: #D1FAE5;
+    --cm-status-approved-text: #065F46;
+    --cm-status-rejected-bg: #FEE2E2;
+    --cm-status-rejected-text: #7F1D1D;
+    --cm-status-paid-bg: #E8EDF3;
+    --cm-status-paid-text: #1B2D45;
+    --cm-status-suspended-bg: #F5F3FF;
+    --cm-status-suspended-text: #4C1D95;
+    --cm-status-advance-bg: #FFF7ED;
+    --cm-status-advance-text: #9A3412;
+
+    /* Commission chart palette */
+    --cm-chart-1: #1B2D45;
+    --cm-chart-2: #C8A96E;
+    --cm-chart-3: #3D6898;
+    --cm-chart-4: #7B96B2;
+    --cm-chart-5: #8C7355;
+    --cm-chart-6: #A3B8CC;
+
+    /* Finance semantic */
+    --cm-gain: #00873E;
+    --cm-loss: #CC0000;
+
+    /* Alert tokens */
+    --cm-alert-warning-bg: #FFF7ED;
+    --cm-alert-warning-border: #F59E0B;
+    --cm-alert-warning-text: #92400E;
+    --cm-alert-critical-bg: #FEF2F2;
+    --cm-alert-critical-border: #EF4444;
+    --cm-alert-critical-text: #7F1D1D;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Raleway', sans-serif;
+    background: var(--wgi-bg);
+    color: var(--wgi-text);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  .preview-section {
+    background: white;
+    border-bottom: 1px solid var(--wgi-border);
+    padding: 32px 40px;
+  }
+
+  .preview-section h2 {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--wgi-text-muted);
+    margin-bottom: 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--wgi-border);
+  }
+
+  .hub-header {
+    background: var(--wgi-navy);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 48px;
+    gap: 32px;
+  }
+
+  .hub-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.04em; color: white; }
+  .hub-logo span { color: var(--wgi-gold); }
+
+  .hub-nav { display: flex; gap: 0; height: 100%; }
+
+  .hub-nav a {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    transition: color 120ms;
+    border-bottom: 2px solid transparent;
+  }
+
+  .hub-nav a.active { color: white; border-bottom-color: var(--wgi-gold); }
+
+  .hub-user { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 11px; color: rgba(255,255,255,0.7); }
+
+  .hub-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--wgi-navy-400); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; }
+
+  .commission-nav {
+    background: var(--wgi-surface);
+    border-bottom: 1px solid var(--wgi-border);
+    display: flex;
+    padding: 0 24px;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .commission-nav a {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--wgi-text-muted);
+    text-decoration: none;
+    padding: 10px 14px;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 120ms;
+  }
+
+  .commission-nav a.active { color: var(--wgi-navy); border-bottom-color: var(--wgi-gold); }
+  .commission-nav a:hover:not(.active) { color: var(--wgi-text); background: var(--wgi-bg); }
+
+  .alert-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    border-bottom: 1px solid transparent;
+  }
+
+  .alert-banner.warning { background: var(--cm-alert-warning-bg); border-color: var(--cm-alert-warning-border); color: var(--cm-alert-warning-text); }
+  .alert-banner.critical { background: var(--cm-alert-critical-bg); border-color: var(--cm-alert-critical-border); color: var(--cm-alert-critical-text); }
+  .alert-banner .alert-icon { font-size: 14px; }
+
+  .alert-banner .alert-cta {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid currentColor;
+    color: inherit;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .stat-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; background: var(--wgi-surface); border-bottom: 1px solid var(--wgi-border); }
+
+  .stat-card { padding: 16px 24px; border-right: 1px solid var(--wgi-border); }
+  .stat-card:last-child { border-right: none; }
+
+  .stat-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--wgi-text-muted); margin-bottom: 4px; }
+  .stat-value { font-size: 22px; font-weight: 700; color: var(--wgi-navy); line-height: 1.1; margin-bottom: 2px; }
+  .stat-value.mono { font-family: 'JetBrains Mono', monospace; font-size: 18px; }
+  .stat-sub { font-size: 10px; color: var(--wgi-text-light); font-weight: 500; }
+
+  .stat-card.alert .stat-value { color: var(--cm-alert-critical-text); }
+  .stat-card.alert { border-left: 3px solid var(--cm-alert-critical-border); }
+  .stat-card.warning .stat-value { color: var(--cm-alert-warning-text); }
+  .stat-card.warning { border-left: 3px solid var(--cm-alert-warning-border); }
+
+  .page-content { padding: 20px 24px; display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+
+  .chart-card { background: var(--wgi-surface); border: 1px solid var(--wgi-border); border-radius: 4px; overflow: hidden; }
+
+  .chart-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--wgi-border); background: var(--wgi-bg); }
+
+  .chart-title { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wgi-text-muted); }
+
+  .chart-body { padding: 16px; }
+
+  .bar-chart { display: flex; flex-direction: column; gap: 8px; }
+
+  .bar-row { display: grid; grid-template-columns: 80px 1fr 80px; gap: 8px; align-items: center; }
+
+  .bar-label { font-size: 11px; font-weight: 600; color: var(--wgi-text); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .bar-track { background: var(--wgi-bg); border-radius: 2px; height: 20px; overflow: hidden; }
+
+  .bar-fill { height: 100%; background: var(--wgi-navy); border-radius: 2px; }
+  .bar-fill.gold { background: var(--wgi-gold); }
+  .bar-fill.blue { background: var(--cm-chart-3); }
+
+  .bar-amount { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--wgi-text-muted); text-align: left; }
+
+  .pie-legend { display: flex; flex-direction: column; gap: 8px; }
+
+  .pie-legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; }
+
+  .pie-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .pie-name { flex: 1; color: var(--wgi-text); }
+  .pie-pct { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--wgi-text-muted); min-width: 36px; text-align: right; }
+
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 4px; font-family: 'Raleway', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 120ms; letter-spacing: 0.02em; line-height: 1; }
+
+  .btn-primary { background: var(--wgi-navy); color: white; border-color: var(--wgi-navy); }
+  .btn-primary:hover { background: var(--wgi-navy-600); }
+  .btn-secondary { background: white; color: var(--wgi-navy); border-color: var(--wgi-border); }
+  .btn-secondary:hover { border-color: var(--wgi-navy); }
+  .btn-destructive { background: white; color: var(--cm-status-rejected-text); border-color: var(--wgi-border); }
+  .btn-destructive:hover { border-color: var(--cm-status-rejected-text); }
+  .btn-sm { padding: 4px 10px; font-size: 11px; }
+
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+
+  .badge-pending { background: var(--cm-status-pending-bg); color: var(--cm-status-pending-text); }
+  .badge-approved { background: var(--cm-status-approved-bg); color: var(--cm-status-approved-text); }
+  .badge-rejected { background: var(--cm-status-rejected-bg); color: var(--cm-status-rejected-text); }
+  .badge-paid { background: var(--cm-status-paid-bg); color: var(--cm-status-paid-text); }
+  .badge-suspended { background: var(--cm-status-suspended-bg); color: var(--cm-status-suspended-text); }
+  .badge-advance { background: var(--cm-status-advance-bg); color: var(--cm-status-advance-text); }
+
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+
+  .data-table thead tr { background: var(--wgi-navy); }
+
+  .data-table thead th { color: rgba(255,255,255,0.85); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 12px; text-align: left; border-right: 1px solid rgba(255,255,255,0.08); }
+
+  .data-table thead th.right { text-align: right; }
+
+  .data-table tbody tr { border-bottom: 1px solid var(--wgi-border); transition: background 120ms; }
+  .data-table tbody tr:hover { background: var(--wgi-bg); }
+
+  .data-table td { padding: 9px 12px; color: var(--wgi-text); border-right: 1px solid var(--wgi-border); }
+  .data-table td:last-child { border-right: none; }
+  .data-table td.right { text-align: right; }
+
+  .td-policy { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--wgi-text-muted); }
+
+  .td-amount { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; text-align: right; }
+  .td-amount.positive { color: var(--cm-gain); }
+  .td-amount.negative { color: var(--cm-loss); }
+
+  .td-ifa { font-weight: 600; color: var(--wgi-navy); font-size: 12px; }
+
+  .cell-dirty { border-left: 2px solid var(--wgi-gold) !important; background: #FFFBF4 !important; }
+
+  .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+
+  .form-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wgi-text-muted); }
+
+  .form-input { background: var(--wgi-surface); border: 1px solid var(--wgi-border); border-radius: 4px; padding: 7px 10px; font-family: 'Raleway', sans-serif; font-size: 12px; color: var(--wgi-text); outline: none; transition: border-color 120ms; }
+
+  .form-input:focus { border-color: var(--wgi-gold); box-shadow: 0 0 0 2px rgba(200,169,110,0.15); }
+
+  .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748B' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+
+  .ifa-portal { background: var(--wgi-bg); min-height: 400px; padding: 24px; }
+
+  .ifa-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+
+  .ifa-title { font-size: 18px; font-weight: 700; color: var(--wgi-navy); margin-bottom: 2px; }
+  .ifa-subtitle { font-size: 11px; color: var(--wgi-text-muted); font-weight: 500; }
+
+  .ifa-balance-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+
+  .ifa-balance-card { background: var(--wgi-surface); border: 1px solid var(--wgi-border); border-radius: 4px; padding: 14px 16px; }
+
+  .ifa-balance-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--wgi-text-muted); margin-bottom: 4px; }
+
+  .ifa-balance-value { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 500; color: var(--wgi-navy); }
+
+  .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+
+  .swatch { border-radius: 4px; overflow: hidden; border: 1px solid var(--wgi-border); }
+  .swatch-color { height: 56px; }
+  .swatch-label { padding: 6px 8px; background: white; }
+  .swatch-name { font-size: 10px; font-weight: 700; color: var(--wgi-text); display: block; }
+  .swatch-hex { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--wgi-text-muted); }
+
+  .type-specimen { display: flex; flex-direction: column; gap: 16px; }
+
+  .type-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--wgi-border); }
+
+  .type-meta { font-size: 10px; color: var(--wgi-text-muted); font-weight: 600; }
+  .type-meta span { display: block; font-weight: 400; font-style: italic; }
+
+  .toggle-bar { position: fixed; top: 12px; right: 20px; z-index: 999; display: flex; gap: 8px; align-items: center; }
+
+  .toggle-btn { background: rgba(27,45,69,0.9); border: 1px solid rgba(200,169,110,0.5); color: white; padding: 5px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; font-family: 'Raleway', sans-serif; cursor: pointer; transition: all 120ms; }
+
+  body.dark {
+    --wgi-bg: #0F1924;
+    --wgi-surface: #182433;
+    --wgi-border: #253549;
+    --wgi-text: #E2E8F0;
+    --wgi-text-muted: #94A3B8;
+    --wgi-text-light: #64748B;
+  }
+
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .gap-8 { gap: 8px; }
+  .ml-auto { margin-left: auto; }
+  .text-muted { color: var(--wgi-text-muted); }
+  .text-navy { color: var(--wgi-navy); }
+</style>
+</head>
+<body>
+
+<div class="toggle-bar">
+  <button class="toggle-btn" onclick="document.body.classList.toggle('dark')">Toggle Dark</button>
+</div>
+
+<!-- MOCKUP 1: Admin Dashboard -->
+<div class="preview-section">
+  <h2>Mockup 1 — /commission/admin Dashboard</h2>
+
+  <div class="hub-header">
+    <div class="hub-logo">WGI <span>360</span></div>
+    <nav class="hub-nav">
+      <a href="#">Model Portfolio</a>
+      <a href="#" class="active">Commission</a>
+      <a href="#">Financial Planner</a>
+      <a href="#">Advisors</a>
+    </nav>
+    <div class="hub-user">
+      <div class="hub-avatar">GS</div>
+      Gabriel S.
+    </div>
+  </div>
+
+  <nav class="commission-nav">
+    <a href="#" class="active">Dashboard</a>
+    <a href="#">Master File</a>
+    <a href="#">Upload</a>
+    <a href="#">Approvals</a>
+    <a href="#">Payments</a>
+    <a href="#">Payment Matrix</a>
+    <a href="#">KPI</a>
+    <a href="#">Unmapped</a>
+    <a href="#">Audit Log</a>
+  </nav>
+
+  <div class="alert-banner critical">
+    <span class="alert-icon">&#9888;</span>
+    <strong>12 unmapped policies</strong> &mdash; cannot be assigned to an IFA until resolved.
+    <button class="alert-cta">Review Now</button>
+  </div>
+  <div class="alert-banner warning">
+    <span class="alert-icon">!</span>
+    <strong>2 IFAs with negative balance</strong> &mdash; review before next payment run.
+    <button class="alert-cta">View IFAs</button>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-card warning">
+      <div class="stat-label">Pending Approval</div>
+      <div class="stat-value mono">$142,300</div>
+      <div class="stat-sub">34 transactions</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">IFAs Ready to Pay</div>
+      <div class="stat-value">8</div>
+      <div class="stat-sub">$94,820 combined</div>
+    </div>
+    <div class="stat-card alert">
+      <div class="stat-label">Unmapped Policies</div>
+      <div class="stat-value">12</div>
+      <div class="stat-sub">Blocking payout</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Paid This Month</div>
+      <div class="stat-value mono">$387,500</div>
+      <div class="stat-sub">48 transactions</div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="chart-card">
+      <div class="chart-header">
+        <span class="chart-title">Top IFAs by Balance</span>
+        <button class="btn btn-secondary btn-sm">Export</button>
+      </div>
+      <div class="chart-body">
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="bar-label">Martinez, A.</div>
+            <div class="bar-track"><div class="bar-fill" style="width:90%"></div></div>
+            <div class="bar-amount">$48,200</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Reyes, C.</div>
+            <div class="bar-track"><div class="bar-fill blue" style="width:72%"></div></div>
+            <div class="bar-amount">$38,740</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Gutierrez, L.</div>
+            <div class="bar-track"><div class="bar-fill" style="width:55%"></div></div>
+            <div class="bar-amount">$29,600</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Hernandez, M.</div>
+            <div class="bar-track"><div class="bar-fill gold" style="width:38%"></div></div>
+            <div class="bar-amount">$20,380</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Orozco, P.</div>
+            <div class="bar-track"><div class="bar-fill" style="width:25%"></div></div>
+            <div class="bar-amount">$13,200</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <span class="chart-title">By Platform</span>
+      </div>
+      <div class="chart-body">
+        <div class="pie-legend">
+          <div class="pie-legend-item"><div class="pie-dot" style="background: var(--cm-chart-1)"></div><span class="pie-name">Allianz</span><span class="pie-pct">38.2%</span></div>
+          <div class="pie-legend-item"><div class="pie-dot" style="background: var(--cm-chart-2)"></div><span class="pie-name">Generali</span><span class="pie-pct">27.1%</span></div>
+          <div class="pie-legend-item"><div class="pie-dot" style="background: var(--cm-chart-3)"></div><span class="pie-name">RL360</span><span class="pie-pct">18.4%</span></div>
+          <div class="pie-legend-item"><div class="pie-dot" style="background: var(--cm-chart-4)"></div><span class="pie-name">Zurich</span><span class="pie-pct">10.6%</span></div>
+          <div class="pie-legend-item"><div class="pie-dot" style="background: var(--cm-chart-5)"></div><span class="pie-name">Other</span><span class="pie-pct">5.7%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOCKUP 2: Master File -->
+<div class="preview-section">
+  <h2>Mockup 2 — /commission/admin/master-file (dense editable grid)</h2>
+
+  <div class="hub-header">
+    <div class="hub-logo">WGI <span>360</span></div>
+    <nav class="hub-nav"><a href="#" class="active">Commission</a></nav>
+    <div class="hub-user"><div class="hub-avatar">GS</div> Gabriel S.</div>
+  </div>
+
+  <nav class="commission-nav">
+    <a href="#">Dashboard</a>
+    <a href="#" class="active">Master File</a>
+    <a href="#">Upload</a>
+    <a href="#">Approvals</a>
+    <a href="#">Payments</a>
+    <a href="#">Payment Matrix</a>
+    <a href="#">KPI</a>
+    <a href="#">Unmapped</a>
+    <a href="#">Audit Log</a>
+  </nav>
+
+  <div style="padding: 12px 24px; background: var(--wgi-surface); border-bottom: 1px solid var(--wgi-border); display: flex; align-items: center; gap: 12px;">
+    <select class="form-input form-select" style="width:160px"><option>All Platforms</option></select>
+    <select class="form-input form-select" style="width:140px"><option>All Statuses</option></select>
+    <input class="form-input" placeholder="Search policy / IFA..." style="width:200px">
+    <div class="ml-auto flex gap-8">
+      <button class="btn btn-secondary btn-sm">Export XLSX</button>
+      <button class="btn btn-primary btn-sm">Save Changes</button>
+    </div>
+  </div>
+
+  <div style="overflow-x: auto;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:32px; padding: 10px 8px;"><input type="checkbox"></th>
+          <th>Policy Number</th>
+          <th>Holder</th>
+          <th>IFA</th>
+          <th>Platform</th>
+          <th>Type</th>
+          <th class="right">Gross</th>
+          <th class="right">IFA %</th>
+          <th class="right">IFA Amt</th>
+          <th class="right">WGI Amt</th>
+          <th>Status</th>
+          <th>Tx Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 9px 8px;"><input type="checkbox" checked></td>
+          <td class="td-policy">POL-2024-00441</td>
+          <td style="font-weight:600">Marcos Rodr&iacute;guez</td>
+          <td class="td-ifa">MART-001</td>
+          <td class="text-muted">Allianz</td>
+          <td><span class="badge badge-approved">Initial</span></td>
+          <td class="td-amount">$8,400.00</td>
+          <td class="td-amount">60.00%</td>
+          <td class="td-amount positive">$5,040.00</td>
+          <td class="td-amount">$3,360.00</td>
+          <td><span class="badge badge-approved">Approved</span></td>
+          <td class="mono text-muted" style="font-size:11px">2024-11-15</td>
+        </tr>
+        <tr>
+          <td style="padding: 9px 8px;"><input type="checkbox"></td>
+          <td class="td-policy">POL-2024-00442</td>
+          <td style="font-weight:600">Ana Castillo</td>
+          <td class="td-ifa">REYE-002</td>
+          <td class="text-muted">Generali</td>
+          <td><span class="badge badge-advance">Advance</span></td>
+          <td class="td-amount">$12,000.00</td>
+          <td class="cell-dirty td-amount">65.00%</td>
+          <td class="td-amount positive">$7,800.00</td>
+          <td class="td-amount">$4,200.00</td>
+          <td><span class="badge badge-pending">Pending</span></td>
+          <td class="mono text-muted" style="font-size:11px">2024-11-18</td>
+        </tr>
+        <tr>
+          <td style="padding: 9px 8px;"><input type="checkbox"></td>
+          <td class="td-policy">POL-2024-00443</td>
+          <td style="font-weight:600">Luis Fern&aacute;ndez</td>
+          <td class="td-ifa">GUTZ-003</td>
+          <td class="text-muted">RL360</td>
+          <td><span class="badge badge-approved">Renewal</span></td>
+          <td class="td-amount">$3,200.00</td>
+          <td class="td-amount">55.00%</td>
+          <td class="td-amount positive">$1,760.00</td>
+          <td class="td-amount">$1,440.00</td>
+          <td><span class="badge badge-paid">Paid</span></td>
+          <td class="mono text-muted" style="font-size:11px">2024-11-20</td>
+        </tr>
+        <tr>
+          <td style="padding: 9px 8px;"><input type="checkbox"></td>
+          <td class="td-policy">POL-2024-00444</td>
+          <td style="font-weight:600">Sofia Morales</td>
+          <td class="td-ifa">HERN-004</td>
+          <td class="text-muted">Zurich</td>
+          <td><span class="badge badge-approved">Top-up</span></td>
+          <td class="td-amount">$5,800.00</td>
+          <td class="td-amount">60.00%</td>
+          <td class="td-amount positive">$3,480.00</td>
+          <td class="td-amount">$2,320.00</td>
+          <td><span class="badge badge-suspended">Suspended</span></td>
+          <td class="mono text-muted" style="font-size:11px">2024-11-21</td>
+        </tr>
+        <tr>
+          <td style="padding: 9px 8px;"><input type="checkbox"></td>
+          <td class="td-policy">POL-2024-00445</td>
+          <td style="font-weight:600">Rodrigo Vega</td>
+          <td class="td-ifa">&mdash;</td>
+          <td class="text-muted">Allianz</td>
+          <td><span class="badge badge-approved">Initial</span></td>
+          <td class="td-amount">$9,100.00</td>
+          <td class="td-amount">&mdash;</td>
+          <td class="td-amount negative">&mdash;</td>
+          <td class="td-amount">&mdash;</td>
+          <td><span class="badge badge-rejected">Unmapped</span></td>
+          <td class="mono text-muted" style="font-size:11px">2024-11-22</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="padding: 8px 24px; background: var(--wgi-surface); border-top: 1px solid var(--wgi-border); display:flex; align-items:center; justify-content:space-between;">
+    <span style="font-size:11px; color: var(--wgi-text-muted); font-weight:500">Showing 1&ndash;5 of 3,412 records &middot; 1 unsaved change</span>
+    <div class="flex gap-8">
+      <button class="btn btn-secondary btn-sm">&larr; Prev</button>
+      <button class="btn btn-secondary btn-sm">Next &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOCKUP 3: IFA Portal -->
+<div class="preview-section">
+  <h2>Mockup 3 — /commission/ifa (IFA Portal)</h2>
+
+  <div class="hub-header">
+    <div class="hub-logo">WGI <span>360</span></div>
+    <nav class="hub-nav"><a href="#" class="active">My Commission</a></nav>
+    <div class="hub-user"><div class="hub-avatar">AM</div> A. Martinez</div>
+  </div>
+
+  <div class="ifa-portal">
+    <div class="ifa-header">
+      <div>
+        <div class="ifa-title">My Commission</div>
+        <div class="ifa-subtitle">IFA Code: MART-001 &middot; Allianz &middot; Generali</div>
+      </div>
+      <div class="flex gap-8">
+        <button class="btn btn-secondary">Export Statement</button>
+        <button class="btn btn-primary">Download XLSX</button>
+      </div>
+    </div>
+
+    <div class="ifa-balance-strip">
+      <div class="ifa-balance-card">
+        <div class="ifa-balance-label">Current Balance</div>
+        <div class="ifa-balance-value">$48,200</div>
+      </div>
+      <div class="ifa-balance-card">
+        <div class="ifa-balance-label">Suspended</div>
+        <div class="ifa-balance-value" style="color: var(--cm-status-suspended-text)">$12,400</div>
+      </div>
+      <div class="ifa-balance-card">
+        <div class="ifa-balance-label">Total Earned</div>
+        <div class="ifa-balance-value">$284,600</div>
+      </div>
+      <div class="ifa-balance-card">
+        <div class="ifa-balance-label">Total Paid</div>
+        <div class="ifa-balance-value">$236,400</div>
+      </div>
+    </div>
+
+    <div style="background: var(--wgi-surface); border: 1px solid var(--wgi-border); border-radius: 4px; overflow: hidden;">
+      <div style="display:flex; border-bottom: 1px solid var(--wgi-border);">
+        <a href="#" style="font-size:12px; font-weight:600; color: var(--wgi-navy); text-decoration:none; padding: 10px 16px; border-bottom: 3px solid var(--wgi-gold);">Transactions</a>
+        <a href="#" style="font-size:12px; font-weight:600; color: var(--wgi-text-muted); text-decoration:none; padding: 10px 16px; border-bottom: 3px solid transparent;">Payments</a>
+        <a href="#" style="font-size:12px; font-weight:600; color: var(--wgi-text-muted); text-decoration:none; padding: 10px 16px; border-bottom: 3px solid transparent;">APE Summary</a>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Policy</th>
+            <th>Holder</th>
+            <th>Platform</th>
+            <th>Type</th>
+            <th class="right">IFA Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-policy">POL-2024-00441</td>
+            <td style="font-weight:600">Marcos Rodr&iacute;guez</td>
+            <td class="text-muted">Allianz</td>
+            <td><span class="badge badge-approved">Initial</span></td>
+            <td class="td-amount positive">$5,040.00</td>
+            <td><span class="badge badge-approved">Approved</span></td>
+            <td class="mono text-muted" style="font-size:11px">2024-11-15</td>
+          </tr>
+          <tr>
+            <td class="td-policy">POL-2024-00442</td>
+            <td style="font-weight:600">Ana Castillo</td>
+            <td class="text-muted">Generali</td>
+            <td><span class="badge badge-advance">Advance</span></td>
+            <td class="td-amount positive">$7,800.00</td>
+            <td><span class="badge badge-pending">Pending</span></td>
+            <td class="mono text-muted" style="font-size:11px">2024-11-18</td>
+          </tr>
+          <tr>
+            <td class="td-policy">POL-2024-00112</td>
+            <td style="font-weight:600">Elena Santos</td>
+            <td class="text-muted">RL360</td>
+            <td><span class="badge badge-approved">Renewal</span></td>
+            <td class="td-amount positive">$2,100.00</td>
+            <td><span class="badge badge-paid">Paid</span></td>
+            <td class="mono text-muted" style="font-size:11px">2024-10-30</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- COLOR PALETTE -->
+<div class="preview-section">
+  <h2>Color Tokens</h2>
+
+  <strong style="font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--wgi-text-muted); display:block; margin-bottom:12px;">WGI Brand (inherited)</strong>
+  <div class="palette-grid" style="margin-bottom:24px">
+    <div class="swatch"><div class="swatch-color" style="background:#1B2D45"></div><div class="swatch-label"><span class="swatch-name">--wgi-navy</span><span class="swatch-hex">#1B2D45</span></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#C8A96E"></div><div class="swatch-label"><span class="swatch-name">--wgi-gold</span><span class="swatch-hex">#C8A96E</span></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#F8FAFC"></div><div class="swatch-label"><span class="swatch-name">--wgi-bg</span><span class="swatch-hex">#F8FAFC</span></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#FFFFFF; border:1px solid #E2E8F0"></div><div class="swatch-label"><span class="swatch-name">--wgi-surface</span><span class="swatch-hex">#FFFFFF</span></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#E2E8F0"></div><div class="swatch-label"><span class="swatch-name">--wgi-border</span><span class="swatch-hex">#E2E8F0</span></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#64748B"></div><div class="swatch-label"><span class="swatch-name">--wgi-text-muted</span><span class="swatch-hex">#64748B</span></div></div>
+  </div>
+
+  <strong style="font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--wgi-text-muted); display:block; margin-bottom:12px;">Status Badges</strong>
+  <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px;">
+    <span class="badge badge-pending">Pending</span>
+    <span class="badge badge-approved">Approved</span>
+    <span class="badge badge-rejected">Rejected</span>
+    <span class="badge badge-paid">Paid</span>
+    <span class="badge badge-suspended">Suspended</span>
+    <span class="badge badge-advance">Advance</span>
+  </div>
+
+  <strong style="font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--wgi-text-muted); display:block; margin-bottom:12px;">Chart Palette &mdash; replaces rainbow</strong>
+  <div class="palette-grid">
+    <div class="swatch"><div class="swatch-color" style="background:#1B2D45"></div><div class="swatch-label"><span class="swatch-name">--cm-chart-1</span><span class="swatch-hex">#1B2D45</span></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#C8A96E"></div><div class="swatch-label"><span class="swatch-name">--cm-chart-2</span><span class="swatch-hex">#C8A96E</span></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#3D6898"></div><div class="swatch-label"><span class="swatch-name">--cm-chart-3</span><span class="swatch-hex">#3D6898</span></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#7B96B2"></div><div class="swatch-label"><span class="swatch-name">--cm-chart-4</span><span class="swatch-hex">#7B96B2</span></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#8C7355"></div><div class="swatch-label"><span class="swatch-name">--cm-chart-5</span><span class="swatch-hex">#8C7355</span></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#A3B8CC"></div><div class="swatch-label"><span class="swatch-name">--cm-chart-6</span><span class="swatch-hex">#A3B8CC</span></div></div>
+  </div>
+</div>
+
+<!-- TYPOGRAPHY -->
+<div class="preview-section">
+  <h2>Typography</h2>
+  <div class="type-specimen">
+    <div class="type-row">
+      <div class="type-meta">Page Heading<span>Raleway 700 / 18px</span></div>
+      <div style="font-size:18px; font-weight:700; color: var(--wgi-navy)">Commission Administration</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">Section / Tab<span>Raleway 600 / 12px UC</span></div>
+      <div style="font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color: var(--wgi-text-muted)">Master File &middot; Approvals &middot; Payments</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">Table Header<span>Raleway 700 / 10px UC</span></div>
+      <div style="font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color: rgba(255,255,255,0.85); background: var(--wgi-navy); padding: 8px 12px; border-radius:3px; display:inline-block">Policy Number &middot; IFA &middot; Platform &middot; Gross Amount &middot; Status</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">Stat Card Value<span>Raleway 700 / 22px navy</span></div>
+      <div style="font-size:22px; font-weight:700; color: var(--wgi-navy)">$387,500</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">Monetary Cell<span>JetBrains Mono / 12px</span></div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:12px; display:flex; gap:24px;">
+        <span style="color: var(--cm-gain)">$5,040.00</span>
+        <span style="color: var(--wgi-text)">$8,400.00</span>
+        <span style="color: var(--cm-loss)">-$320.00</span>
+      </div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">Policy / ID<span>JetBrains Mono / 11px muted</span></div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color: var(--wgi-text-muted)">POL-2024-00441 &middot; MART-001 &middot; REF-20241115-0441</div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPONENTS -->
+<div class="preview-section">
+  <h2>Components</h2>
+
+  <strong style="font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--wgi-text-muted); display:block; margin-bottom:12px;">Buttons</strong>
+  <div class="flex gap-8" style="margin-bottom:24px; flex-wrap:wrap;">
+    <button class="btn btn-primary">Save Changes</button>
+    <button class="btn btn-primary">Approve Selected</button>
+    <button class="btn btn-secondary">Export XLSX</button>
+    <button class="btn btn-secondary">Run Retry</button>
+    <button class="btn btn-destructive">Reject</button>
+    <button class="btn btn-primary btn-sm">Upload File</button>
+    <button class="btn btn-secondary btn-sm">Filters</button>
+  </div>
+
+  <strong style="font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--wgi-text-muted); display:block; margin-bottom:12px;">Alert Banners</strong>
+  <div style="display:flex; flex-direction:column; gap:8px; max-width:680px;">
+    <div class="alert-banner critical" style="border-radius:4px; border-width:1px; border-style:solid">
+      <span class="alert-icon">&#9888;</span>
+      <strong>12 unmapped policies</strong> &mdash; blocking payout.
+      <button class="alert-cta">Review</button>
+    </div>
+    <div class="alert-banner warning" style="border-radius:4px; border-width:1px; border-style:solid">
+      <span class="alert-icon">!</span>
+      <strong>2 IFAs with negative balance</strong> &mdash; review before next payment run.
+      <button class="alert-cta">View IFAs</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

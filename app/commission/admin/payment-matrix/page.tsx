@@ -66,12 +66,12 @@ interface FormState {
 
 function getPriorityBadge(rule: PaymentMatrixRule) {
   if (rule.ifa_id && rule.commission_type_code)
-    return { label: 'P1 Specific', color: 'bg-purple-100 text-purple-800' }
+    return { label: 'P1 Specific', color: 'bg-[var(--cm-status-advance-bg)] text-[var(--cm-status-advance-text)]' }
   if (rule.ifa_id)
-    return { label: 'P2 IFA', color: 'bg-blue-100 text-blue-800' }
+    return { label: 'P2 IFA', color: 'bg-[var(--cm-status-paid-bg)] text-[var(--cm-status-paid-text)]' }
   if (rule.commission_type_code)
-    return { label: 'P3 Type', color: 'bg-yellow-100 text-yellow-800' }
-  return { label: 'P4 Catch-all', color: 'bg-gray-100 text-gray-700' }
+    return { label: 'P3 Type', color: 'bg-[var(--cm-status-pending-bg)] text-[var(--cm-status-pending-text)]' }
+  return { label: 'P4 Catch-all', color: 'bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)]' }
 }
 
 const emptyForm: FormState = {
@@ -340,7 +340,7 @@ export default function PaymentMatrixPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <button
           onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[var(--wgi-navy)] font-medium transition-colors"
         >
           ← Back to Admin
         </button>
@@ -350,7 +350,7 @@ export default function PaymentMatrixPage() {
             <p className="text-sm mt-0.5" style={{ color: 'var(--wgi-text-muted)' }}>Commission calculation rules per platform, IFA and type</p>
           </div>
           {!READ_ONLY && (
-            <button onClick={openAddModal} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm font-medium">
+            <button onClick={openAddModal} className="bg-[var(--wgi-navy)] text-white px-4 py-2 rounded-md hover:bg-[var(--wgi-navy-600)] text-sm font-medium">
               + Add Rule
             </button>
           )}
@@ -375,10 +375,10 @@ export default function PaymentMatrixPage() {
           <h2 className="text-sm font-semibold text-gray-700 mb-3">Rule Priority — first match wins when calculating commissions</h2>
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
             {[
-              { label: 'P1 Specific', color: 'bg-purple-100 text-purple-800', desc: 'Platform + IFA + Type' },
-              { label: 'P2 IFA', color: 'bg-blue-100 text-blue-800', desc: 'Platform + IFA (all types)' },
-              { label: 'P3 Type', color: 'bg-yellow-100 text-yellow-800', desc: 'Platform + Type (all IFAs)' },
-              { label: 'P4 Catch-all', color: 'bg-gray-100 text-gray-700', desc: 'Platform (all IFAs, all types)' },
+              { label: 'P1 Specific', color: 'bg-[var(--cm-status-advance-bg)] text-[var(--cm-status-advance-text)]', desc: 'Platform + IFA + Type' },
+              { label: 'P2 IFA', color: 'bg-[var(--cm-status-paid-bg)] text-[var(--cm-status-paid-text)]', desc: 'Platform + IFA (all types)' },
+              { label: 'P3 Type', color: 'bg-[var(--cm-status-pending-bg)] text-[var(--cm-status-pending-text)]', desc: 'Platform + Type (all IFAs)' },
+              { label: 'P4 Catch-all', color: 'bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)]', desc: 'Platform (all IFAs, all types)' },
             ].map((item, i, arr) => (
               <span key={item.label} className="flex items-center gap-2">
                 <span className={`px-2 py-0.5 rounded text-xs font-medium ${item.color}`}>{item.label}</span>
@@ -409,7 +409,7 @@ export default function PaymentMatrixPage() {
                 <button
                   key={s}
                   onClick={() => setFilterStatus(s)}
-                  className={`px-3 py-2 capitalize ${filterStatus === s ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                  className={`px-3 py-2 capitalize ${filterStatus === s ? 'bg-[var(--wgi-navy)] text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
                 >
                   {s}
                 </button>
@@ -429,7 +429,7 @@ export default function PaymentMatrixPage() {
               <p className="mt-3 text-gray-600">No rules found.</p>
               <button
                 onClick={openAddModal}
-                className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm"
+                className="mt-3 bg-[var(--wgi-navy)] text-white px-4 py-2 rounded-md hover:bg-[var(--wgi-navy-600)] text-sm"
               >
                 Add your first rule
               </button>
@@ -437,10 +437,10 @@ export default function PaymentMatrixPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-[var(--wgi-navy)]">
                   <tr>
                     {['Priority', 'Platform', 'IFA', 'Commission Type', 'IFA Rate', 'Co. Rate', 'Est. Periods', 'Effective', 'Status', ...(READ_ONLY ? [] : ['Actions'])].map(h => (
-                      <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                      <th key={h} className="px-4 py-3 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em] whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -460,7 +460,7 @@ export default function PaymentMatrixPage() {
 
                         <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
                           {rule.ifa
-                            ? <span><span className="font-mono text-xs bg-gray-100 px-1 rounded">{rule.ifa.code}</span> <span className="text-gray-500">{rule.ifa.name}</span></span>
+                            ? <span><span className="cm-mono text-xs bg-gray-100 px-1 rounded">{rule.ifa.code}</span> <span className="text-gray-500">{rule.ifa.name}</span></span>
                             : <span className="text-gray-400 italic text-xs">All IFAs</span>
                           }
                         </td>
@@ -472,11 +472,11 @@ export default function PaymentMatrixPage() {
                           }
                         </td>
 
-                        <td className="px-4 py-3 text-sm font-semibold text-green-700 whitespace-nowrap">
+                        <td className="px-4 py-3 text-sm font-semibold cm-mono text-[var(--cm-gain)] whitespace-nowrap">
                           {(rule.ifa_rate * 100).toFixed(2)}%
                         </td>
 
-                        <td className="px-4 py-3 text-sm font-semibold text-blue-700 whitespace-nowrap">
+                        <td className="px-4 py-3 text-sm font-semibold cm-mono text-[var(--wgi-navy)] whitespace-nowrap">
                           {(rule.company_rate * 100).toFixed(2)}%
                         </td>
 
@@ -506,7 +506,7 @@ export default function PaymentMatrixPage() {
                         </td>
 
                         <td className="px-4 py-3 whitespace-nowrap">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${rule.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${rule.is_active ? 'bg-[var(--cm-status-approved-bg)] text-[var(--cm-status-approved-text)]' : 'bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)]'}`}>
                             {rule.is_active ? 'Active' : 'Inactive'}
                           </span>
                         </td>
@@ -514,7 +514,7 @@ export default function PaymentMatrixPage() {
                         {!READ_ONLY && (
                           <td className="px-4 py-3 whitespace-nowrap">
                             <div className="flex items-center gap-3 text-sm">
-                              <button onClick={() => openEditModal(rule)} className="text-blue-600 hover:text-blue-800 font-medium">
+                              <button onClick={() => openEditModal(rule)} className="text-[var(--wgi-navy)] hover:opacity-70 font-medium">
                                 Edit
                               </button>
                               <button
@@ -700,7 +700,7 @@ export default function PaymentMatrixPage() {
                   <button
                     type="button"
                     onClick={() => setForm(f => ({ ...f, has_establishment_periods: !f.has_establishment_periods }))}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${form.has_establishment_periods ? 'bg-blue-600' : 'bg-gray-300'}`}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${form.has_establishment_periods ? 'bg-[var(--wgi-navy)]' : 'bg-gray-300'}`}
                     aria-label="Toggle establishment periods"
                   >
                     <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${form.has_establishment_periods ? 'translate-x-6' : 'translate-x-1'}`} />
@@ -720,7 +720,7 @@ export default function PaymentMatrixPage() {
                             onClick={() => setStartFrom(opt)}
                             className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-colors ${
                               startFrom === opt
-                                ? 'bg-blue-600 text-white border-blue-600'
+                                ? 'bg-[var(--wgi-navy)] text-white border-[var(--wgi-navy)]'
                                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                             }`}
                           >
@@ -787,7 +787,7 @@ export default function PaymentMatrixPage() {
                         <button
                           type="button"
                           onClick={() => setEstPeriods(prev => [...prev, { split_pct: 0, release_months: 0 }])}
-                          className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                          className="text-sm text-[var(--wgi-navy)] hover:opacity-70 font-medium"
                         >
                           + Add period
                         </button>
@@ -810,7 +810,7 @@ export default function PaymentMatrixPage() {
                 <button
                   type="button"
                   onClick={() => setForm(f => ({ ...f, is_active: !f.is_active }))}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${form.is_active ? 'bg-green-500' : 'bg-gray-300'}`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${form.is_active ? 'bg-[var(--wgi-navy)]' : 'bg-gray-300'}`}
                   aria-label="Toggle active"
                 >
                   <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${form.is_active ? 'translate-x-6' : 'translate-x-1'}`} />
@@ -830,7 +830,7 @@ export default function PaymentMatrixPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 text-sm font-medium"
+                className="px-5 py-2 bg-[var(--wgi-navy)] text-white rounded-md hover:bg-[var(--wgi-navy-600)] disabled:opacity-50 text-sm font-medium"
               >
                 {saving ? 'Saving...' : editingRule ? 'Save Changes' : 'Create Rule'}
               </button>

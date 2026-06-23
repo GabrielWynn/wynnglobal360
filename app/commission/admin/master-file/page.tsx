@@ -7,6 +7,7 @@ import { AgGridReact } from 'ag-grid-react'
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
+import '@/components/commission/ag-theme-commission.css'
 import type {
   ColDef,
   CellValueChangedEvent,
@@ -102,6 +103,18 @@ interface AddForm {
 
 const FILTER_STORAGE_KEY  = 'wgi_master_file_filters'
 const COLUMN_STATE_KEY    = 'wgi_master_file_columns'
+
+// Numeric + identifier columns render in JetBrains Mono with tabular figures
+// (DESIGN-COMMISSION.md). Applied via defaultColDef.cellClass → `.cm-cell-mono`
+// (defined in ag-theme-commission.css). Text columns stay in the UI font.
+const MONO_FIELDS = new Set<string>([
+  'policy_number', 'ifa_code',
+  'amount', 'variable_amount', 'adjusted', 'ape', 'ape_wgi',
+  'platform_payment_pct', 'rate',
+  'ifa_percentage', 'ifa_amount', 'suspense_percentage', 'suspense_amount',
+  'wgi_percentage', 'wg_amount', 'pending_percentage', 'pending_amount',
+  'due_wg', 'paid', 'unpaid',
+])
 
 // Column panel groups — maps colIds to labelled sections in the dropdown
 const COL_GROUPS: { label: string; ids: string[] }[] = [
@@ -965,11 +978,17 @@ export default function MasterFilePage() {
         cellEditorParams: { values: ['pending', 'approved', 'paid', 'cancelled'] },
         cellStyle: (p: CellClassParams) => {
           if (p.node?.rowPinned) return null
-          const colors: Record<string, string> = {
-            pending: '#f59e0b', approved: '#3b82f6', paid: '#10b981', cancelled: '#ef4444',
+          // Commission status palette (DESIGN-COMMISSION.md --cm-status-*).
+          const tokens: Record<string, { bg: string; text: string }> = {
+            pending:    { bg: 'var(--cm-status-pending-bg)',   text: 'var(--cm-status-pending-text)' },
+            approved:   { bg: 'var(--cm-status-approved-bg)',  text: 'var(--cm-status-approved-text)' },
+            paid:       { bg: 'var(--cm-status-paid-bg)',      text: 'var(--cm-status-paid-text)' },
+            cancelled:  { bg: 'var(--cm-status-rejected-bg)',  text: 'var(--cm-status-rejected-text)' },
+            advance:    { bg: 'var(--cm-status-advance-bg)',   text: 'var(--cm-status-advance-text)' },
+            reconciled: { bg: 'var(--cm-status-suspended-bg)', text: 'var(--cm-status-suspended-text)' },
           }
-          const c = colors[p.value as string] ?? '#6b7280'
-          return { backgroundColor: `${c}20`, color: c, fontWeight: 'bold' }
+          const t = tokens[p.value as string] ?? { bg: '#F1F5F9', text: '#64748B' }
+          return { backgroundColor: t.bg, color: t.text, fontWeight: 'bold' }
         },
       },
       {
@@ -1009,6 +1028,10 @@ export default function MasterFilePage() {
 
   const defaultColDef = useMemo<ColDef>(() => ({
     sortable: true, resizable: true, filter: true,
+    cellClass: (p: CellClassParams) => {
+      const key = p.colDef.field ?? p.colDef.colId ?? ''
+      return MONO_FIELDS.has(key) ? 'cm-cell-mono' : ''
+    },
   }), [])
 
   // ── Cell edit ────────────────────────────────────────────────────────────────
@@ -1687,7 +1710,7 @@ export default function MasterFilePage() {
 
               {/* Primary actions */}
               <button onClick={openAddModal}
-                className="h-6 px-2.5 bg-emerald-600 text-white text-xs rounded hover:bg-emerald-700 font-medium whitespace-nowrap transition-colors">
+                className="h-6 px-2.5 bg-[var(--wgi-navy)] text-white text-xs rounded hover:bg-[var(--wgi-navy-600)] font-medium whitespace-nowrap transition-colors">
                 + New
               </button>
               {selectedRows.length > 0 && (
@@ -1927,7 +1950,7 @@ export default function MasterFilePage() {
 
         {/* AG Grid + custom bottom bar */}
         <div className="flex flex-col flex-1 border border-gray-200 rounded-md overflow-hidden" style={{ minHeight: 0 }}>
-          <div className="ag-theme-alpine flex-1" style={{ minHeight: 0 }}>
+          <div className="ag-theme-alpine ag-theme-commission flex-1" style={{ minHeight: 0 }}>
           <AgGridReact
             ref={gridRef}
             rowData={rowData}

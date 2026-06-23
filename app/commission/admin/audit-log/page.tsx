@@ -15,13 +15,14 @@ interface AuditEntry {
   created_at: string
 }
 
+// Commission status palette (DESIGN-COMMISSION.md --cm-status-*).
 const ACTION_COLOURS: Record<string, string> = {
-  'commission.approve': 'bg-green-100 text-green-800',
-  'commission.reject': 'bg-red-100 text-red-800',
-  'commission.override': 'bg-amber-100 text-amber-800',
-  'commission.pay': 'bg-blue-100 text-blue-800',
-  'commission.reconcile': 'bg-purple-100 text-purple-800',
-  'commission.config_update': 'bg-gray-100 text-gray-700',
+  'commission.approve':       'bg-[var(--cm-status-approved-bg)]  text-[var(--cm-status-approved-text)]',
+  'commission.reject':        'bg-[var(--cm-status-rejected-bg)]  text-[var(--cm-status-rejected-text)]',
+  'commission.override':      'bg-[var(--cm-status-advance-bg)]   text-[var(--cm-status-advance-text)]',
+  'commission.pay':           'bg-[var(--cm-status-paid-bg)]      text-[var(--cm-status-paid-text)]',
+  'commission.reconcile':     'bg-[var(--cm-status-suspended-bg)] text-[var(--cm-status-suspended-text)]',
+  'commission.config_update': 'bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)]',
 }
 
 const FIELD_LABELS: Record<string, string> = {
@@ -108,7 +109,7 @@ export default function AuditLogPage() {
 
         <button
           onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[var(--wgi-navy)] font-medium transition-colors"
         >
           ← Back to Admin
         </button>
@@ -160,7 +161,7 @@ export default function AuditLogPage() {
 
           <button
             onClick={() => load(1)}
-            className="bg-indigo-600 text-white px-4 py-1.5 rounded text-sm hover:bg-indigo-700"
+            className="bg-[var(--wgi-navy)] text-white px-4 py-1.5 rounded text-sm hover:bg-[var(--wgi-navy-600)]"
           >
             Search
           </button>
@@ -182,13 +183,13 @@ export default function AuditLogPage() {
         {/* Table */}
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <table className="min-w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-[var(--wgi-navy)]">
               <tr>
-                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-500 w-36">Date / Time</th>
-                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-500 w-32">Policy</th>
-                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-500 w-24">Action</th>
-                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-500">Changes</th>
-                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-500 w-44">User</th>
+                <th className="text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-white/85 w-36">Date / Time</th>
+                <th className="text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-white/85 w-32">Policy</th>
+                <th className="text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-white/85 w-24">Action</th>
+                <th className="text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-white/85">Changes</th>
+                <th className="text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-white/85 w-44">User</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -232,7 +233,7 @@ export default function AuditLogPage() {
                             {!isOpen && fields.length > 3 && (
                               <button
                                 onClick={() => toggleExpand(log.id)}
-                                className="text-xs text-indigo-600 hover:underline"
+                                className="text-xs text-[var(--wgi-navy)] hover:underline"
                               >
                                 +{fields.length - 3} more
                               </button>
@@ -240,7 +241,7 @@ export default function AuditLogPage() {
                             {isOpen && (
                               <button
                                 onClick={() => toggleExpand(log.id)}
-                                className="text-xs text-indigo-600 hover:underline"
+                                className="text-xs text-[var(--wgi-navy)] hover:underline"
                               >
                                 Show less
                               </button>

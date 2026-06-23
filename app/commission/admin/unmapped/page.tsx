@@ -138,7 +138,7 @@ export default function UnmappedPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--wgi-navy)] mx-auto" />
           <p className="mt-4 text-gray-600">Loading unmapped policies…</p>
         </div>
       </div>
@@ -151,7 +151,7 @@ export default function UnmappedPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-4">
         <button
           onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[var(--wgi-navy)] font-medium transition-colors"
         >
           ← Back to Admin
         </button>
@@ -167,7 +167,7 @@ export default function UnmappedPage() {
           <button
             onClick={handleRetryAzure}
             disabled={retrying || policies.length === 0}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm disabled:opacity-50"
+            className="bg-[var(--wgi-navy)] text-white px-4 py-2 rounded-md hover:bg-[var(--wgi-navy-600)] text-sm disabled:opacity-50"
           >
             {retrying ? 'Retrying Azure…' : 'Retry Azure Lookup'}
           </button>
@@ -229,19 +229,19 @@ export default function UnmappedPage() {
             {/* Table */}
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 text-sm">
-                <thead className="bg-gray-50">
+                <thead className="bg-[var(--wgi-navy)]">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Policy Number</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Policy Holder</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Platform</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Since</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-80">Assign IFA</th>
+                    <th className="px-4 py-3 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">Policy Number</th>
+                    <th className="px-4 py-3 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">Policy Holder</th>
+                    <th className="px-4 py-3 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">Platform</th>
+                    <th className="px-4 py-3 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">Since</th>
+                    <th className="px-4 py-3 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em] w-80">Assign IFA</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {policies.map(p => (
                     <tr key={p.policy_number} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 font-mono font-medium text-gray-900">{p.policy_number}</td>
+                      <td className="px-4 py-3 cm-mono font-medium text-gray-900">{p.policy_number}</td>
                       <td className="px-4 py-3 text-gray-600">{p.policy_holder_name || <span className="text-gray-400">—</span>}</td>
                       <td className="px-4 py-3 text-gray-600">{p.platform?.name || <span className="text-gray-400">—</span>}</td>
                       <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
@@ -266,7 +266,7 @@ export default function UnmappedPage() {
                           <button
                             onClick={() => handleAssign(p.policy_number)}
                             disabled={!assignments[p.policy_number] || assigning === p.policy_number}
-                            className="bg-green-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+                            className="bg-[var(--wgi-navy)] text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-[var(--wgi-navy-600)] disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
                           >
                             {assigning === p.policy_number ? 'Saving…' : 'Assign'}
                           </button>

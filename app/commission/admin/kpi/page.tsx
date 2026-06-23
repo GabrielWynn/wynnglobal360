@@ -52,9 +52,11 @@ interface KPIData {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
+// Commission chart palette (DESIGN-COMMISSION.md --cm-chart-*) — replaces the
+// previous rainbow. CSS variables resolve in both recharts fills and inline styles.
 const BRAND_COLORS = [
-  '#1E3A5F', '#2563EB', '#0EA5E9', '#6366F1',
-  '#8B5CF6', '#0D9488', '#F59E0B', '#EF4444',
+  'var(--cm-chart-1)', 'var(--cm-chart-2)', 'var(--cm-chart-3)',
+  'var(--cm-chart-4)', 'var(--cm-chart-5)', 'var(--cm-chart-6)',
 ]
 
 const PRESETS: { key: PresetKey; label: string }[] = [
@@ -81,7 +83,7 @@ function pctBadge(pct: number | null) {
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function KPICard({
-  label, value, sub, growth, accent = '#2563EB',
+  label, value, sub, growth, accent = 'var(--cm-chart-1)',
 }: {
   label: string; value: string; sub?: string; growth?: GrowthMetric; accent?: string
 }) {
@@ -90,7 +92,7 @@ function KPICard({
       <div className="h-1" style={{ backgroundColor: accent }} />
       <div className="p-4 flex-1">
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{label}</p>
-        <p className="text-3xl font-black text-gray-900 mt-1 leading-none">{value}</p>
+        <p className="text-3xl font-black cm-mono text-[var(--wgi-navy)] mt-1 leading-none">{value}</p>
         <div className="flex items-center gap-2 mt-2">
           {growth && pctBadge(growth.pct)}
           {growth && (
@@ -161,7 +163,7 @@ export default function KPIDashboard() {
       <div className="text-center">
         <p className="text-red-600 font-semibold">Failed to load data</p>
         <p className="text-sm text-gray-500 mt-1">{error}</p>
-        <button onClick={() => load({ preset })} className="mt-4 bg-blue-700 text-white px-4 py-2 rounded text-sm">Retry</button>
+        <button onClick={() => load({ preset })} className="mt-4 bg-[var(--wgi-navy)] text-white px-4 py-2 rounded text-sm">Retry</button>
       </div>
     </div>
   )
@@ -213,7 +215,7 @@ export default function KPIDashboard() {
 
         <button
           onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[var(--wgi-navy)] font-medium transition-colors"
         >
           ← Back to Admin
         </button>
@@ -268,31 +270,31 @@ export default function KPIDashboard() {
             label="APE IFA"
             value={fmt(ape.total_current)}
             growth={ape.growth}
-            accent="#1E3A5F"
+            accent="var(--cm-chart-1)"
           />
           <KPICard
             label="APE WGI"
             value={fmt(ape_wgi.total_current)}
             growth={ape_wgi.growth}
-            accent="#0D9488"
+            accent="var(--cm-chart-3)"
           />
           <KPICard
             label="Gross Revenue"
             value={fmt(revenue.growth.gross_usd.current)}
             growth={revenue.growth.gross_usd}
-            accent="#2563EB"
+            accent="var(--cm-chart-4)"
           />
           <KPICard
             label="WGI Net Revenue"
             value={fmt(revenue.growth.wgi_net_usd.current)}
             growth={revenue.growth.wgi_net_usd}
-            accent="#0EA5E9"
+            accent="var(--cm-chart-6)"
           />
           <KPICard
             label="Paid to IFAs"
             value={fmt(revenue.paid_ifa_total)}
             sub={`${ifas.active_count} active IFAs`}
-            accent="#6366F1"
+            accent="var(--cm-chart-2)"
           />
         </section>
 
