@@ -19,6 +19,7 @@ import { computeMergePreview, getMergeBlockReason, type MergeableRecord } from '
 import { fmtMoney, normalizeCommissionType } from '@/lib/commission-format'
 import { useMasterFileColumns } from '@/hooks/useMasterFileColumns'
 import { ReconcileModal } from '@/components/commission/master-file/ReconcileModal'
+import { DeleteModal } from '@/components/commission/master-file/DeleteModal'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 
@@ -1963,56 +1964,20 @@ export default function MasterFilePage() {
       )}
 
       {/* ── Delete Confirmation Modal ───────────────────────────────────────────── */}
-      {deleteModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 space-y-4">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Delete {selectedRows.length} Record{selectedRows.length !== 1 ? 's' : ''}?
-            </h2>
-
-            {paidSelectedCount > 0 && (
-              <div className="bg-amber-50 border border-amber-300 text-amber-800 px-3 py-2 rounded text-sm">
-                ⚠️ <strong>{paidSelectedCount}</strong> of the selected record{paidSelectedCount !== 1 ? 's are' : ' is'} already <strong>paid</strong>.
-                Deleting will not reverse any payment batches.
-              </div>
-            )}
-
-            <p className="text-sm text-gray-600">
-              Records will be <strong>soft-deleted</strong> — hidden from normal view but retained in the database.
-              Use <em>Show Deleted</em> to view them later.
-            </p>
-
-            {requireTypedConfirm ? (
-              <div>
-                <p className="text-sm text-red-700 font-medium mb-2">
-                  Deleting {selectedRows.length} records. Type <strong>DELETE</strong> to confirm:
-                </p>
-                <input type="text" value={deleteTyped}
-                  onChange={e => setDeleteTyped(e.target.value)}
-                  placeholder="Type DELETE"
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm font-mono" />
-              </div>
-            ) : (
-              <label className="flex items-start gap-2 cursor-pointer">
-                <input type="checkbox" checked={deleteConfirm}
-                  onChange={e => setDeleteConfirm(e.target.checked)} className="mt-0.5" />
-                <span className="text-sm text-gray-700">I understand this cannot be undone from the interface.</span>
-              </label>
-            )}
-
-            <div className="flex gap-3 pt-1">
-              <button onClick={() => setDeleteModal(false)}
-                className="flex-1 border border-gray-300 text-gray-700 py-2 rounded text-sm hover:bg-gray-50">
-                Cancel
-              </button>
-              <button onClick={handleDelete} disabled={deleting || !deleteEnabled}
-                className="flex-1 bg-red-600 text-white py-2 rounded text-sm font-medium hover:bg-red-700 disabled:opacity-40">
-                {deleting ? 'Deleting…' : `Delete ${selectedRows.length} Record${selectedRows.length !== 1 ? 's' : ''}`}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteModal
+        open={deleteModal}
+        count={selectedRows.length}
+        paidSelectedCount={paidSelectedCount}
+        requireTypedConfirm={requireTypedConfirm}
+        deleteEnabled={deleteEnabled}
+        deleting={deleting}
+        deleteTyped={deleteTyped}
+        deleteConfirm={deleteConfirm}
+        onTypedChange={setDeleteTyped}
+        onConfirmChange={setDeleteConfirm}
+        onCancel={() => setDeleteModal(false)}
+        onConfirm={handleDelete}
+      />
 
       {/* ── Allocation Breakdown Side Panel ─────────────────────────────────── */}
       {detailRecord && (() => {
