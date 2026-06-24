@@ -18,6 +18,7 @@ import * as XLSX from 'xlsx'
 import { computeMergePreview, getMergeBlockReason, type MergeableRecord } from '@/lib/commission-merge'
 import { fmtMoney, normalizeCommissionType } from '@/lib/commission-format'
 import { useMasterFileColumns } from '@/hooks/useMasterFileColumns'
+import { ReconcileModal } from '@/components/commission/master-file/ReconcileModal'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 
@@ -2295,50 +2296,13 @@ export default function MasterFilePage() {
       )}
 
       {/* ── Reconcile Confirmation Modal ─────────────────────────────────────── */}
-      {reconcileModal && (() => {
-        const advRow = selectedRows.find(r => r.is_advance)
-        const stmRow = selectedRows.find(r => !r.is_advance)
-        return (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900">Reconcile Advance with Statement</h2>
-
-              <div className="space-y-3 text-sm">
-                <div className="bg-amber-50 border border-amber-200 rounded p-3">
-                  <p className="text-xs font-semibold text-amber-700 mb-1">Advance Payment</p>
-                  <p className="font-medium text-gray-900">{advRow?.policy_number} — {advRow?.ifa_name}</p>
-                  <p className="text-gray-500">${advRow?.ifa_amount?.toFixed(3)} {advRow?.currency} · {advRow?.transaction_date}</p>
-                </div>
-                <div className="bg-green-50 border border-green-200 rounded p-3">
-                  <p className="text-xs font-semibold text-green-700 mb-1">Statement Entry (will be marked reconciled)</p>
-                  <p className="font-medium text-gray-900">{stmRow?.policy_number} — {stmRow?.ifa_name}</p>
-                  <p className="text-gray-500">${stmRow?.ifa_amount?.toFixed(3)} {stmRow?.currency} · {stmRow?.transaction_date}</p>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 border border-gray-200 rounded p-3 text-xs text-gray-600 space-y-1">
-                <p>After reconciliation:</p>
-                <ul className="list-disc list-inside space-y-0.5">
-                  <li>Statement entry → <strong>reconciled</strong>, paid = IFA amount (unpaid = $0)</li>
-                  <li>Both records remain visible and linked to each other</li>
-                  <li>Advance record is unchanged</li>
-                </ul>
-              </div>
-
-              <div className="flex gap-3 pt-1">
-                <button onClick={() => setReconcileModal(false)}
-                  className="flex-1 border border-gray-300 text-gray-700 py-2 rounded text-sm hover:bg-gray-50">
-                  Cancel
-                </button>
-                <button onClick={handleReconcile} disabled={reconciling}
-                  className="flex-1 bg-amber-600 text-white py-2 rounded text-sm font-medium hover:bg-amber-700 disabled:opacity-40">
-                  {reconciling ? 'Reconciling…' : 'Confirm Reconcile'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )
-      })()}
+      <ReconcileModal
+        open={reconcileModal}
+        selectedRows={selectedRows}
+        reconciling={reconciling}
+        onCancel={() => setReconcileModal(false)}
+        onConfirm={handleReconcile}
+      />
     </div>
   )
 }
