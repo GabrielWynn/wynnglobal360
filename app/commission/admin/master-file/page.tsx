@@ -18,6 +18,7 @@ import type {
 } from 'ag-grid-community'
 import * as XLSX from 'xlsx'
 import { computeMergePreview, getMergeBlockReason, type MergeableRecord } from '@/lib/commission-merge'
+import { fmtMoney, fmtNum, fmtPct, parsePct, parseAmt, fmtDate, normalizeCommissionType } from '@/lib/commission-format'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 
@@ -185,51 +186,7 @@ const defaultAddForm: AddForm = {
   is_advance: false,
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
-
-const fmtMoney = (n: number): string => {
-  const [int, dec] = Math.abs(n).toFixed(3).split('.')
-  const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  return (n < 0 ? '-' : '') + grouped + '.' + dec
-}
-
-const fmtNum = (p: ValueFormatterParams): string =>
-  p.value != null ? fmtMoney(Number(p.value)) : '0.000'
-
-const fmtPct = (p: ValueFormatterParams): string =>
-  (p.value != null && Number(p.value) !== 0) ? `${(Number(p.value) * 100).toFixed(4)}%` : '—'
-
-const parsePct = (p: ValueParserParams): number => {
-  const v = parseFloat(String(p.newValue).replace('%', ''))
-  return isNaN(v) ? (p.oldValue as number) : v / 100
-}
-
-const parseAmt = (p: ValueParserParams): number | null => {
-  const str = String(p.newValue ?? '').replace(/[$,]/g, '').trim()
-  if (str === '') return null
-  const v = parseFloat(str)
-  return isNaN(v) ? (p.oldValue as number) : v
-}
-
-
-// Format ISO date string (YYYY-MM-DD) as dd/mm/yy
-const fmtDate = (p: ValueFormatterParams): string => {
-  if (p.node?.rowPinned || !p.value) return ''
-  const [y, m, d] = String(p.value).split('-')
-  if (!y || !m || !d) return p.value
-  return `${d}/${m}/${y.slice(2)}`
-}
-
-// Mirror of the server-side normalizer in process-upload/route.ts
-function normalizeCommissionType(raw: string): string | null {
-  if (!raw) return null
-  const s = raw.trim().toLowerCase()
-  if (/\binitial\b/.test(s) || s === 'init' || s === 'first year') return 'Initial'
-  if (/\btrail\b/.test(s) || /\btrailing\b/.test(s) || s === 'renewal trail') return 'Trail'
-  if (/\brenewal\b/.test(s) || s === 'renew' || s === 'subsequent') return 'Renewal'
-  if (/\bother\b/.test(s) || s === 'misc' || s === 'miscellaneous' || s === 'override') return 'Other'
-  return raw.slice(0, 255) || null
-}
+// Money / percent / date formatters live in lib/commission-format.ts (imported above).
 
 // ── Allocation detail panel (full-width row renderer) ──────────────────────────
 
