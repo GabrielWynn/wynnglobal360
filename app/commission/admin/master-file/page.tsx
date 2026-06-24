@@ -1589,7 +1589,7 @@ export default function MasterFilePage() {
           <div className="flex items-center gap-2.5 px-4 flex-shrink-0 border-r border-gray-200 bg-slate-50">
             <button
               onClick={() => router.push('/commission/admin')}
-              className="flex items-center gap-1 text-[11px] text-slate-500 hover:text-blue-600 font-medium whitespace-nowrap transition-colors"
+              className="flex items-center gap-1 text-[11px] text-slate-500 hover:text-[var(--wgi-navy)] font-medium whitespace-nowrap transition-colors"
             >
               <span className="text-slate-400">‹</span> Admin
             </button>
@@ -1605,10 +1605,10 @@ export default function MasterFilePage() {
 
               {/* KPI chips */}
               {([
-                { label: 'Amt',    value: totalAmount, color: 'text-gray-800' },
-                { label: 'IFA',    value: totalIFA,    color: 'text-blue-600' },
-                { label: 'Paid',   value: totalPaid,   color: 'text-green-700' },
-                { label: 'Unpaid', value: totalUnpaid, color: 'text-red-600' },
+                { label: 'Amt',    value: totalAmount, color: 'text-[var(--wgi-text)]' },
+                { label: 'IFA',    value: totalIFA,    color: 'text-[var(--wgi-navy)]' },
+                { label: 'Paid',   value: totalPaid,   color: 'text-[var(--cm-gain)]' },
+                { label: 'Unpaid', value: totalUnpaid, color: 'text-[var(--cm-loss)]' },
               ] as const).map(({ label, value, color }) => (
                 <div key={label} className="flex items-baseline gap-0.5 whitespace-nowrap">
                   <span className="text-[10px] text-gray-400">{label}</span>
@@ -1634,9 +1634,9 @@ export default function MasterFilePage() {
                   <select
                     value={value}
                     onChange={e => applyDropdownFilter(field, e.target.value, setter as (v: string) => void)}
-                    className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-blue-400 focus:outline-none transition-colors ${
+                    className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none transition-colors ${
                       value
-                        ? 'border-blue-400 bg-blue-50 text-blue-700 font-semibold'
+                        ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold'
                         : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'
                     }`}
                   >
@@ -1653,12 +1653,12 @@ export default function MasterFilePage() {
                 <span className="text-[11px] font-medium text-slate-500">Date</span>
                 <input type="date" value={dateFrom}
                   onChange={e => applyDateRangeFilter('transaction_date', dateFrom, setDateFrom, dateTo, setDateTo, e.target.value, undefined)}
-                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-blue-400 focus:outline-none transition-colors ${dateFrom ? 'border-blue-400 bg-blue-50 text-blue-700 font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
+                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none transition-colors ${dateFrom ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
                 />
                 <span className="text-[11px] text-slate-400">–</span>
                 <input type="date" value={dateTo}
                   onChange={e => applyDateRangeFilter('transaction_date', dateFrom, setDateFrom, dateTo, setDateTo, undefined, e.target.value)}
-                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-blue-400 focus:outline-none transition-colors ${dateTo ? 'border-blue-400 bg-blue-50 text-blue-700 font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
+                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none transition-colors ${dateTo ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
                 />
                 {(dateFrom || dateTo) && (
                   <button onClick={() => applyDateRangeFilter('transaction_date', dateFrom, setDateFrom, dateTo, setDateTo, '', '')}
@@ -1671,12 +1671,12 @@ export default function MasterFilePage() {
                 <span className="text-[11px] font-medium text-slate-500">Comm.</span>
                 <input type="date" value={commDateFrom}
                   onChange={e => applyDateRangeFilter('commencement_date', commDateFrom, setCommDateFrom, commDateTo, setCommDateTo, e.target.value, undefined)}
-                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-blue-400 focus:outline-none transition-colors ${commDateFrom ? 'border-blue-400 bg-blue-50 text-blue-700 font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
+                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none transition-colors ${commDateFrom ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
                 />
                 <span className="text-[11px] text-slate-400">–</span>
                 <input type="date" value={commDateTo}
                   onChange={e => applyDateRangeFilter('commencement_date', commDateFrom, setCommDateFrom, commDateTo, setCommDateTo, undefined, e.target.value)}
-                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-blue-400 focus:outline-none transition-colors ${commDateTo ? 'border-blue-400 bg-blue-50 text-blue-700 font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
+                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none transition-colors ${commDateTo ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
                 />
                 {(commDateFrom || commDateTo) && (
                   <button onClick={() => applyDateRangeFilter('commencement_date', commDateFrom, setCommDateFrom, commDateTo, setCommDateTo, '', '')}
@@ -1690,7 +1690,7 @@ export default function MasterFilePage() {
               {QUICK_FILTERS.map(qf => (
                 <button key={qf.label} onClick={() => toggleQuickFilter(qf)}
                   className={`h-6 px-2 text-xs rounded-full font-medium transition-colors whitespace-nowrap ${
-                    activeQuickFilters.has(qf.label) ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    activeQuickFilters.has(qf.label) ? 'bg-[var(--wgi-navy)] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                 >
                   {qf.label}
@@ -1715,13 +1715,13 @@ export default function MasterFilePage() {
               </button>
               {selectedRows.length > 0 && (
                 <button onClick={() => { setDeleteModal(true); setDeleteConfirm(false); setDeleteTyped('') }}
-                  className="h-6 px-2.5 bg-red-50 text-red-700 text-xs rounded border border-red-200 hover:bg-red-100 font-medium whitespace-nowrap">
+                  className="h-6 px-2.5 bg-[var(--cm-status-rejected-bg)] text-[var(--cm-status-rejected-text)] text-xs rounded border border-[var(--wgi-border)] hover:border-[var(--cm-status-rejected-text)] font-medium whitespace-nowrap">
                   🗑 ({selectedRows.length})
                 </button>
               )}
               {canReconcile && (
                 <button onClick={() => setReconcileModal(true)}
-                  className="h-6 px-2.5 bg-amber-50 text-amber-800 text-xs rounded border border-amber-300 hover:bg-amber-100 font-medium whitespace-nowrap">
+                  className="h-6 px-2.5 bg-white text-[var(--wgi-navy)] text-xs rounded border border-[var(--wgi-border)] hover:border-[var(--wgi-navy)] font-medium whitespace-nowrap">
                   🔗 Reconcile
                 </button>
               )}
@@ -1730,7 +1730,7 @@ export default function MasterFilePage() {
                   onClick={openMergeModal}
                   disabled={!!mergeBlockReason}
                   title={mergeBlockReason ?? 'Merge selected rows into one'}
-                  className="h-6 px-2.5 bg-violet-50 text-violet-800 text-xs rounded border border-violet-300 hover:bg-violet-100 font-medium whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="h-6 px-2.5 bg-white text-[var(--wgi-navy)] text-xs rounded border border-[var(--wgi-border)] hover:border-[var(--wgi-navy)] font-medium whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   ⊕ Merge ({selectedRows.length})
                 </button>
@@ -1755,11 +1755,11 @@ export default function MasterFilePage() {
                 <>
                   <span className="w-px h-4 bg-gray-200 mx-0.5" />
                   <button onClick={() => bulkUpdateStatus('approved')}
-                    className="h-6 px-2.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 whitespace-nowrap">Approve</button>
+                    className="h-6 px-2.5 bg-[var(--wgi-navy)] text-white text-xs rounded hover:bg-[var(--wgi-navy-600)] whitespace-nowrap">Approve</button>
                   <button onClick={bulkMarkAsPaid}
-                    className="h-6 px-2.5 bg-green-600 text-white text-xs rounded hover:bg-green-700 whitespace-nowrap">Mark Paid</button>
+                    className="h-6 px-2.5 bg-[var(--wgi-navy)] text-white text-xs rounded hover:bg-[var(--wgi-navy-600)] whitespace-nowrap">Mark Paid</button>
                   <button onClick={() => bulkUpdateStatus('cancelled')}
-                    className="h-6 px-2.5 bg-red-600 text-white text-xs rounded hover:bg-red-700 whitespace-nowrap">Cancel</button>
+                    className="h-6 px-2.5 bg-white text-[var(--cm-status-rejected-text)] text-xs rounded border border-[var(--wgi-border)] hover:border-[var(--cm-status-rejected-text)] whitespace-nowrap">Cancel</button>
                 </>
               )}
 
@@ -1767,7 +1767,7 @@ export default function MasterFilePage() {
 
               {/* Utility */}
               <button onClick={exportToExcel}
-                className="h-6 px-2.5 bg-gray-700 text-white text-xs rounded hover:bg-gray-800 whitespace-nowrap">Export</button>
+                className="h-6 px-2.5 bg-white text-[var(--wgi-navy)] text-xs rounded border border-[var(--wgi-border)] hover:border-[var(--wgi-navy)] font-medium whitespace-nowrap">Export</button>
               <button onClick={() => loadData()} disabled={loading}
                 className="h-6 px-2 bg-gray-100 text-gray-600 text-xs rounded border border-gray-300 hover:bg-gray-200 disabled:opacity-50">
                 {loading ? '…' : '↻'}
@@ -1791,7 +1791,7 @@ export default function MasterFilePage() {
                 <button key={d} onClick={() => setDensity(d)}
                   title={{ compact: 'Compact', normal: 'Normal', cozy: 'Cozy' }[d]}
                   className={`h-6 w-6 text-xs rounded border font-bold ${
-                    density === d ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200'
+                    density === d ? 'bg-[var(--wgi-navy)] text-white border-[var(--wgi-navy)]' : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200'
                   }`}
                 >
                   {d === 'compact' ? '−' : d === 'normal' ? '○' : '+'}
@@ -1822,13 +1822,13 @@ export default function MasterFilePage() {
                 title="Show/hide and freeze columns"
                 className={`h-8 px-2.5 text-xs rounded border font-medium flex items-center gap-1.5 whitespace-nowrap transition-colors ${
                   colPanelOpen
-                    ? 'bg-indigo-600 text-white border-indigo-600'
+                    ? 'bg-[var(--wgi-navy)] text-white border-[var(--wgi-navy)]'
                     : 'bg-gray-50 text-gray-600 border-gray-300 hover:bg-gray-100'
                 }`}
               >
                 <span>Columns</span>
                 {colSnapshot.filter(s => s.hide && s.colId !== 'rowNum').length > 0 && (
-                  <span className={`text-[10px] px-1 py-0.5 rounded-full font-semibold ${colPanelOpen ? 'bg-indigo-400 text-white' : 'bg-red-100 text-red-600'}`}>
+                  <span className={`text-[10px] px-1 py-0.5 rounded-full font-semibold ${colPanelOpen ? 'bg-white/25 text-white' : 'bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)]'}`}>
                     {colSnapshot.filter(s => s.hide && s.colId !== 'rowNum').length}
                   </span>
                 )}
@@ -1850,7 +1850,7 @@ export default function MasterFilePage() {
                     <div className="flex items-center justify-between px-4 py-2.5 bg-gray-50 border-b border-gray-200">
                       <span className="text-xs font-semibold text-gray-700">Columns</span>
                       <div className="flex items-center gap-2">
-                        <button onClick={showAllColumns} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium">Show all</button>
+                        <button onClick={showAllColumns} className="text-xs text-[var(--wgi-navy)] hover:opacity-70 font-medium">Show all</button>
                         <span className="text-gray-300">|</span>
                         <button onClick={resetColumnLayout} className="text-xs text-gray-500 hover:text-red-600">Reset</button>
                         <button onClick={() => setColPanelOpen(false)} className="text-gray-400 hover:text-gray-600 text-sm leading-none ml-1">✕</button>
@@ -1878,7 +1878,7 @@ export default function MasterFilePage() {
                                   <button
                                     onClick={() => toggleColVisibility(snap.colId, snap.hide)}
                                     title={snap.hide ? 'Show column' : 'Hide column'}
-                                    className={`flex-shrink-0 w-8 h-4 rounded-full transition-colors ${snap.hide ? 'bg-gray-200' : 'bg-indigo-500'}`}
+                                    className={`flex-shrink-0 w-8 h-4 rounded-full transition-colors ${snap.hide ? 'bg-gray-200' : 'bg-[var(--wgi-navy)]'}`}
                                   >
                                     <span className={`block w-3 h-3 rounded-full bg-white shadow transition-transform mx-0.5 ${snap.hide ? 'translate-x-0' : 'translate-x-4'}`} />
                                   </button>
@@ -1888,8 +1888,8 @@ export default function MasterFilePage() {
                                     title={isPinned ? 'Unfreeze' : 'Freeze left'}
                                     className={`flex-shrink-0 text-xs px-1.5 py-0.5 rounded border transition-colors ${
                                       isPinned
-                                        ? 'bg-blue-100 text-blue-700 border-blue-300 font-semibold'
-                                        : 'bg-transparent text-gray-300 border-gray-200 hover:text-blue-500 hover:border-blue-300'
+                                        ? 'bg-[var(--cm-status-paid-bg)] text-[var(--wgi-navy)] border-[var(--wgi-navy)] font-semibold'
+                                        : 'bg-transparent text-gray-300 border-gray-200 hover:text-[var(--wgi-navy)] hover:border-[var(--wgi-navy)]'
                                     }`}
                                   >
                                     {isPinned ? '⊣ frozen' : '⊣'}
@@ -1910,7 +1910,7 @@ export default function MasterFilePage() {
             </div>
 
             <button onClick={() => router.push('/commission/admin/upload')}
-              className="h-8 px-2.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 whitespace-nowrap font-medium transition-colors">
+              className="h-8 px-2.5 bg-[var(--wgi-navy)] text-white text-xs rounded hover:bg-[var(--wgi-navy-600)] whitespace-nowrap font-medium transition-colors">
               Upload CSV
             </button>
 
@@ -1922,7 +1922,7 @@ export default function MasterFilePage() {
 
         {/* Feedback toast */}
         {feedback && (
-          <div className="flex-shrink-0 mb-2 bg-green-50 border border-green-200 text-green-800 px-4 py-1.5 rounded text-xs font-medium">
+          <div className="flex-shrink-0 mb-2 bg-[var(--cm-status-approved-bg)] border border-[var(--cm-status-approved-text)]/25 text-[var(--cm-status-approved-text)] px-4 py-1.5 rounded text-xs font-medium">
             {feedback}
           </div>
         )}
@@ -1930,19 +1930,19 @@ export default function MasterFilePage() {
         {/* Bulk formula row — conditional on selection */}
         {selectedRows.length > 0 && (
           <div className="flex-shrink-0 flex flex-wrap items-center gap-2 px-3 py-1.5 mb-2 bg-white border border-gray-200 rounded-md">
-            <span className="text-xs text-purple-700 font-medium whitespace-nowrap">
+            <span className="text-xs text-[var(--wgi-navy)] font-semibold whitespace-nowrap">
               Apply to {selectedRows.filter(r => !r.allocation_parent_id).length} selected:
             </span>
             <select value={formulaField} onChange={e => { setFormulaField(e.target.value); setFormulaValue('') }}
-              className="text-xs border border-gray-300 rounded px-2 h-6 focus:ring-1 focus:ring-purple-400 focus:outline-none bg-white">
+              className="text-xs border border-gray-300 rounded px-2 h-6 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none bg-white">
               {FORMULA_FIELDS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
             </select>
             <input type="text" placeholder={currentHint} value={formulaValue}
               onChange={e => setFormulaValue(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') bulkApplyFormula() }}
-              className="text-xs border border-gray-300 rounded px-2 h-6 w-44 focus:ring-1 focus:ring-purple-400 focus:outline-none" />
+              className="text-xs border border-gray-300 rounded px-2 h-6 w-44 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none" />
             <button onClick={bulkApplyFormula} disabled={formulaApplying}
-              className="h-6 px-3 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 disabled:opacity-40 font-medium">
+              className="h-6 px-3 bg-[var(--wgi-navy)] text-white text-xs rounded hover:bg-[var(--wgi-navy-600)] disabled:opacity-40 font-medium">
               {formulaApplying ? 'Applying…' : 'Apply'}
             </button>
           </div>
@@ -2090,7 +2090,7 @@ export default function MasterFilePage() {
                       gridRef.current?.api.setGridOption('paginationPageSize', s)
                       setPgSize(s)
                     }}
-                    className="border border-slate-300 rounded px-1 h-5 text-[11px] bg-white text-slate-600 focus:outline-none focus:ring-1 focus:ring-blue-400"
+                    className="border border-slate-300 rounded px-1 h-5 text-[11px] bg-white text-slate-600 focus:outline-none focus:ring-1 focus:ring-[var(--wgi-gold)]"
                   >
                     {[100, 250, 500, 1000, 5000].map(s => (
                       <option key={s} value={s}>{s} / page</option>
@@ -2277,9 +2277,9 @@ export default function MasterFilePage() {
 
             {/* Live preview */}
             {addForm.amount && (
-              <div className="mt-4 bg-blue-50 border border-blue-200 rounded p-3">
-                <p className="text-xs font-semibold text-blue-700 mb-1">Calculated Preview</p>
-                <div className="grid grid-cols-3 gap-2 text-xs text-blue-800">
+              <div className="mt-4 bg-[var(--wgi-bg)] border border-[var(--wgi-border)] rounded p-3">
+                <p className="text-xs font-semibold text-[var(--wgi-navy)] mb-1">Calculated Preview</p>
+                <div className="grid grid-cols-3 gap-2 text-xs text-[var(--wgi-text-muted)]">
                   <span>IFA Comm: <strong>${previewIFA.toFixed(3)}</strong></span>
                   <span>IFA Susp: <strong>${previewSusp.toFixed(3)}</strong></span>
                   <span>WGI: <strong>${previewWGI.toFixed(3)}</strong></span>
@@ -2294,7 +2294,7 @@ export default function MasterFilePage() {
                 Cancel
               </button>
               <button onClick={handleAddRecord} disabled={addSaving}
-                className="flex-1 bg-emerald-600 text-white py-2 rounded text-sm font-medium hover:bg-emerald-700 disabled:opacity-40">
+                className="flex-1 bg-[var(--wgi-navy)] text-white py-2 rounded text-sm font-medium hover:bg-[var(--wgi-navy-600)] disabled:opacity-40">
                 {addSaving ? 'Saving…' : 'Add Record'}
               </button>
             </div>
@@ -2370,17 +2370,17 @@ export default function MasterFilePage() {
           <div className="fixed inset-0 z-40 flex justify-end pointer-events-none">
             {/* backdrop — only covers area, closes panel on click */}
             <div className="absolute inset-0 pointer-events-auto" onClick={() => setDetailRecord(null)} />
-            <div className="relative pointer-events-auto w-full max-w-xl bg-white shadow-2xl border-l border-sky-200 flex flex-col overflow-hidden">
+            <div className="relative pointer-events-auto w-full max-w-xl bg-white shadow-2xl border-l border-[var(--wgi-border)] flex flex-col overflow-hidden">
               {/* Header */}
-              <div className="flex items-center justify-between px-5 py-3 bg-sky-50 border-b border-sky-200 flex-shrink-0">
+              <div className="flex items-center justify-between px-5 py-3 bg-[var(--wgi-bg)] border-b border-[var(--wgi-border)] flex-shrink-0">
                 <div>
-                  <p className="text-sm font-bold text-sky-900">Allocation Breakdown</p>
-                  <p className="text-xs text-sky-600">{detailRecord.policy_number} — {detailRecord.ifa_code} / {detailRecord.ifa_name}</p>
+                  <p className="text-sm font-bold text-[var(--wgi-navy)]">Allocation Breakdown</p>
+                  <p className="text-xs text-[var(--wgi-text-muted)]">{detailRecord.policy_number} — {detailRecord.ifa_code} / {detailRecord.ifa_name}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => { openAllocModalCb(detailRecord) }}
-                    className="text-xs px-3 py-1.5 bg-sky-600 text-white rounded font-medium hover:bg-sky-700"
+                    className="text-xs px-3 py-1.5 bg-[var(--wgi-navy)] text-white rounded font-medium hover:bg-[var(--wgi-navy-600)]"
                   >
                     + Add Allocation
                   </button>
@@ -2391,12 +2391,12 @@ export default function MasterFilePage() {
               <div className="flex-1 overflow-y-auto p-5">
                 <table className="w-full text-xs border-collapse">
                   <thead>
-                    <tr className="bg-sky-50 text-sky-700">
-                      <th className="text-left px-3 py-2 border border-sky-200 font-semibold">Party</th>
-                      <th className="text-right px-3 py-2 border border-sky-200 font-semibold">Uploaded %</th>
-                      <th className="text-right px-3 py-2 border border-sky-200 font-semibold">Effective %</th>
-                      <th className="text-right px-3 py-2 border border-sky-200 font-semibold">Effective Amt</th>
-                      <th className="px-3 py-2 border border-sky-200"></th>
+                    <tr className="bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)]">
+                      <th className="text-left px-3 py-2 border border-[var(--wgi-border)] font-semibold">Party</th>
+                      <th className="text-right px-3 py-2 border border-[var(--wgi-border)] font-semibold">Uploaded %</th>
+                      <th className="text-right px-3 py-2 border border-[var(--wgi-border)] font-semibold">Effective %</th>
+                      <th className="text-right px-3 py-2 border border-[var(--wgi-border)] font-semibold">Effective Amt</th>
+                      <th className="px-3 py-2 border border-[var(--wgi-border)]"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2497,8 +2497,8 @@ export default function MasterFilePage() {
                     <option value="suspense">Suspense ({(parent.suspense_percentage * 100).toFixed(2)}% → ${parent.suspense_amount?.toFixed(3)})</option>
                   </select>
                   <p className="text-xs text-gray-500 mt-1">
-                    Available from {allocForm.source_bucket.toUpperCase()}: <strong className="text-blue-700">{(available * 100).toFixed(2)}%</strong>
-                    {' '}= <strong className="text-blue-700">${(parent.amount * available).toFixed(3)}</strong>
+                    Available from {allocForm.source_bucket.toUpperCase()}: <strong className="text-[var(--wgi-navy)]">{(available * 100).toFixed(2)}%</strong>
+                    {' '}= <strong className="text-[var(--wgi-navy)]">${(parent.amount * available).toFixed(3)}</strong>
                   </p>
                 </div>
 
@@ -2512,7 +2512,7 @@ export default function MasterFilePage() {
                     className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm"
                   />
                   {allocForm.percentage && !isNaN(previewPct) && previewPct > 0 && (
-                    <p className="text-xs text-blue-700 mt-1">
+                    <p className="text-xs text-[var(--wgi-navy)] mt-1">
                       = <strong>${previewAmt.toFixed(3)}</strong> redirected to secondary IFA
                     </p>
                   )}
@@ -2550,7 +2550,7 @@ export default function MasterFilePage() {
                   Cancel
                 </button>
                 <button onClick={handleSubmitAllocation} disabled={allocSaving}
-                  className="flex-1 bg-sky-600 text-white py-2 rounded text-sm font-medium hover:bg-sky-700 disabled:opacity-40">
+                  className="flex-1 bg-[var(--wgi-navy)] text-white py-2 rounded text-sm font-medium hover:bg-[var(--wgi-navy-600)] disabled:opacity-40">
                   {allocSaving ? 'Creating…' : 'Create Allocation'}
                 </button>
               </div>
@@ -2582,7 +2582,7 @@ export default function MasterFilePage() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {selectedRows.map(r => (
-                    <tr key={r.id} className={r.id === mergeSurvivorId ? 'bg-violet-50' : ''}>
+                    <tr key={r.id} className={r.id === mergeSurvivorId ? 'bg-[#eef3f9]' : ''}>
                       <td className="px-2 py-2">
                         <input
                           type="radio"
@@ -2602,11 +2602,11 @@ export default function MasterFilePage() {
               </table>
             </div>
 
-            <div className="bg-violet-50 border border-violet-200 rounded p-4 text-sm grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="bg-[var(--wgi-bg)] border border-[var(--wgi-border)] rounded p-4 text-sm grid grid-cols-2 sm:grid-cols-3 gap-3">
               <div><span className="text-gray-500 block text-xs">Received</span><strong>${fmtMoney(mergePreview.amount)}</strong></div>
               <div><span className="text-gray-500 block text-xs">Expect</span><strong>${fmtMoney(mergePreview.variable_amount)}</strong></div>
               <div><span className="text-gray-500 block text-xs">Gross</span><strong>${fmtMoney(mergePreview.gross)}</strong></div>
-              <div><span className="text-gray-500 block text-xs">IFA Comm</span><strong className="text-blue-700">${fmtMoney(mergePreview.ifa_amount)}</strong></div>
+              <div><span className="text-gray-500 block text-xs">IFA Comm</span><strong className="text-[var(--wgi-navy)]">${fmtMoney(mergePreview.ifa_amount)}</strong></div>
               <div><span className="text-gray-500 block text-xs">Paid</span><strong>${fmtMoney(mergePreview.paid)}</strong></div>
               <div><span className="text-gray-500 block text-xs">Unpaid</span><strong className="text-red-600">${fmtMoney(mergePreview.unpaid)}</strong></div>
               <div><span className="text-gray-500 block text-xs">Status</span><strong>{mergePreview.status}</strong></div>
@@ -2627,7 +2627,7 @@ export default function MasterFilePage() {
                 Cancel
               </button>
               <button onClick={handleConfirmMerge} disabled={merging || !mergeSurvivorId}
-                className="flex-1 bg-violet-600 text-white py-2 rounded text-sm font-medium hover:bg-violet-700 disabled:opacity-40">
+                className="flex-1 bg-[var(--wgi-navy)] text-white py-2 rounded text-sm font-medium hover:bg-[var(--wgi-navy-600)] disabled:opacity-40">
                 {merging ? 'Merging…' : `Merge ${selectedRows.length} rows`}
               </button>
             </div>
