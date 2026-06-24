@@ -233,8 +233,8 @@ function normalizeCommissionType(raw: string): string | null {
 
 // ── Allocation detail panel (full-width row renderer) ──────────────────────────
 
-const thS: React.CSSProperties = { padding: '4px 8px', textAlign: 'left', borderBottom: '1px solid #bae6fd', fontWeight: 600, fontSize: 11, color: '#0369a1', whiteSpace: 'nowrap' }
-const tdS: React.CSSProperties = { padding: '4px 8px', borderBottom: '1px solid #e0f2fe', fontSize: 12 }
+const thS: React.CSSProperties = { padding: '4px 8px', textAlign: 'left', borderBottom: '1px solid #E2E8F0', fontWeight: 600, fontSize: 11, color: '#1B2D45', whiteSpace: 'nowrap' }
+const tdS: React.CSSProperties = { padding: '4px 8px', borderBottom: '1px solid #E2E8F0', fontSize: 12 }
 
 function AllocationDetailPanel(params: any) {
   const record: CommissionRecord = params.data?._parentRecord
@@ -255,21 +255,21 @@ function AllocationDetailPanel(params: any) {
   const origSusp = record.suspense_percentage + suspAllocd
 
   return (
-    <div style={{ padding: '10px 16px 10px 48px', background: '#f0f9ff', borderBottom: '2px solid #bae6fd' }}>
+    <div style={{ padding: '10px 16px 10px 48px', background: '#F8FAFC', borderBottom: '2px solid #E2E8F0' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: '#0369a1', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: '#1B2D45', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           Allocation Breakdown — {record.policy_number} / {record.ifa_code}
         </span>
         <button
           onClick={() => ctx.onAddAllocation?.(record)}
-          style={{ fontSize: 11, padding: '3px 10px', background: '#0284c7', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}
+          style={{ fontSize: 11, padding: '3px 10px', background: '#1B2D45', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}
         >
           + Add Allocation
         </button>
       </div>
       <table style={{ borderCollapse: 'collapse', fontSize: 12, width: '100%' }}>
         <thead>
-          <tr style={{ background: '#e0f2fe' }}>
+          <tr style={{ background: '#F8FAFC' }}>
             <th style={thS}>Party</th>
             <th style={thS}>Uploaded %</th>
             <th style={thS}>Effective %</th>
@@ -308,22 +308,22 @@ function AllocationDetailPanel(params: any) {
             <td style={tdS}></td>
           </tr>
           {allocations.map(alloc => (
-            <tr key={alloc.id} style={{ background: '#fef9c3' }}>
+            <tr key={alloc.id} style={{ background: '#FFF7ED' }}>
               <td style={tdS}>
-                <strong style={{ color: '#92400e' }}>{alloc.secondary_ifa_code}</strong>
+                <strong style={{ color: '#9A3412' }}>{alloc.secondary_ifa_code}</strong>
                 {alloc.secondary_ifa_name ? ` — ${alloc.secondary_ifa_name}` : ''}{' '}
-                <span style={{ fontSize: 10, color: '#b45309', fontStyle: 'italic' }}>(Secondary IFA)</span>
+                <span style={{ fontSize: 10, color: '#9A3412', fontStyle: 'italic' }}>(Secondary IFA)</span>
               </td>
               <td style={{ ...tdS, color: '#9ca3af' }}>—</td>
-              <td style={{ ...tdS, color: '#b45309', fontWeight: 700 }}>{fmtP(alloc.percentage)}</td>
-              <td style={{ ...tdS, color: '#b45309', fontWeight: 700 }}>{fmtA(record.amount * alloc.percentage)}</td>
+              <td style={{ ...tdS, color: '#9A3412', fontWeight: 700 }}>{fmtP(alloc.percentage)}</td>
+              <td style={{ ...tdS, color: '#9A3412', fontWeight: 700 }}>{fmtA(record.amount * alloc.percentage)}</td>
               <td style={tdS}>{alloc.source_bucket.toUpperCase()}</td>
               <td style={tdS}>{alloc.notes ?? ''}</td>
               <td style={tdS}>
                 <button
                   onClick={() => ctx.onDeleteAllocation?.(alloc.id)}
                   disabled={ctx.deletingAllocationIdRef?.current === alloc.id}
-                  style={{ fontSize: 11, padding: '2px 8px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: 4, cursor: 'pointer' }}
+                  style={{ fontSize: 11, padding: '2px 8px', background: '#FEE2E2', color: '#7F1D1D', border: '1px solid #E2E8F0', borderRadius: 4, cursor: 'pointer' }}
                 >
                   {ctx.deletingAllocationIdRef?.current === alloc.id ? '…' : 'Remove'}
                 </button>
@@ -723,7 +723,7 @@ export default function MasterFilePage() {
 
   // ── Column Definitions ────────────────────────────────────────────────────────
   const columnDefs = useMemo<ColDef[]>(() => {
-    const yellowCell = { backgroundColor: '#fef3c7' }
+    const yellowCell = { backgroundColor: '#FAF5EA' }  // editable-cell affordance (gold wash)
 
     return [
       // Row number — clean row header, click to select (Excel-style)
@@ -735,8 +735,8 @@ export default function MasterFilePage() {
         sortable: false, filter: false, editable: false,
         suppressMovable: true, resizable: false,
         cellStyle: (p: any): any => ({
-          background: p.node?.isSelected?.() ? '#dbeafe' : '#f1f5f9',
-          color: p.node?.isSelected?.() ? '#1d4ed8' : '#94a3b8',
+          background: p.node?.isSelected?.() ? '#eef3f9' : '#f1f5f9',
+          color: p.node?.isSelected?.() ? '#1B2D45' : '#94a3b8',
           fontSize: '11px',
           fontWeight: 500,
           textAlign: 'center',
@@ -764,7 +764,7 @@ export default function MasterFilePage() {
               <button
                 onClick={(e) => { e.stopPropagation(); setDetailRecord(isOpen ? null : data) }}
                 title={isOpen ? 'Close breakdown panel' : 'View allocation breakdown'}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: '#0284c7', fontWeight: 'bold', padding: '0 2px', lineHeight: 1 }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: '#1B2D45', fontWeight: 'bold', padding: '0 2px', lineHeight: 1 }}
               >
                 {isOpen ? '▼' : '▶'}
               </button>
@@ -858,7 +858,7 @@ export default function MasterFilePage() {
           return amt + adj
         },
         valueFormatter: (p: ValueFormatterParams) => p.value != null ? fmtMoney(Number(p.value)) : '',
-        cellStyle: { fontWeight: 'bold', color: '#1d4ed8' } as Record<string, string | number>,
+        cellStyle: { fontWeight: 'bold', color: '#1B2D45' } as Record<string, string | number>,
       },
       {
         headerName: 'CCY', field: 'currency',
@@ -968,8 +968,8 @@ export default function MasterFilePage() {
         valueFormatter: fmtNum,
         cellStyle: (p: CellClassParams) =>
           (p.value ?? 0) > 0
-            ? { color: '#dc2626', fontWeight: 'bold' }
-            : { color: '#16a34a', fontWeight: 'normal' },
+            ? { color: '#CC0000', fontWeight: 'bold' }
+            : { color: '#00873E', fontWeight: 'normal' },
       },
       {
         headerName: 'Status', field: 'status',
@@ -1004,14 +1004,14 @@ export default function MasterFilePage() {
         cellEditor: 'agLargeTextCellEditor', cellEditorPopup: true,
         cellEditorParams: { maxLength: 2000, rows: 6, cols: 50 },
         wrapText: true, autoHeight: true,
-        cellStyle: { backgroundColor: '#fef9c3', borderLeft: '2px solid #facc15', whiteSpace: 'pre-wrap', lineHeight: '1.4' } as Record<string, string | number>,
+        cellStyle: { backgroundColor: '#FAF5EA', borderLeft: '2px solid #C8A96E', whiteSpace: 'pre-wrap', lineHeight: '1.4' } as Record<string, string | number>,
       },
       {
         headerName: 'IFA Notes', field: 'ifa_notes', width: 200, editable: true, filter: 'agTextColumnFilter',
         cellEditor: 'agLargeTextCellEditor', cellEditorPopup: true,
         cellEditorParams: { maxLength: 2000, rows: 6, cols: 50 },
         wrapText: true, autoHeight: true,
-        cellStyle: { backgroundColor: '#fef9c3', borderLeft: '2px solid #facc15', whiteSpace: 'pre-wrap', lineHeight: '1.4' } as Record<string, string | number>,
+        cellStyle: { backgroundColor: '#FAF5EA', borderLeft: '2px solid #C8A96E', whiteSpace: 'pre-wrap', lineHeight: '1.4' } as Record<string, string | number>,
       },
       { headerName: 'Platform', field: 'platform.name', width: 120, filter: 'agTextColumnFilter' },
       {
@@ -1975,7 +1975,7 @@ export default function MasterFilePage() {
             getRowStyle={(params: any): any => {
               if (params.node.rowPinned === 'bottom') {
                 return params.data?._selected
-                  ? { background: '#dbeafe', fontWeight: 700, borderTop: '2px solid #3b82f6' }
+                  ? { background: '#eef3f9', fontWeight: 700, borderTop: '2px solid #1B2D45' }
                   : { background: '#f1f5f9', fontWeight: 700, borderTop: '2px solid #94a3b8' }
               }
               if (params.data?._isDetailRow) return {}
@@ -1983,13 +1983,13 @@ export default function MasterFilePage() {
                 return { opacity: '0.5', background: '#fee2e2', textDecoration: 'line-through' }
               }
               if (params.data?.allocation_parent_id) {
-                return { background: '#e0f2fe', borderLeft: '3px solid #0ea5e9' } // light blue — allocation child
+                return { background: '#eef3f9', borderLeft: '3px solid #3D6898' } // navy tint — allocation child
               }
               if (params.data?.status === 'reconciled') {
                 return { background: '#d1fae5' } // green — statement covered by advance
               }
               if (params.data?.is_advance) {
-                return { background: '#fef3c7' } // amber — advance payment
+                return { background: '#FFF7ED' } // advance payment (advance token)
               }
               return undefined
             }}
