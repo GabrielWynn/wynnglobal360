@@ -131,66 +131,71 @@ export default function AdminDashboard() {
   ]
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--wgi-bg)' }}>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="min-h-[calc(100vh-105px)]" style={{ background: 'var(--wgi-bg)' }}>
 
-        {/* ── Alert banners ─────────────────────────────────────────────────── */}
-        {(
-          (stats.unmappedPolicies > 0 && !dismissedAlerts.has('unmapped')) ||
-          (stats.negativeBalanceIFAs > 0 && !dismissedAlerts.has('negative')) ||
-          (stats.pendingApproval > 0 && !dismissedAlerts.has('pending'))
-        ) && (
-          <div className="overflow-hidden rounded-[6px] border border-[var(--wgi-border)]">
-            {stats.unmappedPolicies > 0 && !dismissedAlerts.has('unmapped') && (
-              <AlertBanner
-                level="critical"
-                cta="Manage"
-                onCta={() => router.push('/commission/admin/unmapped')}
-                onDismiss={() => dismiss('unmapped')}
-              >
-                <strong>{stats.unmappedPolicies} unmapped policies</strong> could not be matched to an IFA in Azure.
-              </AlertBanner>
-            )}
-            {stats.negativeBalanceIFAs > 0 && !dismissedAlerts.has('negative') && (
-              <AlertBanner level="warning" onDismiss={() => dismiss('negative')}>
-                <strong>{stats.negativeBalanceIFAs} IFAs</strong> have a negative balance &mdash; review before next payment run.
-              </AlertBanner>
-            )}
-            {stats.pendingApproval > 0 && !dismissedAlerts.has('pending') && (
-              <AlertBanner
-                level="warning"
-                cta="Review"
-                onCta={() => router.push('/commission/admin/approvals')}
-                onDismiss={() => dismiss('pending')}
-              >
-                <strong>{stats.pendingApproval} transactions</strong> awaiting approval ({formatCurrency(stats.pendingApprovalSum, 'USD')} total IFA value).
-              </AlertBanner>
-            )}
+      {/* ── Alert banners (edge-to-edge) ──────────────────────────────────── */}
+      {stats.unmappedPolicies > 0 && !dismissedAlerts.has('unmapped') && (
+        <AlertBanner
+          level="critical"
+          cta="Manage"
+          onCta={() => router.push('/commission/admin/unmapped')}
+          onDismiss={() => dismiss('unmapped')}
+        >
+          <strong>{stats.unmappedPolicies} unmapped policies</strong> could not be matched to an IFA in Azure.
+        </AlertBanner>
+      )}
+      {stats.negativeBalanceIFAs > 0 && !dismissedAlerts.has('negative') && (
+        <AlertBanner level="warning" onDismiss={() => dismiss('negative')}>
+          <strong>{stats.negativeBalanceIFAs} IFAs</strong> have a negative balance &mdash; review before next payment run.
+        </AlertBanner>
+      )}
+      {stats.pendingApproval > 0 && !dismissedAlerts.has('pending') && (
+        <AlertBanner
+          level="warning"
+          cta="Review"
+          onCta={() => router.push('/commission/admin/approvals')}
+          onDismiss={() => dismiss('pending')}
+        >
+          <strong>{stats.pendingApproval} transactions</strong> awaiting approval ({formatCurrency(stats.pendingApprovalSum, 'USD')} total IFA value).
+        </AlertBanner>
+      )}
+
+      {/* ── Stat strips (edge-to-edge, all 8 preserved) ───────────────────── */}
+      <div className="grid grid-cols-2 divide-x divide-y divide-[var(--wgi-border)] border-b border-[var(--wgi-border)] bg-[var(--wgi-surface)] lg:grid-cols-4 lg:divide-y-0">
+        {metrics.slice(0, 4).map((m) => (
+          <div
+            key={m.label}
+            onClick={() => m.href !== '#' && router.push(m.href)}
+            className={m.href !== '#' ? 'cursor-pointer transition-colors hover:bg-[var(--wgi-bg)]' : ''}
+          >
+            <StatCard label={m.label} value={m.value} sub={m.sub} variant={m.variant} mono={m.mono} />
           </div>
-        )}
+        ))}
+      </div>
+      <div className="grid grid-cols-2 divide-x divide-y divide-[var(--wgi-border)] border-b border-[var(--wgi-border)] bg-[var(--wgi-surface)] lg:grid-cols-4 lg:divide-y-0">
+        {metrics.slice(4).map((m) => (
+          <div
+            key={m.label}
+            onClick={() => m.href !== '#' && router.push(m.href)}
+            className={m.href !== '#' ? 'cursor-pointer transition-colors hover:bg-[var(--wgi-bg)]' : ''}
+          >
+            <StatCard label={m.label} value={m.value} sub={m.sub} variant={m.variant} mono={m.mono} />
+          </div>
+        ))}
+      </div>
 
-        {/* ── Metric cards (all 8 preserved) ────────────────────────────────── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-[var(--wgi-border)] overflow-hidden rounded-[6px] border border-[var(--wgi-border)] bg-[var(--wgi-surface)]">
-          {metrics.slice(0, 4).map((m) => (
-            <div
-              key={m.label}
-              onClick={() => m.href !== '#' && router.push(m.href)}
-              className={m.href !== '#' ? 'cursor-pointer transition-colors hover:bg-[var(--wgi-bg)]' : ''}
-            >
-              <StatCard label={m.label} value={m.value} sub={m.sub} variant={m.variant} mono={m.mono} />
-            </div>
-          ))}
-        </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-[var(--wgi-border)] overflow-hidden rounded-[6px] border border-[var(--wgi-border)] bg-[var(--wgi-surface)]">
-          {metrics.slice(4).map((m) => (
-            <div
-              key={m.label}
-              onClick={() => m.href !== '#' && router.push(m.href)}
-              className={m.href !== '#' ? 'cursor-pointer transition-colors hover:bg-[var(--wgi-bg)]' : ''}
-            >
-              <StatCard label={m.label} value={m.value} sub={m.sub} variant={m.variant} mono={m.mono} />
-            </div>
-          ))}
+      {/* ── Content ───────────────────────────────────────────────────────── */}
+      <main className="space-y-5 px-6 py-5">
+
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 className="text-[18px] font-bold text-[var(--wgi-navy)]">Commission Administration</h1>
+            <p className="mt-0.5 text-[11px] font-medium text-[var(--wgi-text-muted)]">Operations overview</p>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={() => router.push('/commission/admin/upload')} className="rounded-[4px] border border-[var(--wgi-border)] bg-white px-3 py-1.5 text-xs font-semibold text-[var(--wgi-navy)] hover:border-[var(--wgi-navy)]">+ Upload File</button>
+            <button onClick={() => router.push('/commission/admin/approvals')} className="rounded-[4px] bg-[var(--wgi-navy)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[var(--wgi-navy-600)]">Review Approvals</button>
+          </div>
         </div>
 
         {/* ── Charts ────────────────────────────────────────────────────────── */}

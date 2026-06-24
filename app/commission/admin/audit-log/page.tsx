@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import { getAuthHeaders } from '@/lib/supabase'
 
 interface AuditEntry {
@@ -46,7 +45,6 @@ function fmtDateTime(iso: string): string {
 }
 
 export default function AuditLogPage() {
-  const router = useRouter()
   const [logs,        setLogs]        = useState<AuditEntry[]>([])
   const [total,       setTotal]       = useState(0)
   const [page,        setPage]        = useState(1)
@@ -103,19 +101,17 @@ export default function AuditLogPage() {
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-[calc(100vh-105px)]" style={{ background: 'var(--wgi-bg)' }}>
 
-      <main className="px-6 py-4 space-y-4">
+      <main className="px-6 py-5 space-y-4">
 
-        <button
-          onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[var(--wgi-navy)] font-medium transition-colors"
-        >
-          ← Back to Admin
-        </button>
+        <div>
+          <h1 className="text-[18px] font-bold text-[var(--wgi-navy)]">Audit Log</h1>
+          <p className="mt-0.5 text-[11px] font-medium text-[var(--wgi-text-muted)]">Every change is recorded</p>
+        </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow px-4 py-3 flex flex-wrap items-end gap-3">
+        <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] px-4 py-3 flex flex-wrap items-end gap-3">
           <div className="flex flex-col gap-1">
             <label className="text-xs text-gray-500">Policy</label>
             <input
@@ -181,7 +177,7 @@ export default function AuditLogPage() {
         )}
 
         {/* Table */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] overflow-hidden">
           <table className="min-w-full text-sm">
             <thead className="bg-[var(--wgi-navy)]">
               <tr>
