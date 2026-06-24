@@ -43,13 +43,13 @@ export default function AnnualPerformance({ returns }: Props) {
           Annual Performance
         </p>
         <p className="text-xs mt-0.5" style={{ color: "var(--wgi-text-muted)" }}>
-          Calendar-year returns · trailing 12 months · current partial year shown as YTD above
+          Calendar-year returns · partial years marked when the portfolio started mid-year · current year shown as YTD above
         </p>
       </div>
 
       {/* Rows */}
       <div className="divide-y" style={{ background: "white", borderColor: "var(--wgi-border)" }}>
-        {[...returns].reverse().map(({ year, return: ret }) => {
+        {[...returns].reverse().map(({ year, return: ret, partial, days }) => {
           const positive = ret >= 0;
           const pct      = `${positive ? "+" : ""}${(ret * 100).toFixed(2)}%`;
           const barColor = positive ? "var(--mp-gain, #00873E)" : "var(--mp-loss, #CC0000)";
@@ -58,12 +58,19 @@ export default function AnnualPerformance({ returns }: Props) {
           return (
             <div key={year} className="flex items-center gap-4 px-5 py-3.5">
               {/* Year */}
-              <span
-                className="text-sm font-bold w-12 flex-shrink-0"
-                style={{ color: "var(--wgi-text)" }}
-              >
-                {year}
-              </span>
+              <div className="w-24 flex-shrink-0">
+                <span
+                  className="text-sm font-bold block"
+                  style={{ color: "var(--wgi-text)" }}
+                >
+                  {year}
+                </span>
+                {partial && (
+                  <span className="text-[10px]" style={{ color: "var(--wgi-text-muted)" }}>
+                    partial · {days}d
+                  </span>
+                )}
+              </div>
 
               {/* Bar */}
               <div className="flex-1 h-5 rounded-full overflow-hidden flex items-center"

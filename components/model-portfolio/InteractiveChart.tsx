@@ -250,6 +250,18 @@ export default function InteractiveChart({
     return [min - pad, max + pad];
   }, [data, start, end]);
 
+  const versionDates = useMemo(
+    () => [...new Set(compositions.map((c) => c.effectiveFrom))].sort(),
+    [compositions]
+  );
+
+  const rebalanceDates = useMemo(() => {
+    if (!series.length) return [];
+    return versionDates
+      .map((d) => series.find((p) => p.date >= d)?.date ?? null)
+      .filter((d): d is string => Boolean(d));
+  }, [versionDates, series]);
+
   const periodReturn = data[end]?.value ?? 0;
   const windowStartDate = series[start]?.date;
   const windowEndDate   = series[end]?.date;
@@ -291,7 +303,7 @@ export default function InteractiveChart({
                 <span style={{ color: periodReturn >= 0 ? "var(--mp-gain, #00873E)" : "var(--mp-loss, #CC0000)", fontWeight: 600 }}>
                   {fmtPct(periodReturn)}
                 </span>{" "}
-                over period · drag the timeline or click a point for holdings
+                over period · gold lines = portfolio version changes · drag the timeline or click a point for holdings
               </p>
             )}
           </div>
@@ -354,6 +366,15 @@ export default function InteractiveChart({
               />
               <Tooltip content={<CustomTooltip />} />
               <ReferenceLine y={0} stroke="#e5e7eb" strokeWidth={1} />
+              {rebalanceDates.map((d) => (
+                <ReferenceLine
+                  key={d}
+                  x={d}
+                  stroke="var(--wgi-gold, #C8A96E)"
+                  strokeDasharray="2 4"
+                  strokeWidth={1}
+                />
+              ))}
               {selectedDate && (
                 <ReferenceLine
                   x={selectedDate}

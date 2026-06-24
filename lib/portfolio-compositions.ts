@@ -235,9 +235,10 @@ export function computeStandardReturns(dailyReturns: DailyReturn[]): StandardRet
 // ---------------------------------------------------------------------------
 
 export interface AnnualReturn {
-  year:   number;
-  return: number;  // decimal e.g. 0.12 = 12%
-  days:   number;  // trading days used
+  year:    number;
+  return:  number;  // decimal e.g. 0.12 = 12%
+  days:    number;   // trading days used
+  partial: boolean;  // true when fewer than 200 trading days in that calendar year
 }
 
 export function computeAnnualReturns(dailyReturns: DailyReturn[]): AnnualReturn[] {
@@ -246,26 +247,27 @@ export function computeAnnualReturns(dailyReturns: DailyReturn[]): AnnualReturn[
   const currentYear = new Date().getFullYear();
   const results: AnnualReturn[] = [];
 
-  // Determine the range of years in the data
   const firstYear = parseInt(dailyReturns[0].date.slice(0, 4), 10);
   const lastYear  = parseInt(dailyReturns[dailyReturns.length - 1].date.slice(0, 4), 10);
 
   for (let year = firstYear; year <= lastYear; year++) {
-    // Never include the current (partial) year — it shows as YTD
+    // Current (partial) year is shown as YTD in the summary cards
     if (year >= currentYear) break;
 
     const slice = dailyReturns.filter(
       (d) => d.date >= `${year}-01-01` && d.date <= `${year}-12-31`
     );
 
-    // Require at least 200 trading days for a "complete" year result
-    if (slice.length < 200) continue;
+    // Full calendar year: require 200+ trading days
+    // Partial year (e.g. portfolio started mid-year): require 60+ days
+    const partial = slice.length < 200;
+    if (slice.length < (partial ? 60 : 200)) continue;
 
     const yearReturn = slice.reduce(
       (acc, d) => (1 + acc) * (1 + d.portfolioReturn) - 1,
       0
     );
-    results.push({ year, return: yearReturn, days: slice.length });
+    results.push({ year, return: yearReturn, days: slice.length, partial });
   }
 
   return results;
