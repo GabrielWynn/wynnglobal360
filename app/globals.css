@@ -288,3 +288,53 @@
 .ag-theme-alpine .ag-header-cell-resize::after {
   background-color: #cbd5e1;
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Commission module design tokens (--cm-*)
+   Source of truth: DESIGN-COMMISSION.md
+   Additive only — these variables are scoped by usage in app/commission/**
+   and components/commission/**. Nothing references them until Phase 2.
+   ────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Status badge tokens */
+  --cm-status-pending-bg:    #FEF3C7;
+  --cm-status-pending-text:  #78350F;
+  --cm-status-approved-bg:   #D1FAE5;
+  --cm-status-approved-text: #065F46;
+  --cm-status-rejected-bg:   #FEE2E2;
+  --cm-status-rejected-text: #7F1D1D;
+  --cm-status-paid-bg:       #E8EDF3;
+  --cm-status-paid-text:     #1B2D45;
+  --cm-status-suspended-bg:  #F5F3FF;
+  --cm-status-suspended-text:#4C1D95;
+  --cm-status-advance-bg:    #FFF7ED;
+  --cm-status-advance-text:  #9A3412;
+
+  /* Alert banner tokens */
+  --cm-alert-warning-bg:     #FFF7ED;
+  --cm-alert-warning-border: #F59E0B;
+  --cm-alert-warning-text:   #92400E;
+  --cm-alert-critical-bg:    #FEF2F2;
+  --cm-alert-critical-border:#EF4444;
+  --cm-alert-critical-text:  #7F1D1D;
+
+  /* Chart palette — replaces the legacy rainbow array */
+  --cm-chart-1: #1B2D45; /* wgi-navy */
+  --cm-chart-2: #C8A96E; /* wgi-gold */
+  --cm-chart-3: #3D6898; /* navy-400 */
+  --cm-chart-4: #7B96B2; /* slate-blue */
+  --cm-chart-5: #8C7355; /* warm brown */
+  --cm-chart-6: #A3B8CC; /* lightest blue-slate */
+
+  /* Finance semantic (shared convention with Model Portfolio) */
+  --cm-gain: #00873E;
+  --cm-loss: #CC0000;
+}
+
+/* Monetary / identifier text in commission UI: JetBrains Mono + tabular figures
+   (DESIGN-COMMISSION.md). --font-jetbrains-mono is provided by the commission
+   layout; the fallback covers any context where the variable is absent. */
+.cm-mono {
+  font-family: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}

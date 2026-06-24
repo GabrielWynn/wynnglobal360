@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createServerClient, supabaseAdmin } from "@/lib/supabase";
+import { CommissionNav } from "@/components/commission/CommissionNav";
 
 // Verifies admin role before rendering any /commission/admin/* page.
 // The commission layout above already checks for a valid session,
@@ -42,5 +43,10 @@ export default async function CommissionAdminLayout({
     redirect("/commission/ifa");
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <CommissionNav />
+      {children}
+    </>
+  );
 }

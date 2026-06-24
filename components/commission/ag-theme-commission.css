@@ -1,0 +1,71 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Commission ag-Grid theme override (DESIGN-COMMISSION.md)
+
+   Navy header + WGI tokens + gold focus/dirty accents on top of ag-theme-alpine.
+
+   IMPORTANT (Phase 1): this file is NOT imported anywhere yet, so it has zero
+   effect on any existing grid. Phase 2 wires it in for the master-file grid:
+
+     1. import this file in the master-file page/module, and
+     2. add the `ag-theme-commission` class alongside `ag-theme-alpine` on the
+        grid wrapper:  <div className="ag-theme-alpine ag-theme-commission" />
+
+   Scoping every rule under `.ag-theme-commission` guarantees it cannot affect
+   the hub's existing light-grey Alpine grids until that class is applied.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.ag-theme-commission {
+  --ag-header-background-color: var(--wgi-navy);
+  --ag-header-foreground-color: rgba(255, 255, 255, 0.85);
+  --ag-header-column-resize-handle-color: rgba(200, 169, 110, 0.6); /* gold */
+  --ag-header-column-separator-color: rgba(255, 255, 255, 0.1);
+
+  --ag-background-color: var(--wgi-surface);
+  --ag-odd-row-background-color: var(--wgi-surface);
+  --ag-row-hover-color: var(--wgi-bg);
+  --ag-selected-row-background-color: #eef3f9;
+
+  --ag-border-color: var(--wgi-border);
+  --ag-cell-horizontal-border: solid var(--wgi-border);
+
+  --ag-input-focus-border-color: var(--wgi-gold);
+  --ag-range-selection-border-color: var(--wgi-navy);
+
+  --ag-font-size: 12px;
+
+  --ag-row-height: 32px;
+  --ag-header-height: 36px;
+  --ag-cell-horizontal-padding: 12px;
+}
+
+/* Navy header: override the legacy light-grey Alpine header rules in
+   globals.css (those target `.ag-theme-alpine .ag-header`). The combined
+   `.ag-theme-commission.ag-theme-alpine` selector wins on specificity. */
+.ag-theme-commission.ag-theme-alpine .ag-header {
+  background: var(--wgi-navy);
+  border-bottom: 2px solid var(--wgi-navy-700);
+}
+
+.ag-theme-commission.ag-theme-alpine .ag-header-cell {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ag-theme-commission.ag-theme-alpine .ag-header-cell-resize::after {
+  background-color: rgba(200, 169, 110, 0.6);
+}
+
+/* Dirty / unsaved cell: gold left border + warm background tint. */
+.ag-theme-commission .ag-cell.cell-dirty {
+  border-left: 2px solid var(--wgi-gold) !important;
+  background: #fffbf4 !important;
+}
+
+/* Monetary / identifier cells render in JetBrains Mono with tabular figures. */
+.ag-theme-commission .cm-cell-mono {
+  font-family: var(--font-jetbrains-mono), "JetBrains Mono", monospace;
+  font-variant-numeric: tabular-nums;
+}

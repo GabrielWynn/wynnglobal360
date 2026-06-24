@@ -169,48 +169,41 @@ export default function PaymentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-
-        <button
-          onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
-        >
-          ← Back to Admin
-        </button>
+    <div className="min-h-[calc(100vh-105px)]" style={{ background: 'var(--wgi-bg)' }}>
+      <main className="px-6 py-5 space-y-6">
 
         {/* Feedback */}
         {feedback && (
-          <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md text-sm">
+          <div className="rounded-[6px] border border-[var(--cm-status-approved-text)]/30 bg-[var(--cm-status-approved-bg)] px-4 py-2.5 text-xs font-semibold text-[var(--cm-status-approved-text)]">
             {feedback}
           </div>
         )}
 
         {/* ── Section 1: IFAs Ready to Pay ──────────────────────────────────── */}
         <section>
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex flex-wrap items-end justify-between gap-3 mb-3">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">IFAs Ready to Pay</h2>
-              <p className="text-sm text-gray-500">Approved balances awaiting payment</p>
+              <h1 className="text-[18px] font-bold text-[var(--wgi-navy)]">IFAs Ready to Pay</h1>
+              <p className="mt-0.5 text-[11px] font-medium text-[var(--wgi-text-muted)]">Approved balances awaiting payment</p>
             </div>
             <input
               type="text"
               placeholder="Search IFA name or code…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm w-56 focus:ring-2 focus:ring-blue-500"
+              className="h-8 w-56 rounded-[4px] border border-[var(--wgi-border)] px-3 text-xs outline-none focus:border-[var(--wgi-gold)] focus:ring-2 focus:ring-[var(--wgi-gold)]/20"
             />
           </div>
 
           {loading ? (
-            <div className="bg-white rounded-lg shadow p-12 text-center text-gray-500">Loading…</div>
+            <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-12 text-center text-gray-500">Loading…</div>
           ) : filtered.length === 0 ? (
-            <div className="bg-white rounded-lg shadow p-10 text-center">
+            <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-10 text-center">
               <p className="text-gray-500 font-medium">No approved balances</p>
               <p className="text-sm text-gray-400 mt-1">Approve transactions on the Approvals page first.</p>
               <button
                 onClick={() => router.push('/commission/admin/approvals')}
-                className="mt-4 text-sm text-blue-600 hover:underline"
+                className="mt-4 text-sm text-[var(--wgi-navy)] hover:underline"
               >
                 Go to Approvals →
               </button>
@@ -218,14 +211,14 @@ export default function PaymentsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {filtered.map(summary => (
-                <div key={summary.ifa.id} className="bg-white rounded-lg shadow p-5 space-y-4">
+                <div key={summary.ifa.id} className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-5 space-y-4">
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="font-semibold text-gray-900">{summary.ifa.name}</p>
-                      <p className="text-xs text-gray-500 font-mono">{summary.ifa.code}</p>
+                      <p className="text-xs text-gray-500 cm-mono">{summary.ifa.code}</p>
                       <p className="text-xs text-gray-400">{summary.ifa.email}</p>
                     </div>
-                    <span className="bg-amber-100 text-amber-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                    <span className="bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)] text-xs font-semibold px-2 py-0.5 rounded-full">
                       {summary.transactionIds.length} txns
                     </span>
                   </div>
@@ -235,14 +228,14 @@ export default function PaymentsPage() {
                       <div key={currency} className="flex items-center justify-between bg-gray-50 rounded-md px-3 py-2">
                         <div>
                           <span className="text-xs font-medium text-gray-500 uppercase">{currency}</span>
-                          <p className={`font-bold text-lg ${amount < 0 ? 'text-red-600' : 'text-gray-900'}`}>
+                          <p className={`font-bold text-lg cm-mono ${amount < 0 ? 'text-[var(--cm-loss)]' : 'text-gray-900'}`}>
                             {formatCurrency(amount, currency)}
                           </p>
                         </div>
                         {amount > 0 ? (
                           <button
                             onClick={() => openPayModal(summary, currency)}
-                            className="bg-green-600 text-white text-sm px-3 py-1.5 rounded-md font-medium hover:bg-green-700"
+                            className="bg-[var(--wgi-navy)] text-white text-sm px-3 py-1.5 rounded-md font-medium hover:bg-[var(--wgi-navy-600)]"
                           >
                             Mark Paid
                           </button>
@@ -284,12 +277,12 @@ export default function PaymentsPage() {
                           onBlur={() => saveNotes(summary.ifa.code)}
                           placeholder="Thresholds, key details, reminders…"
                           rows={4}
-                          className="w-full text-sm border border-gray-200 rounded-md px-3 py-2 resize-y focus:outline-none focus:ring-2 focus:ring-blue-400 bg-amber-50 placeholder-gray-400"
+                          className="w-full text-sm border border-gray-200 rounded-md px-3 py-2 resize-y focus:outline-none focus:ring-2 focus:ring-[var(--wgi-gold)] bg-amber-50 placeholder-gray-400"
                         />
                         <div className="flex items-center justify-between">
                           <p className="text-xs text-gray-400">Saved automatically on blur</p>
                           {notesState[summary.ifa.code]?.saving && (
-                            <p className="text-xs text-blue-500">Saving…</p>
+                            <p className="text-xs text-[var(--wgi-navy)]">Saving…</p>
                           )}
                         </div>
                       </div>
@@ -304,25 +297,25 @@ export default function PaymentsPage() {
         {/* ── Section 2: Paid This Month ─────────────────────────────────────── */}
         <section>
           <div className="mb-3">
-            <h2 className="text-lg font-semibold text-gray-900">Paid This Month</h2>
-            <p className="text-sm text-gray-500">
+            <h2 className="text-[15px] font-bold text-[var(--wgi-navy)]">Paid This Month</h2>
+            <p className="mt-0.5 text-[11px] font-medium text-[var(--wgi-text-muted)]">
               {new Date().toLocaleString('default', { month: 'long', year: 'numeric' })} payment history
             </p>
           </div>
 
           {loading ? (
-            <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">Loading…</div>
+            <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-8 text-center text-gray-500">Loading…</div>
           ) : batches.length === 0 ? (
-            <div className="bg-white rounded-lg shadow p-8 text-center">
+            <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-8 text-center">
               <p className="text-gray-500 font-medium">No payments recorded this month</p>
             </div>
           ) : (
-            <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200 text-sm">
-                <thead className="bg-gray-50">
+                <thead className="bg-[var(--wgi-navy)]">
                   <tr>
                     {['IFA', 'Amount', 'Transactions', 'Payment Date', 'Reference'].map(h => (
-                      <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th key={h} className="px-3 py-2.5 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">
                         {h}
                       </th>
                     ))}
@@ -331,18 +324,18 @@ export default function PaymentsPage() {
                 <tbody className="divide-y divide-gray-100">
                   {batches.map(b => (
                     <tr key={b.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3">
+                      <td className="px-3 py-2.5">
                         <p className="font-medium text-gray-900">{b.ifa.name}</p>
-                        <p className="text-xs text-gray-400 font-mono">{b.ifa.code}</p>
+                        <p className="text-xs text-gray-400 cm-mono">{b.ifa.code}</p>
                       </td>
-                      <td className="px-4 py-3 font-semibold text-green-700">
+                      <td className="px-3 py-2.5 font-semibold cm-mono text-[var(--cm-gain)]">
                         {formatCurrency(b.total_amount, b.currency)}
                       </td>
-                      <td className="px-4 py-3 text-gray-600">{b.transaction_count}</td>
-                      <td className="px-4 py-3 text-gray-600">
+                      <td className="px-3 py-2.5 text-gray-600">{b.transaction_count}</td>
+                      <td className="px-3 py-2.5 text-gray-600">
                         {new Date(b.payment_date).toLocaleDateString()}
                       </td>
-                      <td className="px-4 py-3 text-gray-500 font-mono text-xs">
+                      <td className="px-3 py-2.5 text-gray-500 cm-mono text-xs">
                         {b.payment_reference ?? <span className="italic text-gray-400">—</span>}
                       </td>
                     </tr>
@@ -351,7 +344,7 @@ export default function PaymentsPage() {
                 <tfoot className="bg-gray-50">
                   <tr>
                     <td className="px-4 py-2 text-xs font-medium text-gray-500">{batches.length} payment{batches.length !== 1 ? 's' : ''}</td>
-                    <td className="px-4 py-2 text-sm font-bold text-green-700">
+                    <td className="px-4 py-2 text-sm font-bold cm-mono text-[var(--cm-gain)]">
                       {/* Sum per currency */}
                       {Object.entries(
                         batches.reduce<Record<string, number>>((acc, b) => {
@@ -375,7 +368,7 @@ export default function PaymentsPage() {
       {/* ── Payment Confirmation Modal ──────────────────────────────────────── */}
       {payModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 space-y-4">
+          <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)]-xl w-full max-w-md p-6 space-y-4">
             <h2 className="text-lg font-semibold text-gray-900">Confirm Payment</h2>
 
             <div className="bg-gray-50 rounded-md p-4 space-y-1 text-sm">
@@ -385,7 +378,7 @@ export default function PaymentsPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Amount</span>
-                <span className="font-bold text-lg text-green-700">
+                <span className="font-bold text-lg cm-mono text-[var(--cm-gain)]">
                   {formatCurrency(payModal.amount, payModal.currency)}
                 </span>
               </div>
@@ -422,7 +415,7 @@ export default function PaymentsPage() {
                 value={payRef}
                 onChange={e => setPayRef(e.target.value)}
                 placeholder="Bank ref, wire number, etc."
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--wgi-gold)]"
               />
             </div>
 
@@ -436,7 +429,7 @@ export default function PaymentsPage() {
               <button
                 onClick={handlePay}
                 disabled={paying}
-                className="flex-1 bg-green-600 text-white py-2 rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-40"
+                className="flex-1 bg-[var(--wgi-navy)] text-white py-2 rounded-md text-sm font-medium hover:bg-[var(--wgi-navy-600)] disabled:opacity-40"
               >
                 {paying ? 'Processing…' : 'Confirm Payment'}
               </button>

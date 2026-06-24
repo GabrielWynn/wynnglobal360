@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { supabase, getAuthHeaders } from '@/lib/supabase'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -66,12 +65,12 @@ interface FormState {
 
 function getPriorityBadge(rule: PaymentMatrixRule) {
   if (rule.ifa_id && rule.commission_type_code)
-    return { label: 'P1 Specific', color: 'bg-purple-100 text-purple-800' }
+    return { label: 'P1 Specific', color: 'bg-[var(--cm-status-advance-bg)] text-[var(--cm-status-advance-text)]' }
   if (rule.ifa_id)
-    return { label: 'P2 IFA', color: 'bg-blue-100 text-blue-800' }
+    return { label: 'P2 IFA', color: 'bg-[var(--cm-status-paid-bg)] text-[var(--cm-status-paid-text)]' }
   if (rule.commission_type_code)
-    return { label: 'P3 Type', color: 'bg-yellow-100 text-yellow-800' }
-  return { label: 'P4 Catch-all', color: 'bg-gray-100 text-gray-700' }
+    return { label: 'P3 Type', color: 'bg-[var(--cm-status-pending-bg)] text-[var(--cm-status-pending-text)]' }
+  return { label: 'P4 Catch-all', color: 'bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)]' }
 }
 
 const emptyForm: FormState = {
@@ -97,7 +96,6 @@ const FALLBACK_TYPES = [
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function PaymentMatrixPage() {
-  const router = useRouter()
 
   // Data
   const [loading, setLoading] = useState(true)
@@ -321,7 +319,7 @@ export default function PaymentMatrixPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--wgi-navy)] mx-auto" />
           <p className="mt-4 text-gray-600">Loading payment matrix...</p>
         </div>
       </div>
@@ -335,22 +333,16 @@ export default function PaymentMatrixPage() {
   // ─── Render ───────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-[calc(100vh-105px)]" style={{ background: 'var(--wgi-bg)' }}>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <button
-          onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
-        >
-          ← Back to Admin
-        </button>
-        <div className="flex items-center justify-between">
+      <main className="px-6 py-5 space-y-5">
+        <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold" style={{ color: 'var(--wgi-text)' }}>Payment Matrix</h1>
-            <p className="text-sm mt-0.5" style={{ color: 'var(--wgi-text-muted)' }}>Commission calculation rules per platform, IFA and type</p>
+            <h1 className="text-[18px] font-bold text-[var(--wgi-navy)]">Payment Matrix</h1>
+            <p className="mt-0.5 text-[11px] font-medium text-[var(--wgi-text-muted)]">Commission calculation rules per platform, IFA and type</p>
           </div>
           {!READ_ONLY && (
-            <button onClick={openAddModal} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm font-medium">
+            <button onClick={openAddModal} className="rounded-[4px] bg-[var(--wgi-navy)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[var(--wgi-navy-600)]">
               + Add Rule
             </button>
           )}
@@ -358,7 +350,7 @@ export default function PaymentMatrixPage() {
 
         {/* ── Read-only notice ── */}
         {READ_ONLY && (
-          <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-md text-sm flex items-start gap-3">
+          <div className="bg-amber-50 border border-amber-200 text-amber-800 px-3 py-2.5 rounded-md text-sm flex items-start gap-3">
             <span className="text-amber-500 text-lg leading-tight">⚠</span>
             <div>
               <p className="font-semibold">Payment Matrix — View Only</p>
@@ -371,14 +363,14 @@ export default function PaymentMatrixPage() {
         )}
 
         {/* ── Priority Legend ── */}
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-4">
           <h2 className="text-sm font-semibold text-gray-700 mb-3">Rule Priority — first match wins when calculating commissions</h2>
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
             {[
-              { label: 'P1 Specific', color: 'bg-purple-100 text-purple-800', desc: 'Platform + IFA + Type' },
-              { label: 'P2 IFA', color: 'bg-blue-100 text-blue-800', desc: 'Platform + IFA (all types)' },
-              { label: 'P3 Type', color: 'bg-yellow-100 text-yellow-800', desc: 'Platform + Type (all IFAs)' },
-              { label: 'P4 Catch-all', color: 'bg-gray-100 text-gray-700', desc: 'Platform (all IFAs, all types)' },
+              { label: 'P1 Specific', color: 'bg-[var(--cm-status-advance-bg)] text-[var(--cm-status-advance-text)]', desc: 'Platform + IFA + Type' },
+              { label: 'P2 IFA', color: 'bg-[var(--cm-status-paid-bg)] text-[var(--cm-status-paid-text)]', desc: 'Platform + IFA (all types)' },
+              { label: 'P3 Type', color: 'bg-[var(--cm-status-pending-bg)] text-[var(--cm-status-pending-text)]', desc: 'Platform + Type (all IFAs)' },
+              { label: 'P4 Catch-all', color: 'bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)]', desc: 'Platform (all IFAs, all types)' },
             ].map((item, i, arr) => (
               <span key={item.label} className="flex items-center gap-2">
                 <span className={`px-2 py-0.5 rounded text-xs font-medium ${item.color}`}>{item.label}</span>
@@ -390,13 +382,13 @@ export default function PaymentMatrixPage() {
         </div>
 
         {/* ── Filters ── */}
-        <div className="bg-white rounded-lg shadow p-4 flex flex-wrap gap-4 items-end">
+        <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-4 flex flex-wrap gap-4 items-end">
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">Platform</label>
             <select
               value={filterPlatform}
               onChange={e => setFilterPlatform(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[var(--wgi-gold)]"
             >
               <option value="all">All Platforms</option>
               {platforms.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -409,7 +401,7 @@ export default function PaymentMatrixPage() {
                 <button
                   key={s}
                   onClick={() => setFilterStatus(s)}
-                  className={`px-3 py-2 capitalize ${filterStatus === s ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                  className={`px-3 py-2 capitalize ${filterStatus === s ? 'bg-[var(--wgi-navy)] text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
                 >
                   {s}
                 </button>
@@ -420,7 +412,7 @@ export default function PaymentMatrixPage() {
         </div>
 
         {/* ── Rules Table ── */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] overflow-hidden">
           {filteredRules.length === 0 ? (
             <div className="p-12 text-center">
               <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -429,7 +421,7 @@ export default function PaymentMatrixPage() {
               <p className="mt-3 text-gray-600">No rules found.</p>
               <button
                 onClick={openAddModal}
-                className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm"
+                className="mt-3 bg-[var(--wgi-navy)] text-white px-4 py-2 rounded-md hover:bg-[var(--wgi-navy-600)] text-sm"
               >
                 Add your first rule
               </button>
@@ -437,10 +429,10 @@ export default function PaymentMatrixPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-[var(--wgi-navy)]">
                   <tr>
                     {['Priority', 'Platform', 'IFA', 'Commission Type', 'IFA Rate', 'Co. Rate', 'Est. Periods', 'Effective', 'Status', ...(READ_ONLY ? [] : ['Actions'])].map(h => (
-                      <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                      <th key={h} className="px-3 py-2.5 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em] whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -450,37 +442,37 @@ export default function PaymentMatrixPage() {
                     return (
                       <tr key={rule.id} className={`hover:bg-gray-50 ${!rule.is_active ? 'opacity-50' : ''}`}>
 
-                        <td className="px-4 py-3 whitespace-nowrap">
+                        <td className="px-3 py-2.5 whitespace-nowrap">
                           <span className={`px-2 py-0.5 rounded text-xs font-medium ${badge.color}`}>{badge.label}</span>
                         </td>
 
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-sm font-medium text-gray-900 whitespace-nowrap">
                           {rule.platform?.name || rule.platform_id}
                         </td>
 
-                        <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-sm text-gray-700 whitespace-nowrap">
                           {rule.ifa
-                            ? <span><span className="font-mono text-xs bg-gray-100 px-1 rounded">{rule.ifa.code}</span> <span className="text-gray-500">{rule.ifa.name}</span></span>
+                            ? <span><span className="cm-mono text-xs bg-gray-100 px-1 rounded">{rule.ifa.code}</span> <span className="text-gray-500">{rule.ifa.name}</span></span>
                             : <span className="text-gray-400 italic text-xs">All IFAs</span>
                           }
                         </td>
 
-                        <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-sm text-gray-700 whitespace-nowrap">
                           {rule.commission_type_code
                             ? <span className="font-medium">{rule.commission_type_code}</span>
                             : <span className="text-gray-400 italic text-xs">All types</span>
                           }
                         </td>
 
-                        <td className="px-4 py-3 text-sm font-semibold text-green-700 whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-sm font-semibold cm-mono text-[var(--cm-gain)] whitespace-nowrap">
                           {(rule.ifa_rate * 100).toFixed(2)}%
                         </td>
 
-                        <td className="px-4 py-3 text-sm font-semibold text-blue-700 whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-sm font-semibold cm-mono text-[var(--wgi-navy)] whitespace-nowrap">
                           {(rule.company_rate * 100).toFixed(2)}%
                         </td>
 
-                        <td className="px-4 py-3 text-sm text-gray-600">
+                        <td className="px-3 py-2.5 text-sm text-gray-600">
                           {rule.has_establishment_periods && rule.establishment_config ? (
                             <div className="min-w-0">
                               <span className="text-green-600 font-medium text-xs">{rule.establishment_config.periods} splits</span>
@@ -497,7 +489,7 @@ export default function PaymentMatrixPage() {
                           )}
                         </td>
 
-                        <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-xs text-gray-500 whitespace-nowrap">
                           <div>{rule.effective_start_date}</div>
                           {rule.effective_end_date
                             ? <div className="text-orange-500">→ {rule.effective_end_date}</div>
@@ -505,16 +497,16 @@ export default function PaymentMatrixPage() {
                           }
                         </td>
 
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${rule.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                        <td className="px-3 py-2.5 whitespace-nowrap">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${rule.is_active ? 'bg-[var(--cm-status-approved-bg)] text-[var(--cm-status-approved-text)]' : 'bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)]'}`}>
                             {rule.is_active ? 'Active' : 'Inactive'}
                           </span>
                         </td>
 
                         {!READ_ONLY && (
-                          <td className="px-4 py-3 whitespace-nowrap">
+                          <td className="px-3 py-2.5 whitespace-nowrap">
                             <div className="flex items-center gap-3 text-sm">
-                              <button onClick={() => openEditModal(rule)} className="text-blue-600 hover:text-blue-800 font-medium">
+                              <button onClick={() => openEditModal(rule)} className="text-[var(--wgi-navy)] hover:opacity-70 font-medium">
                                 Edit
                               </button>
                               <button
@@ -559,7 +551,7 @@ export default function PaymentMatrixPage() {
             <div className="px-6 py-5 space-y-5">
 
               {formError && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-sm">{formError}</div>
+                <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2.5 rounded text-sm">{formError}</div>
               )}
 
               {/* ── Section 1: Scope ── */}
@@ -573,7 +565,7 @@ export default function PaymentMatrixPage() {
                     <select
                       value={form.platform_id}
                       onChange={e => setForm(f => ({ ...f, platform_id: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                     >
                       <option value="">Select platform...</option>
                       {platforms.map(p => (
@@ -589,7 +581,7 @@ export default function PaymentMatrixPage() {
                     <select
                       value={form.ifa_id}
                       onChange={e => setForm(f => ({ ...f, ifa_id: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                     >
                       <option value="">— All IFAs —</option>
                       {ifas.map(i => (
@@ -606,7 +598,7 @@ export default function PaymentMatrixPage() {
                   <select
                     value={form.commission_type_code}
                     onChange={e => setForm(f => ({ ...f, commission_type_code: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                   >
                     <option value="">— All Commission Types —</option>
                     {commissionTypes.map(ct => (
@@ -632,7 +624,7 @@ export default function PaymentMatrixPage() {
                       value={form.ifa_rate_pct || ''}
                       onChange={e => setForm(f => ({ ...f, ifa_rate_pct: parseFloat(e.target.value) || 0 }))}
                       placeholder="e.g. 2.50"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                     />
                   </div>
                   <div>
@@ -645,7 +637,7 @@ export default function PaymentMatrixPage() {
                       value={form.company_rate_pct || ''}
                       onChange={e => setForm(f => ({ ...f, company_rate_pct: parseFloat(e.target.value) || 0 }))}
                       placeholder="e.g. 0.50"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                     />
                   </div>
                 </div>
@@ -672,7 +664,7 @@ export default function PaymentMatrixPage() {
                       type="date"
                       value={form.effective_start_date}
                       onChange={e => setForm(f => ({ ...f, effective_start_date: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                     />
                   </div>
                   <div>
@@ -683,7 +675,7 @@ export default function PaymentMatrixPage() {
                       type="date"
                       value={form.effective_end_date}
                       onChange={e => setForm(f => ({ ...f, effective_end_date: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--wgi-gold)] text-sm"
                     />
                   </div>
                 </div>
@@ -700,7 +692,7 @@ export default function PaymentMatrixPage() {
                   <button
                     type="button"
                     onClick={() => setForm(f => ({ ...f, has_establishment_periods: !f.has_establishment_periods }))}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${form.has_establishment_periods ? 'bg-blue-600' : 'bg-gray-300'}`}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${form.has_establishment_periods ? 'bg-[var(--wgi-navy)]' : 'bg-gray-300'}`}
                     aria-label="Toggle establishment periods"
                   >
                     <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${form.has_establishment_periods ? 'translate-x-6' : 'translate-x-1'}`} />
@@ -720,7 +712,7 @@ export default function PaymentMatrixPage() {
                             onClick={() => setStartFrom(opt)}
                             className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-colors ${
                               startFrom === opt
-                                ? 'bg-blue-600 text-white border-blue-600'
+                                ? 'bg-[var(--wgi-navy)] text-white border-[var(--wgi-navy)]'
                                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                             }`}
                           >
@@ -752,7 +744,7 @@ export default function PaymentMatrixPage() {
                                 step="0.01"
                                 value={period.split_pct || ''}
                                 onChange={e => updatePeriod(i, 'split_pct', parseFloat(e.target.value) || 0)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm pr-7 focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm pr-7 focus:ring-2 focus:ring-[var(--wgi-gold)]"
                                 placeholder="e.g. 72.00"
                               />
                               <span className="absolute right-2 top-2.5 text-gray-400 text-xs pointer-events-none">%</span>
@@ -764,7 +756,7 @@ export default function PaymentMatrixPage() {
                                 step="1"
                                 value={period.release_months === 0 && i === 0 ? '0' : period.release_months || ''}
                                 onChange={e => updatePeriod(i, 'release_months', parseInt(e.target.value) || 0)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm pr-8 focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm pr-8 focus:ring-2 focus:ring-[var(--wgi-gold)]"
                                 placeholder="0"
                               />
                               <span className="absolute right-2 top-2.5 text-gray-400 text-xs pointer-events-none">mo</span>
@@ -787,7 +779,7 @@ export default function PaymentMatrixPage() {
                         <button
                           type="button"
                           onClick={() => setEstPeriods(prev => [...prev, { split_pct: 0, release_months: 0 }])}
-                          className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                          className="text-sm text-[var(--wgi-navy)] hover:opacity-70 font-medium"
                         >
                           + Add period
                         </button>
@@ -810,7 +802,7 @@ export default function PaymentMatrixPage() {
                 <button
                   type="button"
                   onClick={() => setForm(f => ({ ...f, is_active: !f.is_active }))}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${form.is_active ? 'bg-green-500' : 'bg-gray-300'}`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${form.is_active ? 'bg-[var(--wgi-navy)]' : 'bg-gray-300'}`}
                   aria-label="Toggle active"
                 >
                   <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${form.is_active ? 'translate-x-6' : 'translate-x-1'}`} />
@@ -830,7 +822,7 @@ export default function PaymentMatrixPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 text-sm font-medium"
+                className="px-5 py-2 bg-[var(--wgi-navy)] text-white rounded-md hover:bg-[var(--wgi-navy-600)] disabled:opacity-50 text-sm font-medium"
               >
                 {saving ? 'Saving...' : editingRule ? 'Save Changes' : 'Create Rule'}
               </button>

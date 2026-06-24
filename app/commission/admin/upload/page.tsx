@@ -76,14 +76,16 @@ const PDF_IDENTITY_MAPPING: Omit<ColumnMapping, 'platform_id' | 'id'> = {
   default_currency: 'USD',
 }
 
+// Restrained result-card palette (DESIGN-COMMISSION.md): navy default with
+// semantic accents only for gain / warning / error — no rainbow.
 const RESULT_CARD_STYLES: Record<string, { bg: string; text: string }> = {
-  blue: { bg: 'bg-blue-50', text: 'text-blue-600' },
-  green: { bg: 'bg-green-50', text: 'text-green-600' },
-  purple: { bg: 'bg-purple-50', text: 'text-purple-600' },
-  yellow: { bg: 'bg-yellow-50', text: 'text-yellow-600' },
-  indigo: { bg: 'bg-indigo-50', text: 'text-indigo-600' },
-  red: { bg: 'bg-red-50', text: 'text-red-600' },
-  gray: { bg: 'bg-gray-50', text: 'text-gray-600' },
+  blue:   { bg: 'bg-[var(--wgi-bg)]',                 text: 'text-[var(--wgi-navy)]' },
+  green:  { bg: 'bg-[var(--cm-status-approved-bg)]',  text: 'text-[var(--cm-gain)]' },
+  purple: { bg: 'bg-[var(--wgi-bg)]',                 text: 'text-[var(--wgi-navy)]' },
+  yellow: { bg: 'bg-[var(--cm-status-pending-bg)]',   text: 'text-[var(--cm-status-pending-text)]' },
+  indigo: { bg: 'bg-[var(--wgi-bg)]',                 text: 'text-[var(--wgi-navy)]' },
+  red:    { bg: 'bg-[var(--cm-status-rejected-bg)]',  text: 'text-[var(--cm-status-rejected-text)]' },
+  gray:   { bg: 'bg-[var(--wgi-bg)]',                 text: 'text-[var(--wgi-text-muted)]' },
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -430,7 +432,7 @@ export default function UploadPage() {
       <select
         value={mapping[field] as string}
         onChange={e => setMapping(prev => ({ ...prev, [field]: e.target.value }))}
-        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--wgi-gold)]"
       >
         <option value="">— not mapped —</option>
         {headers.map(h => (
@@ -452,23 +454,21 @@ export default function UploadPage() {
   const currentStepIdx = steps.findIndex(s => s.key === step || (step === 'processing' && s.key === 'preview'))
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="min-h-[calc(100vh-105px)]" style={{ background: 'var(--wgi-bg)' }}>
+      <main className="mx-auto max-w-5xl px-6 py-5 space-y-5">
 
-        <button
-          onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
-        >
-          ← Back to Admin
-        </button>
+        <div>
+          <h1 className="text-[18px] font-bold text-[var(--wgi-navy)]">Upload Commission File</h1>
+          <p className="mt-0.5 text-[11px] font-medium text-[var(--wgi-text-muted)]">Import a CSV or PDF statement</p>
+        </div>
 
         {/* Step indicator */}
         {step !== 'done' && (
           <div className="flex items-center gap-2">
             {steps.filter(s => !(s.key === 'map' && (savedMapping || isPdf))).map((s, i, arr) => (
               <div key={s.key} className="flex items-center gap-2">
-                <div className={`flex items-center gap-1.5 ${i <= currentStepIdx ? 'text-blue-600' : 'text-gray-400'}`}>
-                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border-2 ${i <= currentStepIdx ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300'}`}>
+                <div className={`flex items-center gap-1.5 ${i <= currentStepIdx ? 'text-[var(--wgi-navy)]' : 'text-gray-400'}`}>
+                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border-2 ${i <= currentStepIdx ? 'border-[var(--wgi-navy)] bg-[var(--wgi-navy)] text-white' : 'border-gray-300'}`}>
                     {i + 1}
                   </span>
                   <span className="text-sm font-medium">{s.label}</span>
@@ -488,7 +488,7 @@ export default function UploadPage() {
 
         {/* ── STEP: SELECT ─────────────────────────────────────────────────── */}
         {step === 'select' && (
-          <div className="bg-white rounded-lg shadow p-6 space-y-6">
+          <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-6 space-y-6">
             {/* Platform selector */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -497,7 +497,7 @@ export default function UploadPage() {
               <select
                 value={selectedPlatformId}
                 onChange={e => setSelectedPlatformId(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--wgi-gold)]"
               >
                 <option value="">— Select platform —</option>
                 {platforms.map(p => (
@@ -519,7 +519,7 @@ export default function UploadPage() {
                 CSV or PDF File <span className="text-red-500">*</span>
               </label>
               <div
-                className={`border-2 border-dashed rounded-lg p-10 text-center cursor-pointer transition-colors ${dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}`}
+                className={`border-2 border-dashed rounded-lg p-10 text-center cursor-pointer transition-colors ${dragActive ? 'border-[var(--wgi-gold)] bg-[#FFFBF4]' : 'border-gray-300 hover:border-gray-400'}`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
@@ -547,7 +547,7 @@ export default function UploadPage() {
             <button
               onClick={parseAndContinue}
               disabled={!file || !selectedPlatformId || parsing || extracting}
-              className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full bg-[var(--wgi-navy)] text-white py-3 rounded-md font-medium hover:bg-[var(--wgi-navy-600)] disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {extracting ? 'Extracting — long statements can take several minutes…'
                 : parsing ? 'Parsing…'
@@ -575,7 +575,7 @@ export default function UploadPage() {
 
         {/* ── STEP: MAP COLUMNS ────────────────────────────────────────────── */}
         {step === 'map' && (
-          <div className="bg-white rounded-lg shadow p-6 space-y-6">
+          <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-6 space-y-6">
             <div>
               <h2 className="text-lg font-semibold text-gray-900">Map CSV Columns</h2>
               <p className="text-sm text-gray-500 mt-1">
@@ -639,7 +639,7 @@ export default function UploadPage() {
               <button
                 onClick={confirmMapping}
                 disabled={!mapping.policy_number_col || !mapping.amount_col || !mapping.date_col}
-                className="flex-1 bg-blue-600 text-white py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 bg-[var(--wgi-navy)] text-white py-2 rounded-md text-sm font-medium hover:bg-[var(--wgi-navy-600)] disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Apply Mapping →
               </button>
@@ -649,7 +649,7 @@ export default function UploadPage() {
 
         {/* ── STEP: PREVIEW ────────────────────────────────────────────────── */}
         {step === 'preview' && (
-          <div className="bg-white rounded-lg shadow p-6 space-y-6">
+          <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-6 space-y-6">
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">Confirm & Process</h2>
@@ -660,14 +660,14 @@ export default function UploadPage() {
               </div>
               <div className="flex items-center gap-4">
                 {isPdf && (
-                  <button onClick={downloadCsv} className="text-sm text-blue-600 hover:underline">
+                  <button onClick={downloadCsv} className="text-sm text-[var(--wgi-navy)] hover:underline">
                     ⬇ Download CSV
                   </button>
                 )}
                 {!isPdf && (
                   <button
                     onClick={() => setStep('map')}
-                    className="text-sm text-blue-600 hover:underline"
+                    className="text-sm text-[var(--wgi-navy)] hover:underline"
                   >
                     ← Change mapping
                   </button>
@@ -708,9 +708,9 @@ export default function UploadPage() {
             )}
 
             {/* Mapping summary */}
-            <div className="bg-blue-50 rounded-md p-4 text-sm">
-              <p className="font-medium text-blue-800 mb-2">Applied column mapping:</p>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1 text-blue-700">
+            <div className="bg-[var(--wgi-bg)] rounded-md p-4 text-sm">
+              <p className="font-medium text-[var(--wgi-navy)] mb-2">Applied column mapping:</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1 text-[var(--wgi-text-muted)]">
                 <span>Policy: <strong>{mapping.policy_number_col}</strong></span>
                 <span>Amount: <strong>{mapping.amount_col}</strong></span>
                 <span>Date: <strong>{mapping.date_col}</strong></span>
@@ -728,24 +728,24 @@ export default function UploadPage() {
             <div className="overflow-x-auto">
               <p className="text-xs text-gray-500 mb-2">First {previewRows.length} rows (mapped view):</p>
               <table className="min-w-full text-xs divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-[var(--wgi-navy)]">
                   <tr>
-                    <th className="px-3 py-2 text-left font-medium text-gray-500">Policy</th>
-                    <th className="px-3 py-2 text-left font-medium text-gray-500">Holder</th>
-                    <th className="px-3 py-2 text-left font-medium text-gray-500">Date</th>
-                    <th className="px-3 py-2 text-left font-medium text-gray-500">Type</th>
-                    <th className="px-3 py-2 text-right font-medium text-gray-500">Amount</th>
-                    <th className="px-3 py-2 text-left font-medium text-gray-500">Currency</th>
+                    <th className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-[0.1em] text-white/85">Policy</th>
+                    <th className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-[0.1em] text-white/85">Holder</th>
+                    <th className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-[0.1em] text-white/85">Date</th>
+                    <th className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-[0.1em] text-white/85">Type</th>
+                    <th className="px-3 py-2 text-right text-[10px] font-bold uppercase tracking-[0.1em] text-white/85">Amount</th>
+                    <th className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-[0.1em] text-white/85">Currency</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100">
                   {previewRows.map((row, i) => (
                     <tr key={i} className={isPdf && invalidRowIdx.has(i) ? 'bg-red-50' : undefined}>
-                      <td className="px-3 py-2 font-mono">{row[mapping.policy_number_col] || '—'}</td>
+                      <td className="px-3 py-2 cm-mono">{row[mapping.policy_number_col] || '—'}</td>
                       <td className="px-3 py-2">{mapping.policy_holder_col ? (row[mapping.policy_holder_col] || '—') : '—'}</td>
                       <td className="px-3 py-2">{mapping.date_col ? (row[mapping.date_col] || '—') : '—'}</td>
                       <td className="px-3 py-2">{mapping.commission_type_col ? (row[mapping.commission_type_col] || '—') : '—'}</td>
-                      <td className="px-3 py-2 text-right font-mono">{row[mapping.amount_col] || '0'}</td>
+                      <td className="px-3 py-2 text-right cm-mono">{row[mapping.amount_col] || '0'}</td>
                       <td className="px-3 py-2">{mapping.currency_col ? (row[mapping.currency_col] || mapping.default_currency) : mapping.default_currency}</td>
                     </tr>
                   ))}
@@ -760,7 +760,7 @@ export default function UploadPage() {
               <button
                 onClick={processUpload}
                 disabled={processing || rowsToSubmit.length === 0}
-                className="flex-1 bg-green-600 text-white py-2 rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 bg-[var(--wgi-navy)] text-white py-2 rounded-md text-sm font-medium hover:bg-[var(--wgi-navy-600)] disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Process {rowsToSubmit.length} Rows →
               </button>
@@ -770,8 +770,8 @@ export default function UploadPage() {
 
         {/* ── STEP: PROCESSING ─────────────────────────────────────────────── */}
         {step === 'processing' && (
-          <div className="bg-white rounded-lg shadow p-12 text-center">
-            <div className="animate-spin mx-auto h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full mb-4" />
+          <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-12 text-center">
+            <div className="animate-spin mx-auto h-10 w-10 border-4 border-[var(--wgi-navy)] border-t-transparent rounded-full mb-4" />
             <p className="text-lg font-medium text-gray-700">Processing {rowsToSubmit.length} rows…</p>
             <p className="text-sm text-gray-500 mt-1">Querying Azure SQL and saving to database</p>
           </div>
@@ -779,7 +779,7 @@ export default function UploadPage() {
 
         {/* ── STEP: DONE ───────────────────────────────────────────────────── */}
         {step === 'done' && result && (
-          <div className="bg-white rounded-lg shadow p-6 space-y-6">
+          <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-6 space-y-6">
             <h2 className="text-lg font-semibold text-gray-900">Upload Complete</h2>
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -819,10 +819,10 @@ export default function UploadPage() {
             )}
 
             <div className="flex gap-3">
-              <button onClick={reset} className="flex-1 bg-blue-600 text-white py-2 rounded-md text-sm font-medium hover:bg-blue-700">
+              <button onClick={reset} className="flex-1 bg-[var(--wgi-navy)] text-white py-2 rounded-md text-sm font-medium hover:bg-[var(--wgi-navy-600)]">
                 Upload Another File
               </button>
-              <button onClick={() => router.push('/commission/admin')} className="flex-1 bg-gray-600 text-white py-2 rounded-md text-sm font-medium hover:bg-gray-700">
+              <button onClick={() => router.push('/commission/admin')} className="flex-1 bg-white text-[var(--wgi-navy)] border border-[var(--wgi-border)] py-2 rounded-md text-sm font-medium hover:border-[var(--wgi-navy)]">
                 Back to Dashboard
               </button>
             </div>

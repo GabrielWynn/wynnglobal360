@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import { getAuthHeaders } from '@/lib/supabase'
 import { formatCurrency } from '@/lib/currency'
 import {
@@ -52,9 +51,11 @@ interface KPIData {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
+// Commission chart palette (DESIGN-COMMISSION.md --cm-chart-*) — replaces the
+// previous rainbow. CSS variables resolve in both recharts fills and inline styles.
 const BRAND_COLORS = [
-  '#1E3A5F', '#2563EB', '#0EA5E9', '#6366F1',
-  '#8B5CF6', '#0D9488', '#F59E0B', '#EF4444',
+  'var(--cm-chart-1)', 'var(--cm-chart-2)', 'var(--cm-chart-3)',
+  'var(--cm-chart-4)', 'var(--cm-chart-5)', 'var(--cm-chart-6)',
 ]
 
 const PRESETS: { key: PresetKey; label: string }[] = [
@@ -81,16 +82,16 @@ function pctBadge(pct: number | null) {
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function KPICard({
-  label, value, sub, growth, accent = '#2563EB',
+  label, value, sub, growth, accent = 'var(--cm-chart-1)',
 }: {
   label: string; value: string; sub?: string; growth?: GrowthMetric; accent?: string
 }) {
   return (
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col">
+    <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] overflow-hidden flex flex-col">
       <div className="h-1" style={{ backgroundColor: accent }} />
       <div className="p-4 flex-1">
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{label}</p>
-        <p className="text-3xl font-black text-gray-900 mt-1 leading-none">{value}</p>
+        <p className="text-3xl font-black cm-mono text-[var(--wgi-navy)] mt-1 leading-none">{value}</p>
         <div className="flex items-center gap-2 mt-2">
           {growth && pctBadge(growth.pct)}
           {growth && (
@@ -106,7 +107,6 @@ function KPICard({
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export default function KPIDashboard() {
-  const router = useRouter()
   const [loading, setLoading]           = useState(true)
   const [data, setData]                 = useState<KPIData | null>(null)
   const [error, setError]               = useState<string | null>(null)
@@ -150,7 +150,7 @@ export default function KPIDashboard() {
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-700 mx-auto" />
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--wgi-navy)] mx-auto" />
         <p className="mt-3 text-sm text-gray-500">Loading dashboard…</p>
       </div>
     </div>
@@ -161,7 +161,7 @@ export default function KPIDashboard() {
       <div className="text-center">
         <p className="text-red-600 font-semibold">Failed to load data</p>
         <p className="text-sm text-gray-500 mt-1">{error}</p>
-        <button onClick={() => load({ preset })} className="mt-4 bg-blue-700 text-white px-4 py-2 rounded text-sm">Retry</button>
+        <button onClick={() => load({ preset })} className="mt-4 bg-[var(--wgi-navy)] text-white px-4 py-2 rounded text-sm">Retry</button>
       </div>
     </div>
   )
@@ -207,22 +207,15 @@ export default function KPIDashboard() {
   const dateRange   = `${data.period.current.start} — ${data.period.current.end}`
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-[calc(100vh-105px)]" style={{ background: 'var(--wgi-bg)' }}>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-
-        <button
-          onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
-        >
-          ← Back to Admin
-        </button>
+      <main className="px-6 py-5 space-y-5">
 
         {/* ── Date controls toolbar ─────────────────────────────────────────── */}
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-white rounded-xl border px-4 py-3" style={{ borderColor: 'var(--wgi-border)' }}>
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[6px] border bg-[var(--wgi-surface)] px-4 py-3" style={{ borderColor: 'var(--wgi-border)' }}>
           <div>
-            <p className="text-sm font-semibold" style={{ color: 'var(--wgi-text)' }}>WGI Revenue Dashboard</p>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--wgi-text-muted)' }}>{periodLabel} · {dateRange}</p>
+            <p className="text-[15px] font-bold" style={{ color: 'var(--wgi-navy)' }}>WGI Revenue Dashboard</p>
+            <p className="text-[11px] mt-0.5 font-medium" style={{ color: 'var(--wgi-text-muted)' }}>{periodLabel} · {dateRange}</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {dateMode === 'preset' && PRESETS.map(p => (
@@ -268,31 +261,31 @@ export default function KPIDashboard() {
             label="APE IFA"
             value={fmt(ape.total_current)}
             growth={ape.growth}
-            accent="#1E3A5F"
+            accent="var(--cm-chart-1)"
           />
           <KPICard
             label="APE WGI"
             value={fmt(ape_wgi.total_current)}
             growth={ape_wgi.growth}
-            accent="#0D9488"
+            accent="var(--cm-chart-3)"
           />
           <KPICard
             label="Gross Revenue"
             value={fmt(revenue.growth.gross_usd.current)}
             growth={revenue.growth.gross_usd}
-            accent="#2563EB"
+            accent="var(--cm-chart-4)"
           />
           <KPICard
             label="WGI Net Revenue"
             value={fmt(revenue.growth.wgi_net_usd.current)}
             growth={revenue.growth.wgi_net_usd}
-            accent="#0EA5E9"
+            accent="var(--cm-chart-6)"
           />
           <KPICard
             label="Paid to IFAs"
             value={fmt(revenue.paid_ifa_total)}
             sub={`${ifas.active_count} active IFAs`}
-            accent="#6366F1"
+            accent="var(--cm-chart-2)"
           />
         </section>
 
@@ -300,7 +293,7 @@ export default function KPIDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           {/* Commission Type breakdown */}
-          <section className="bg-white rounded-lg shadow-sm p-5">
+          <section className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-5">
             <p className="text-sm font-bold text-gray-800 uppercase tracking-wide mb-1">Revenue by Commission Type</p>
             <p className="text-xs text-gray-400 mb-4">Gross revenue (USD) · {periodLabel}</p>
 
@@ -351,7 +344,7 @@ export default function KPIDashboard() {
           </section>
 
           {/* Revenue by Life Company (Platform) */}
-          <section className="bg-white rounded-lg shadow-sm p-5">
+          <section className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-5">
             <p className="text-sm font-bold text-gray-800 uppercase tracking-wide mb-1">Revenue by Life Company</p>
             <p className="text-xs text-gray-400 mb-4">Gross vs WGI Net (USD) · {periodLabel}</p>
 
@@ -409,7 +402,7 @@ export default function KPIDashboard() {
         </div>
 
         {/* ══ ROW 4: APE by IFA ═════════════════════════════════════════════ */}
-        <section className="bg-white rounded-lg shadow-sm p-5">
+        <section className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-bold text-gray-800 uppercase tracking-wide">APE by Adviser (IFA)</p>
@@ -471,7 +464,7 @@ export default function KPIDashboard() {
         </section>
 
         {/* ══ ROW 4: Upload History ══════════════════════════════════════════ */}
-        <section className="bg-white rounded-lg shadow-sm p-5">
+        <section className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-bold text-gray-800 uppercase tracking-wide">Statement Upload History</p>

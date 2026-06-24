@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useRouter } from 'next/navigation'
 import { getAuthHeaders } from '@/lib/supabase'
 import { formatCurrency } from '@/lib/currency'
 
@@ -23,7 +22,6 @@ interface Transaction {
 type BulkAction = 'approve' | 'reject' | null
 
 export default function ApprovalsPage() {
-  const router = useRouter()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState<Set<string>>(new Set())
@@ -170,167 +168,147 @@ export default function ApprovalsPage() {
   const selectedTotal = selectedTransactions.reduce((s, t) => s + (t.ifa_amount ?? 0), 0)
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-4">
-
-        <button
-          onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors"
-        >
-          ← Back to Admin
-        </button>
+    <div className="flex min-h-[calc(100vh-105px)] flex-col" style={{ background: 'var(--wgi-bg)' }}>
+      <div className="flex-1 px-6 py-5">
 
         {/* Feedback */}
         {feedback && (
-          <div className={`${feedback.startsWith('Error:') ? 'bg-red-50 border-red-200 text-red-800' : 'bg-green-50 border-green-200 text-green-800'} border px-4 py-3 rounded-md text-sm`}>
+          <div className={`${feedback.startsWith('Error:') ? 'border-[var(--cm-alert-critical-border)] bg-[var(--cm-alert-critical-bg)] text-[var(--cm-alert-critical-text)]' : 'border-[var(--cm-status-approved-text)]/30 bg-[var(--cm-status-approved-bg)] text-[var(--cm-status-approved-text)]'} mb-4 rounded-[6px] border px-4 py-2.5 text-xs font-semibold`}>
             {feedback}
           </div>
         )}
 
-        {/* Toolbar */}
-        <div className="bg-white rounded-lg shadow px-4 py-3 flex flex-col gap-3">
-          {/* Row 1: filter + count + quick-select + bulk actions */}
-          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-3 flex-1 items-start sm:items-center">
-              <input
-                type="text"
-                placeholder="Filter by IFA or policy…"
-                value={searchIFA}
-                onChange={e => { setSearchIFA(e.target.value); lastClickedIdx.current = -1 }}
-                className="border border-gray-300 rounded-md px-3 py-2 text-sm w-60 focus:ring-2 focus:ring-blue-500"
-              />
-              <div className="flex items-center gap-3 flex-wrap">
-                <span className="text-sm text-gray-500">
-                  {filtered.length} pending · {selected.size} selected
-                  {selected.size > 0 && ` · ${fmt(selectedTotal, 'USD')} IFA total`}
-                </span>
-                <div className="flex items-center gap-2 text-xs">
-                  <button
-                    onClick={selectAll}
-                    disabled={filtered.length === 0}
-                    className="text-blue-600 hover:underline disabled:opacity-40"
-                  >
-                    Select All
-                  </button>
-                  {selected.size > 0 && (
-                    <button onClick={clearSelection} className="text-gray-500 hover:underline">
-                      Clear
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {selected.size > 0 && (
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleBulk('approve')}
-                  disabled={actioning}
-                  className="px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-40"
-                >
-                  {actioning ? '…' : `Approve ${selected.size}`}
-                </button>
-                <button
-                  onClick={() => handleBulk('reject')}
-                  disabled={actioning}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-40"
-                >
-                  {actioning ? '…' : `Reject ${selected.size}`}
-                </button>
-              </div>
-            )}
+        {/* Title + filter */}
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h1 className="text-[18px] font-bold text-[var(--wgi-navy)]">Approvals</h1>
+            <p className="mt-0.5 text-[11px] font-medium text-[var(--wgi-text-muted)]">
+              {filtered.length} transaction{filtered.length === 1 ? '' : 's'} pending review
+              {filtered.length > 0 && ` · ${fmt(filtered.reduce((s, t) => s + (t.ifa_amount ?? 0), 0), 'USD')} IFA value`}
+            </p>
           </div>
-
-          {/* Row 2: hint */}
-          <p className="text-xs text-gray-400">
-            Hold{' '}
-            <kbd className="bg-gray-100 border border-gray-300 rounded px-1 py-0.5 font-mono text-xs">Shift</kbd>
-            {' '}and click a checkbox to select a range. Use <strong>Select All</strong> to select all filtered rows at once.
-          </p>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Filter by IFA or policy…"
+              value={searchIFA}
+              onChange={e => { setSearchIFA(e.target.value); lastClickedIdx.current = -1 }}
+              className="h-8 w-60 rounded-[4px] border border-[var(--wgi-border)] px-3 text-xs outline-none focus:border-[var(--wgi-gold)] focus:ring-2 focus:ring-[var(--wgi-gold)]/20"
+            />
+            <button
+              onClick={selectAll}
+              disabled={filtered.length === 0}
+              className="h-8 whitespace-nowrap rounded-[4px] border border-[var(--wgi-border)] bg-white px-3 text-xs font-semibold text-[var(--wgi-navy)] hover:border-[var(--wgi-navy)] disabled:opacity-40"
+            >
+              Select all
+            </button>
+          </div>
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          {loading ? (
-            <div className="p-12 text-center text-gray-500">Loading…</div>
-          ) : filtered.length === 0 ? (
-            <div className="p-12 text-center">
-              <p className="text-gray-500 font-medium">No pending commissions</p>
-              <p className="text-sm text-gray-400 mt-1">Run "Calculate Commissions" on the master file to generate transactions.</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 text-sm">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-3 w-10">
+        {loading ? (
+          <div className="rounded-[6px] border border-[var(--wgi-border)] bg-[var(--wgi-surface)] p-12 text-center text-sm text-[var(--wgi-text-light)]">Loading…</div>
+        ) : filtered.length === 0 ? (
+          <div className="rounded-[6px] border border-[var(--wgi-border)] bg-[var(--wgi-surface)] p-12 text-center">
+            <p className="font-medium text-[var(--wgi-text-muted)]">No pending commissions</p>
+            <p className="mt-1 text-xs text-[var(--wgi-text-light)]">Run &quot;Calculate Commissions&quot; on the master file to generate transactions.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto rounded-[6px] border border-[var(--wgi-border)] bg-[var(--wgi-surface)]">
+            <table className="min-w-full text-[12px]">
+              <thead className="bg-[var(--wgi-navy)]">
+                <tr>
+                  <th className="w-8 px-3 py-2.5">
+                    <input
+                      type="checkbox"
+                      checked={selected.size === filtered.length && filtered.length > 0}
+                      onChange={toggleAll}
+                      className="checkbox cursor-pointer align-middle"
+                    />
+                  </th>
+                  {[
+                    { h: 'IFA' }, { h: 'Policy' }, { h: 'Holder' }, { h: 'Type' }, { h: 'Date' },
+                    { h: 'Gross', right: true }, { h: 'IFA Amount', right: true }, { h: 'Company', right: true }, { h: 'Actions' },
+                  ].map(({ h, right }) => (
+                    <th key={h} className={`px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-white/85 ${right ? 'text-right' : 'text-left'}`}>
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((t, idx) => (
+                  <tr
+                    key={t.id}
+                    className={`border-b border-[var(--wgi-border)] transition-colors ${selected.has(t.id) ? 'bg-[#eef3f9]' : 'hover:bg-[var(--wgi-bg)]'}`}
+                  >
+                    <td className="px-3 py-2">
                       <input
                         type="checkbox"
-                        checked={selected.size === filtered.length && filtered.length > 0}
-                        onChange={toggleAll}
-                        className="rounded border-gray-300 text-blue-600"
+                        checked={selected.has(t.id)}
+                        onChange={() => {}}
+                        onClick={(e) => handleCheckboxClick(t.id, idx, e)}
+                        className="checkbox cursor-pointer align-middle"
                       />
-                    </th>
-                    {['IFA', 'Policy', 'Holder', 'Type', 'Date', 'Gross', 'IFA Amount', 'Company', 'Actions'].map(h => (
-                      <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {h}
-                      </th>
-                    ))}
+                    </td>
+                    <td className="px-3 py-2">
+                      <span className="cm-mono rounded bg-[var(--wgi-bg)] px-1 py-0.5 text-[11px] font-semibold text-[var(--wgi-navy)]">{t.ifas?.code}</span>
+                      <div className="text-[11px] text-[var(--wgi-text-muted)]">{t.ifas?.name}</div>
+                    </td>
+                    <td className="cm-mono px-3 py-2 text-[11px] text-[var(--wgi-text-muted)]">{t.policies?.policy_number ?? '—'}</td>
+                    <td className="px-3 py-2 text-[var(--wgi-text)]">{t.policies?.policy_holder_name ?? '—'}</td>
+                    <td className="px-3 py-2 text-[var(--wgi-text-muted)]">{t.commission_type_code || '—'}</td>
+                    <td className="cm-mono px-3 py-2 text-[11px] text-[var(--wgi-text-muted)]">{t.transaction_date ? new Date(t.transaction_date).toLocaleDateString() : '—'}</td>
+                    <td className="cm-mono px-3 py-2 text-right font-medium text-[var(--wgi-text)]">{fmt(t.gross_amount, t.currency)}</td>
+                    <td className="cm-mono px-3 py-2 text-right font-medium text-[var(--cm-gain)]">{fmt(t.ifa_amount, t.currency)}</td>
+                    <td className="cm-mono px-3 py-2 text-right text-[var(--wgi-text-muted)]">{fmt(t.company_amount, t.currency)}</td>
+                    <td className="px-3 py-2">
+                      <div className="flex items-center gap-2 whitespace-nowrap">
+                        <button onClick={() => handleSingle(t.id, 'approve')} className="text-[11px] font-medium text-[var(--cm-status-approved-text)] hover:underline">Approve</button>
+                        <button onClick={() => handleSingle(t.id, 'reject')} className="text-[11px] text-[var(--cm-status-rejected-text)] hover:underline">Reject</button>
+                        <button onClick={() => openOverride(t)} className="text-[11px] text-[var(--wgi-navy)] hover:underline">Override</button>
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-100">
-                  {filtered.map((t, idx) => (
-                    <tr key={t.id} className={selected.has(t.id) ? 'bg-blue-50' : 'hover:bg-gray-50'}>
-                      <td className="px-4 py-3">
-                        <input
-                          type="checkbox"
-                          checked={selected.has(t.id)}
-                          onChange={() => {}}
-                          onClick={(e) => handleCheckboxClick(t.id, idx, e)}
-                          className="rounded border-gray-300 text-blue-600 cursor-pointer"
-                        />
-                      </td>
-                      <td className="px-4 py-3 font-medium text-gray-900">
-                        <span className="font-mono text-xs bg-gray-100 px-1 py-0.5 rounded">{t.ifas?.code}</span>
-                        <div className="text-xs text-gray-500">{t.ifas?.name}</div>
-                      </td>
-                      <td className="px-4 py-3 font-mono text-xs">{t.policies?.policy_number ?? '—'}</td>
-                      <td className="px-4 py-3 text-gray-600 text-xs">{t.policies?.policy_holder_name ?? '—'}</td>
-                      <td className="px-4 py-3 text-xs text-gray-600">{t.commission_type_code || '—'}</td>
-                      <td className="px-4 py-3 text-xs text-gray-500">{t.transaction_date ? new Date(t.transaction_date).toLocaleDateString() : '—'}</td>
-                      <td className="px-4 py-3 font-medium text-gray-900">{fmt(t.gross_amount, t.currency)}</td>
-                      <td className="px-4 py-3 font-medium text-green-700">{fmt(t.ifa_amount, t.currency)}</td>
-                      <td className="px-4 py-3 text-gray-600">{fmt(t.company_amount, t.currency)}</td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2 whitespace-nowrap">
-                          <button
-                            onClick={() => handleSingle(t.id, 'approve')}
-                            className="text-xs text-green-600 hover:underline font-medium"
-                          >
-                            Approve
-                          </button>
-                          <button
-                            onClick={() => handleSingle(t.id, 'reject')}
-                            className="text-xs text-red-600 hover:underline"
-                          >
-                            Reject
-                          </button>
-                          <button
-                            onClick={() => openOverride(t)}
-                            className="text-xs text-blue-600 hover:underline"
-                          >
-                            Override
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Hint */}
+        <p className="mt-2 text-[11px] text-[var(--wgi-text-light)]">
+          Hold <kbd className="cm-mono rounded border border-[var(--wgi-border)] bg-[var(--wgi-bg)] px-1 py-0.5 text-[10px]">Shift</kbd> and click a checkbox to select a range.
+        </p>
+      </div>
+
+      {/* Sticky bulk action bar */}
+      {selected.size > 0 && (
+        <div className="sticky bottom-0 flex items-center gap-3 border-t border-[var(--wgi-border)] bg-[var(--wgi-surface)] px-6 py-3" style={{ boxShadow: '0 -2px 8px rgba(0,0,0,0.04)' }}>
+          <span className="text-[12px] font-semibold text-[var(--wgi-navy)]">
+            {selected.size} selected · {fmt(selectedTotal, 'USD')} IFA total
+          </span>
+          <div className="ml-auto flex gap-2">
+            <button onClick={clearSelection} className="rounded-[4px] border border-[var(--wgi-border)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--wgi-text)] hover:border-[var(--wgi-navy)]">
+              Clear
+            </button>
+            <button
+              onClick={() => handleBulk('reject')}
+              disabled={actioning}
+              className="rounded-[4px] border border-[var(--wgi-border)] bg-white px-4 py-1.5 text-xs font-semibold text-[var(--cm-status-rejected-text)] hover:border-[var(--cm-status-rejected-text)] disabled:opacity-40"
+            >
+              {actioning ? '…' : `Reject ${selected.size}`}
+            </button>
+            <button
+              onClick={() => handleBulk('approve')}
+              disabled={actioning}
+              className="rounded-[4px] bg-[var(--wgi-navy)] px-4 py-1.5 text-xs font-semibold text-white hover:bg-[var(--wgi-navy-600)] disabled:opacity-40"
+            >
+              {actioning ? '…' : `Approve ${selected.size}`}
+            </button>
+          </div>
         </div>
-      </main>
+      )}
 
       {/* ── Override Modal ─────────────────────────────────────────────────── */}
       {overrideId && (
@@ -352,7 +330,7 @@ export default function ApprovalsPage() {
                 step="0.01"
                 value={overrideAmount}
                 onChange={e => setOverrideAmount(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--wgi-gold)]"
               />
             </div>
 
@@ -363,7 +341,7 @@ export default function ApprovalsPage() {
                 onChange={e => setOverrideReason(e.target.value)}
                 rows={2}
                 placeholder="Explain the reason for the override…"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--wgi-gold)]"
               />
             </div>
 
@@ -377,7 +355,7 @@ export default function ApprovalsPage() {
               <button
                 onClick={handleOverride}
                 disabled={overrideSaving}
-                className="flex-1 bg-blue-600 text-white py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-40"
+                className="flex-1 bg-[var(--wgi-navy)] text-white py-2 rounded-md text-sm font-medium hover:bg-[var(--wgi-navy-600)] disabled:opacity-40"
               >
                 {overrideSaving ? 'Saving…' : 'Apply Override'}
               </button>

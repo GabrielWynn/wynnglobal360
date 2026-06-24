@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WGI Commission Module — Interactive Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wgi-navy: #1B2D45;
+    --wgi-navy-700: #172B4D;
+    --wgi-navy-600: #1E3A5F;
+    --wgi-navy-500: #2C4F7C;
+    --wgi-navy-400: #3D6898;
+    --wgi-gold: #C8A96E;
+    --wgi-bg: #F8FAFC;
+    --wgi-surface: #FFFFFF;
+    --wgi-border: #E2E8F0;
+    --wgi-text: #1A202C;
+    --wgi-text-muted: #64748B;
+    --wgi-text-light: #94A3B8;
+    --wgi-accent: #2980D9;
+
+    --cm-status-pending-bg: #FEF3C7;
+    --cm-status-pending-text: #78350F;
+    --cm-status-approved-bg: #D1FAE5;
+    --cm-status-approved-text: #065F46;
+    --cm-status-rejected-bg: #FEE2E2;
+    --cm-status-rejected-text: #7F1D1D;
+    --cm-status-paid-bg: #E8EDF3;
+    --cm-status-paid-text: #1B2D45;
+    --cm-status-suspended-bg: #F5F3FF;
+    --cm-status-suspended-text: #4C1D95;
+    --cm-status-advance-bg: #FFF7ED;
+    --cm-status-advance-text: #9A3412;
+
+    --cm-chart-1: #1B2D45;
+    --cm-chart-2: #C8A96E;
+    --cm-chart-3: #3D6898;
+    --cm-chart-4: #7B96B2;
+    --cm-chart-5: #8C7355;
+    --cm-chart-6: #A3B8CC;
+
+    --cm-gain: #00873E;
+    --cm-loss: #CC0000;
+
+    --cm-alert-warning-bg: #FFF7ED;
+    --cm-alert-warning-border: #F59E0B;
+    --cm-alert-warning-text: #92400E;
+    --cm-alert-critical-bg: #FEF2F2;
+    --cm-alert-critical-border: #EF4444;
+    --cm-alert-critical-text: #7F1D1D;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Raleway', sans-serif;
+    background: var(--wgi-bg);
+    color: var(--wgi-text);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ── Hub header ────────────────────────────────── */
+  .hub-header {
+    background: var(--wgi-navy);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 48px;
+    gap: 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .hub-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.04em; color: white; cursor: pointer; }
+  .hub-logo span { color: var(--wgi-gold); }
+
+  .hub-nav { display: flex; gap: 0; height: 100%; }
+  .hub-nav a {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    transition: color 120ms;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+  }
+  .hub-nav a.active { color: white; border-bottom-color: var(--wgi-gold); }
+  .hub-nav a:hover:not(.active) { color: rgba(255,255,255,0.85); }
+
+  .hub-user { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 11px; color: rgba(255,255,255,0.7); }
+  .hub-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--wgi-navy-400); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; }
+
+  .role-switch {
+    margin-left: auto;
+    display: flex;
+    gap: 0;
+    background: rgba(255,255,255,0.1);
+    border-radius: 5px;
+    padding: 2px;
+  }
+  .role-switch button {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-family: 'Raleway', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 120ms;
+  }
+  .role-switch button.active { background: var(--wgi-gold); color: var(--wgi-navy); }
+
+  /* ── Commission secondary nav ──────────────────── */
+  .commission-nav {
+    background: var(--wgi-surface);
+    border-bottom: 1px solid var(--wgi-border);
+    display: flex;
+    padding: 0 24px;
+    gap: 0;
+    overflow-x: auto;
+    position: sticky;
+    top: 48px;
+    z-index: 90;
+  }
+  .commission-nav a {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--wgi-text-muted);
+    text-decoration: none;
+    padding: 10px 14px;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 120ms;
+    cursor: pointer;
+  }
+  .commission-nav a.active { color: var(--wgi-navy); border-bottom-color: var(--wgi-gold); }
+  .commission-nav a:hover:not(.active) { color: var(--wgi-text); background: var(--wgi-bg); }
+
+  /* ── Alert banners ─────────────────────────────── */
+  .alert-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    border-bottom: 1px solid transparent;
+  }
+  .alert-banner.warning { background: var(--cm-alert-warning-bg); border-color: var(--cm-alert-warning-border); color: var(--cm-alert-warning-text); }
+  .alert-banner.critical { background: var(--cm-alert-critical-bg); border-color: var(--cm-alert-critical-border); color: var(--cm-alert-critical-text); }
+  .alert-banner .alert-icon { font-size: 14px; }
+  .alert-banner .alert-cta {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid currentColor;
+    color: inherit;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .alert-banner .alert-cta:hover { background: currentColor; }
+  .alert-banner .alert-cta:hover { color: white; }
+
+  /* ── Stat strip ────────────────────────────────── */
+  .stat-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; background: var(--wgi-surface); border-bottom: 1px solid var(--wgi-border); }
+  .stat-card { padding: 16px 24px; border-right: 1px solid var(--wgi-border); }
+  .stat-card:last-child { border-right: none; }
+  .stat-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--wgi-text-muted); margin-bottom: 4px; }
+  .stat-value { font-size: 22px; font-weight: 700; color: var(--wgi-navy); line-height: 1.1; margin-bottom: 2px; }
+  .stat-value.mono { font-family: 'JetBrains Mono', monospace; font-size: 18px; }
+  .stat-sub { font-size: 10px; color: var(--wgi-text-light); font-weight: 500; }
+  .stat-card.alert .stat-value { color: var(--cm-alert-critical-text); }
+  .stat-card.alert { border-left: 3px solid var(--cm-alert-critical-border); }
+  .stat-card.warning .stat-value { color: var(--cm-alert-warning-text); }
+  .stat-card.warning { border-left: 3px solid var(--cm-alert-warning-border); }
+
+  /* ── Page wrapper ──────────────────────────────── */
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-body { padding: 20px 24px; }
+
+  .page-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .page-title { font-size: 18px; font-weight: 700; color: var(--wgi-navy); }
+  .page-subtitle { font-size: 11px; color: var(--wgi-text-muted); font-weight: 500; margin-top: 2px; }
+
+  /* ── Charts ────────────────────────────────────── */
+  .grid-2col { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+  .grid-3col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  .card { background: var(--wgi-surface); border: 1px solid var(--wgi-border); border-radius: 4px; overflow: hidden; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--wgi-border); background: var(--wgi-bg); }
+  .card-title { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wgi-text-muted); }
+  .card-body { padding: 16px; }
+
+  .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row { display: grid; grid-template-columns: 100px 1fr 90px; gap: 10px; align-items: center; }
+  .bar-label { font-size: 11px; font-weight: 600; color: var(--wgi-text); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar-track { background: var(--wgi-bg); border-radius: 2px; height: 22px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 2px; transition: width 600ms ease-out; }
+  .bar-amount { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--wgi-text-muted); text-align: left; }
+
+  .pie-wrap { display: flex; align-items: center; gap: 20px; }
+  .pie-svg { flex-shrink: 0; }
+  .pie-legend { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .pie-legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; }
+  .pie-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .pie-name { flex: 1; color: var(--wgi-text); }
+  .pie-pct { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--wgi-text-muted); min-width: 40px; text-align: right; }
+
+  /* ── Buttons ───────────────────────────────────── */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 4px; font-family: 'Raleway', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 120ms; letter-spacing: 0.02em; line-height: 1; }
+  .btn-primary { background: var(--wgi-navy); color: white; border-color: var(--wgi-navy); }
+  .btn-primary:hover { background: var(--wgi-navy-600); }
+  .btn-primary:disabled { background: var(--wgi-text-light); border-color: var(--wgi-text-light); cursor: not-allowed; }
+  .btn-secondary { background: white; color: var(--wgi-navy); border-color: var(--wgi-border); }
+  .btn-secondary:hover { border-color: var(--wgi-navy); }
+  .btn-destructive { background: white; color: var(--cm-status-rejected-text); border-color: var(--wgi-border); }
+  .btn-destructive:hover { border-color: var(--cm-status-rejected-text); }
+  .btn-sm { padding: 4px 10px; font-size: 11px; }
+
+  /* ── Badges ────────────────────────────────────── */
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+  .badge-pending { background: var(--cm-status-pending-bg); color: var(--cm-status-pending-text); }
+  .badge-approved { background: var(--cm-status-approved-bg); color: var(--cm-status-approved-text); }
+  .badge-rejected { background: var(--cm-status-rejected-bg); color: var(--cm-status-rejected-text); }
+  .badge-paid { background: var(--cm-status-paid-bg); color: var(--cm-status-paid-text); }
+  .badge-suspended { background: var(--cm-status-suspended-bg); color: var(--cm-status-suspended-text); }
+  .badge-advance { background: var(--cm-status-advance-bg); color: var(--cm-status-advance-text); }
+  .badge-unmapped { background: var(--cm-status-rejected-bg); color: var(--cm-status-rejected-text); }
+
+  /* ── Data table ────────────────────────────────── */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--wgi-border); border-radius: 4px; background: var(--wgi-surface); }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-table thead tr { background: var(--wgi-navy); }
+  .data-table thead th { color: rgba(255,255,255,0.85); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 12px; text-align: left; border-right: 1px solid rgba(255,255,255,0.08); white-space: nowrap; position: sticky; top: 0; }
+  .data-table thead th.right { text-align: right; }
+  .data-table thead th.center { text-align: center; }
+  .data-table tbody tr { border-bottom: 1px solid var(--wgi-border); transition: background 120ms; }
+  .data-table tbody tr:hover { background: var(--wgi-bg); }
+  .data-table tbody tr.selected { background: #EEF3F9; }
+  .data-table td { padding: 9px 12px; color: var(--wgi-text); border-right: 1px solid var(--wgi-border); }
+  .data-table td:last-child { border-right: none; }
+  .data-table td.right { text-align: right; }
+  .data-table td.center { text-align: center; }
+  .td-policy { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--wgi-text-muted); }
+  .td-amount { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; text-align: right; }
+  .td-amount.positive { color: var(--cm-gain); }
+  .td-amount.negative { color: var(--cm-loss); }
+  .td-ifa { font-weight: 600; color: var(--wgi-navy); font-size: 12px; }
+  .cell-editable { cursor: cell; position: relative; }
+  .cell-editable:hover { box-shadow: inset 0 0 0 1px var(--wgi-gold); }
+  .cell-dirty { border-left: 2px solid var(--wgi-gold) !important; background: #FFFBF4 !important; }
+
+  /* ── Toolbar ───────────────────────────────────── */
+  .toolbar { padding: 12px 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+  /* ── Forms ─────────────────────────────────────── */
+  .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  .form-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wgi-text-muted); }
+  .form-input { background: var(--wgi-surface); border: 1px solid var(--wgi-border); border-radius: 4px; padding: 7px 10px; font-family: 'Raleway', sans-serif; font-size: 12px; color: var(--wgi-text); outline: none; transition: border-color 120ms; }
+  .form-input:focus { border-color: var(--wgi-gold); box-shadow: 0 0 0 2px rgba(200,169,110,0.15); }
+  .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748B' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; cursor: pointer; }
+
+  /* ── Upload dropzone ───────────────────────────── */
+  .dropzone { border: 2px dashed var(--wgi-border); border-radius: 8px; padding: 48px; text-align: center; background: var(--wgi-surface); cursor: pointer; transition: all 150ms; }
+  .dropzone:hover { border-color: var(--wgi-gold); background: #FFFBF4; }
+  .dropzone-icon { font-size: 32px; color: var(--wgi-text-light); margin-bottom: 12px; }
+  .dropzone-title { font-size: 14px; font-weight: 700; color: var(--wgi-navy); margin-bottom: 4px; }
+  .dropzone-sub { font-size: 11px; color: var(--wgi-text-muted); }
+
+  .stepper { display: flex; align-items: center; gap: 0; margin-bottom: 20px; }
+  .step { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; color: var(--wgi-text-muted); }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--wgi-bg); border: 1px solid var(--wgi-border); display: flex; align-items: center; justify-content: center; font-size: 10px; }
+  .step.done .step-num { background: var(--cm-gain); border-color: var(--cm-gain); color: white; }
+  .step.active .step-num { background: var(--wgi-navy); border-color: var(--wgi-navy); color: white; }
+  .step.active { color: var(--wgi-navy); }
+  .step-line { width: 48px; height: 1px; background: var(--wgi-border); margin: 0 12px; }
+
+  /* ── Action bar (sticky) ───────────────────────── */
+  .action-bar { position: sticky; bottom: 0; background: var(--wgi-surface); border-top: 1px solid var(--wgi-border); padding: 12px 24px; display: flex; align-items: center; gap: 12px; box-shadow: 0 -2px 8px rgba(0,0,0,0.04); }
+  .action-bar .selected-count { font-size: 12px; font-weight: 600; color: var(--wgi-navy); }
+
+  /* ── IFA portal ────────────────────────────────── */
+  .ifa-balance-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .ifa-balance-card { background: var(--wgi-surface); border: 1px solid var(--wgi-border); border-radius: 4px; padding: 14px 16px; }
+  .ifa-balance-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--wgi-text-muted); margin-bottom: 4px; }
+  .ifa-balance-value { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 500; color: var(--wgi-navy); }
+
+  /* ── Tab bar ───────────────────────────────────── */
+  .tab-bar { display: flex; border-bottom: 1px solid var(--wgi-border); background: var(--wgi-surface); }
+  .tab-bar a { font-size: 12px; font-weight: 600; color: var(--wgi-text-muted); text-decoration: none; padding: 10px 16px; border-bottom: 3px solid transparent; cursor: pointer; transition: all 120ms; }
+  .tab-bar a.active { color: var(--wgi-navy); border-bottom-color: var(--wgi-gold); }
+  .tab-bar a:hover:not(.active) { color: var(--wgi-text); }
+
+  /* ── Modal ─────────────────────────────────────── */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(27,45,69,0.4); z-index: 1000; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: 8px; width: 480px; max-width: 90vw; max-height: 85vh; overflow: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.25); animation: modalIn 150ms ease-out; }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+  .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--wgi-border); display: flex; align-items: center; justify-content: space-between; }
+  .modal-title { font-size: 15px; font-weight: 700; color: var(--wgi-navy); }
+  .modal-close { background: none; border: none; font-size: 20px; color: var(--wgi-text-muted); cursor: pointer; line-height: 1; }
+  .modal-body { padding: 20px; }
+  .modal-footer { padding: 16px 20px; border-top: 1px solid var(--wgi-border); display: flex; justify-content: flex-end; gap: 8px; }
+
+  /* ── Diff viewer ───────────────────────────────── */
+  .diff-row { display: flex; gap: 8px; font-size: 11px; padding: 3px 0; align-items: center; }
+  .diff-field { font-weight: 700; color: var(--wgi-text-muted); min-width: 90px; }
+  .diff-old { font-family: 'JetBrains Mono', monospace; color: var(--cm-loss); text-decoration: line-through; }
+  .diff-arrow { color: var(--wgi-text-light); }
+  .diff-new { font-family: 'JetBrains Mono', monospace; color: var(--cm-gain); font-weight: 500; }
+
+  /* ── Toast ─────────────────────────────────────── */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--wgi-navy); color: white; padding: 12px 20px; border-radius: 6px; font-size: 12px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 2000; opacity: 0; transform: translateY(10px); transition: all 200ms; border-left: 3px solid var(--wgi-gold); }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ── Misc utilities ────────────────────────────── */
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .gap-8 { gap: 8px; }
+  .gap-12 { gap: 12px; }
+  .ml-auto { margin-left: auto; }
+  .mt-12 { margin-top: 12px; }
+  .mt-16 { margin-top: 16px; }
+  .mt-20 { margin-top: 20px; }
+  .mb-16 { margin-bottom: 16px; }
+  .text-muted { color: var(--wgi-text-muted); }
+  .text-navy { color: var(--wgi-navy); }
+  .font-bold { font-weight: 700; }
+  .table-footer { padding: 8px 16px; background: var(--wgi-surface); border-top: 1px solid var(--wgi-border); display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--wgi-text-muted); font-weight: 500; }
+
+  .checkbox { width: 14px; height: 14px; cursor: pointer; accent-color: var(--wgi-navy); }
+
+  .kpi-big { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 500; color: var(--wgi-navy); }
+  .kpi-growth { font-size: 11px; font-weight: 700; }
+  .kpi-growth.up { color: var(--cm-gain); }
+  .kpi-growth.down { color: var(--cm-loss); }
+
+  .pill-toggle { display: inline-flex; background: var(--wgi-bg); border: 1px solid var(--wgi-border); border-radius: 5px; padding: 2px; gap: 2px; }
+  .pill-toggle button { background: transparent; border: none; padding: 5px 12px; font-family: 'Raleway', sans-serif; font-size: 11px; font-weight: 600; color: var(--wgi-text-muted); border-radius: 4px; cursor: pointer; transition: all 120ms; }
+  .pill-toggle button.active { background: var(--wgi-navy); color: white; }
+
+  .empty-hint { padding: 40px; text-align: center; color: var(--wgi-text-light); font-size: 12px; }
+  .info-note { background: var(--wgi-bg); border: 1px solid var(--wgi-border); border-left: 3px solid var(--wgi-gold); border-radius: 4px; padding: 12px 16px; font-size: 11px; color: var(--wgi-text-muted); margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ══ HUB HEADER ══════════════════════════════════════════════════════════════ -->
+<div class="hub-header">
+  <div class="hub-logo" onclick="go('dashboard')">WGI <span>360</span></div>
+  <nav class="hub-nav" id="hubNav">
+    <a onclick="alert('Prototype: Model Portfolio module')">Model Portfolio</a>
+    <a class="active">Commission</a>
+    <a onclick="alert('Prototype: Financial Planner module')">Financial Planner</a>
+    <a onclick="alert('Prototype: Advisors module')">Advisors</a>
+  </nav>
+  <div class="role-switch">
+    <button id="roleAdmin" class="active" onclick="setRole('admin')">Admin View</button>
+    <button id="roleIfa" onclick="setRole('ifa')">IFA View</button>
+  </div>
+  <div class="hub-user" style="margin-left:24px"><div class="hub-avatar" id="avatar">GS</div> <span id="userName">Gabriel S.</span></div>
+</div>
+
+<!-- ══ COMMISSION SECONDARY NAV (admin only) ═══════════════════════════════════ -->
+<nav class="commission-nav" id="commissionNav">
+  <a data-page="dashboard" class="active" onclick="go('dashboard')">Dashboard</a>
+  <a data-page="master-file" onclick="go('master-file')">Master File</a>
+  <a data-page="upload" onclick="go('upload')">Upload</a>
+  <a data-page="approvals" onclick="go('approvals')">Approvals</a>
+  <a data-page="payments" onclick="go('payments')">Payments</a>
+  <a data-page="payment-matrix" onclick="go('payment-matrix')">Payment Matrix</a>
+  <a data-page="kpi" onclick="go('kpi')">KPI</a>
+  <a data-page="unmapped" onclick="go('unmapped')">Unmapped</a>
+  <a data-page="audit-log" onclick="go('audit-log')">Audit Log</a>
+</nav>
+
+<!-- ══════════════════ PAGE: DASHBOARD ══════════════════ -->
+<div class="page active" id="page-dashboard">
+  <div class="alert-banner critical">
+    <span class="alert-icon">&#9888;</span>
+    <strong>12 unmapped policies</strong> &mdash; cannot be assigned to an IFA until resolved.
+    <button class="alert-cta" onclick="go('unmapped')">Review Now</button>
+  </div>
+  <div class="alert-banner warning">
+    <span class="alert-icon">!</span>
+    <strong>2 IFAs with negative balance</strong> &mdash; review before next payment run.
+    <button class="alert-cta" onclick="go('payments')">View IFAs</button>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-card warning">
+      <div class="stat-label">Pending Approval</div>
+      <div class="stat-value mono">$142,300</div>
+      <div class="stat-sub">34 transactions</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">IFAs Ready to Pay</div>
+      <div class="stat-value">8</div>
+      <div class="stat-sub">$94,820 combined</div>
+    </div>
+    <div class="stat-card alert">
+      <div class="stat-label">Unmapped Policies</div>
+      <div class="stat-value">12</div>
+      <div class="stat-sub">Blocking payout</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Paid This Month</div>
+      <div class="stat-value mono">$387,500</div>
+      <div class="stat-sub">48 transactions</div>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="page-title-row">
+      <div>
+        <div class="page-title">Commission Administration</div>
+        <div class="page-subtitle">November 2024 &middot; Last upload 2 hours ago</div>
+      </div>
+      <div class="flex gap-8">
+        <button class="btn btn-secondary" onclick="go('upload')">+ Upload File</button>
+        <button class="btn btn-primary" onclick="go('approvals')">Review Approvals</button>
+      </div>
+    </div>
+
+    <div class="grid-2col">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Top IFAs by Balance</span>
+          <button class="btn btn-secondary btn-sm" onclick="toast('Exported Top IFAs to XLSX')">Export</button>
+        </div>
+        <div class="card-body">
+          <div class="bar-chart" id="dashBars"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">By Platform</span></div>
+        <div class="card-body">
+          <div class="pie-wrap">
+            <svg class="pie-svg" id="dashPie" width="120" height="120" viewBox="0 0 120 120"></svg>
+            <div class="pie-legend" id="dashPieLegend"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-20">
+      <div class="card-header"><span class="card-title">Recent Activity</span></div>
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead><tr><th>Time</th><th>Action</th><th>Detail</th><th>User</th></tr></thead>
+          <tbody id="dashActivity"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE: MASTER FILE ══════════════════ -->
+<div class="page" id="page-master-file">
+  <div class="page-body">
+    <div class="page-title-row">
+      <div>
+        <div class="page-title">Master File</div>
+        <div class="page-subtitle">Editable commission records &middot; double-click a cell to edit</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <select class="form-input form-select" style="width:160px" onchange="filterMaster()" id="mfPlatform">
+        <option value="">All Platforms</option>
+        <option>Allianz</option><option>Generali</option><option>RL360</option><option>Zurich</option>
+      </select>
+      <select class="form-input form-select" style="width:140px" onchange="filterMaster()" id="mfStatus">
+        <option value="">All Statuses</option>
+        <option>Approved</option><option>Pending</option><option>Paid</option><option>Suspended</option><option>Unmapped</option>
+      </select>
+      <input class="form-input" placeholder="Search policy / IFA / holder..." style="width:240px" id="mfSearch" oninput="filterMaster()">
+      <div class="ml-auto flex gap-8">
+        <button class="btn btn-secondary btn-sm" onclick="toast('Exported 3,412 records to XLSX')">Export XLSX</button>
+        <button class="btn btn-primary btn-sm" id="mfSaveBtn" onclick="saveMaster()" disabled>Save Changes</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table" id="masterTable">
+        <thead>
+          <tr>
+            <th style="width:32px"><input type="checkbox" class="checkbox" onclick="toggleAllMaster(this)"></th>
+            <th>Policy Number</th>
+            <th>Holder</th>
+            <th>IFA</th>
+            <th>Platform</th>
+            <th>Type</th>
+            <th class="right">Gross</th>
+            <th class="right">IFA %</th>
+            <th class="right">IFA Amt</th>
+            <th class="right">WGI Amt</th>
+            <th>Status</th>
+            <th>Tx Date</th>
+          </tr>
+        </thead>
+        <tbody id="masterBody"></tbody>
+      </table>
+    </div>
+    <div class="table-footer">
+      <span id="mfFooter">Showing 1&ndash;8 of 3,412 records</span>
+      <div class="flex gap-8">
+        <button class="btn btn-secondary btn-sm">&larr; Prev</button>
+        <button class="btn btn-secondary btn-sm">Next &rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE: UPLOAD ══════════════════ -->
+<div class="page" id="page-upload">
+  <div class="page-body">
+    <div class="page-title-row"><div class="page-title">Upload Commission File</div></div>
+
+    <div class="stepper">
+      <div class="step done"><span class="step-num">&#10003;</span> Select Platform</div>
+      <div class="step-line"></div>
+      <div class="step active"><span class="step-num">2</span> Upload &amp; Map</div>
+      <div class="step-line"></div>
+      <div class="step"><span class="step-num">3</span> Validate</div>
+      <div class="step-line"></div>
+      <div class="step"><span class="step-num">4</span> Import</div>
+    </div>
+
+    <div class="grid-2col">
+      <div>
+        <div class="dropzone" onclick="simulateUpload()">
+          <div class="dropzone-icon">&#8682;</div>
+          <div class="dropzone-title">Drop CSV file here, or click to browse</div>
+          <div class="dropzone-sub">Allianz format &middot; max 10MB &middot; .csv only</div>
+        </div>
+
+        <div class="card mt-20" id="uploadPreview" style="display:none">
+          <div class="card-header">
+            <span class="card-title">Preview &mdash; allianz_nov2024.csv (248 rows)</span>
+            <span class="badge badge-approved">2 warnings</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="data-table">
+              <thead><tr><th>Row</th><th>Policy</th><th>Holder</th><th class="right">Amount</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody id="uploadRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">Column Mapping</span></div>
+        <div class="card-body">
+          <div class="form-group"><label class="form-label">Platform</label><select class="form-input form-select"><option>Allianz</option><option>Generali</option></select></div>
+          <div class="form-group"><label class="form-label">Policy Number Column</label><select class="form-input form-select"><option>policy_no</option></select></div>
+          <div class="form-group"><label class="form-label">Amount Column</label><select class="form-input form-select"><option>gross_comm</option></select></div>
+          <div class="form-group"><label class="form-label">Date Column</label><select class="form-input form-select"><option>trans_date</option></select></div>
+          <div class="form-group"><label class="form-label">Default Currency</label><select class="form-input form-select"><option>USD</option><option>EUR</option><option>GBP</option></select></div>
+          <button class="btn btn-primary" style="width:100%; justify-content:center" id="importBtn" onclick="go('master-file'); toast('246 records imported, 2 flagged unmapped')" disabled>Import 248 Records</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE: APPROVALS ══════════════════ -->
+<div class="page" id="page-approvals">
+  <div class="page-body">
+    <div class="page-title-row">
+      <div>
+        <div class="page-title">Approvals</div>
+        <div class="page-subtitle">34 transactions pending review &middot; $142,300 total</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input class="form-input" placeholder="Filter by IFA..." style="width:220px" id="apSearch" oninput="filterApprovals()">
+      <select class="form-input form-select" style="width:160px" id="apType" onchange="filterApprovals()">
+        <option value="">All Types</option><option>Initial</option><option>Renewal</option><option>Advance</option><option>Top-up</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width:32px"><input type="checkbox" class="checkbox" onclick="toggleAllApprovals(this)"></th>
+            <th>Policy</th><th>IFA</th><th>Holder</th><th>Type</th>
+            <th class="right">Gross</th><th class="right">IFA Amt</th><th class="right">WGI Amt</th><th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="approvalsBody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="action-bar" id="approvalsActionBar" style="display:none">
+    <span class="selected-count" id="apCount">0 selected</span>
+    <div class="ml-auto flex gap-8">
+      <button class="btn btn-secondary" onclick="openOverride()">Override Amount</button>
+      <button class="btn btn-destructive" onclick="rejectApprovals()">Reject</button>
+      <button class="btn btn-primary" onclick="approveApprovals()">Approve Selected</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE: PAYMENTS ══════════════════ -->
+<div class="page" id="page-payments">
+  <div class="page-body">
+    <div class="page-title-row">
+      <div>
+        <div class="page-title">Payments</div>
+        <div class="page-subtitle">8 IFAs ready to pay &middot; $94,820 combined balance</div>
+      </div>
+      <input class="form-input" placeholder="Search IFA..." style="width:220px" id="paySearch" oninput="filterPayments()">
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>IFA Code</th><th>Name</th><th class="right">USD</th><th class="right">EUR</th><th class="right">GBP</th><th class="center">Txns</th><th class="center">Action</th></tr>
+        </thead>
+        <tbody id="paymentsBody"></tbody>
+      </table>
+    </div>
+
+    <div class="card mt-20">
+      <div class="card-header"><span class="card-title">Recent Payment Batches</span></div>
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead><tr><th>IFA</th><th>Reference</th><th class="right">Amount</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="batchesBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE: PAYMENT MATRIX ══════════════════ -->
+<div class="page" id="page-payment-matrix">
+  <div class="page-body">
+    <div class="page-title-row">
+      <div>
+        <div class="page-title">Payment Matrix</div>
+        <div class="page-subtitle">Commission split rules by platform, IFA, and type</div>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('matrixModal')">+ New Rule</button>
+    </div>
+
+    <div class="info-note">Rules are matched most-specific-first: IFA + Type &gt; IFA &gt; Platform default. Establishment periods stagger the IFA split across release months.</div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Platform</th><th>IFA</th><th>Type</th><th class="right">IFA Rate</th><th class="right">WGI Rate</th><th class="center">Est. Periods</th><th>Effective</th><th class="center">Active</th></tr>
+        </thead>
+        <tbody id="matrixBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE: KPI ══════════════════ -->
+<div class="page" id="page-kpi">
+  <div class="page-body">
+    <div class="page-title-row">
+      <div>
+        <div class="page-title">KPI &amp; Revenue</div>
+        <div class="page-subtitle">Performance metrics and growth</div>
+      </div>
+      <div class="pill-toggle">
+        <button onclick="setKpiPeriod(this,'This Month')" class="active">This Month</button>
+        <button onclick="setKpiPeriod(this,'This Quarter')">Quarter</button>
+        <button onclick="setKpiPeriod(this,'YTD')">YTD</button>
+        <button onclick="setKpiPeriod(this,'Last 12M')">12M</button>
+      </div>
+    </div>
+
+    <div class="grid-3col mb-16">
+      <div class="card"><div class="card-body">
+        <div class="stat-label">Gross Revenue</div>
+        <div class="kpi-big">$1,284,600</div>
+        <div class="kpi-growth up">&#9650; 12.4% vs prior</div>
+      </div></div>
+      <div class="card"><div class="card-body">
+        <div class="stat-label">WGI Net</div>
+        <div class="kpi-big">$486,200</div>
+        <div class="kpi-growth up">&#9650; 8.1% vs prior</div>
+      </div></div>
+      <div class="card"><div class="card-body">
+        <div class="stat-label">IFA Payout</div>
+        <div class="kpi-big">$798,400</div>
+        <div class="kpi-growth down">&#9660; 2.3% vs prior</div>
+      </div></div>
+    </div>
+
+    <div class="grid-2col">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Revenue by Month</span></div>
+        <div class="card-body"><svg id="kpiLine" width="100%" height="200" viewBox="0 0 560 200"></svg></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Top IFAs (APE)</span></div>
+        <div class="card-body"><div class="bar-chart" id="kpiBars"></div></div>
+      </div>
+    </div>
+
+    <div class="card mt-20">
+      <div class="card-header"><span class="card-title">By Commission Type</span></div>
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead><tr><th>Type</th><th class="right">Gross</th><th class="right">WGI Net</th><th class="right">IFA Total</th><th class="center">Count</th></tr></thead>
+          <tbody id="kpiTypeBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE: UNMAPPED ══════════════════ -->
+<div class="page" id="page-unmapped">
+  <div class="page-body">
+    <div class="page-title-row">
+      <div>
+        <div class="page-title">Unmapped Policies</div>
+        <div class="page-subtitle">12 policies could not be auto-assigned to an IFA</div>
+      </div>
+      <button class="btn btn-secondary" onclick="toast('Retry complete: 3 newly mapped, 9 still unmapped')">&#8635; Retry Azure Lookup</button>
+    </div>
+
+    <div class="info-note">These policies were uploaded but the policy number was not found in the IFA mapping. Assign an IFA manually, or run the Azure lookup to retry.</div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Policy Number</th><th>Holder</th><th>Platform</th><th>Created</th><th>Status</th><th style="width:280px">Assign IFA</th></tr>
+        </thead>
+        <tbody id="unmappedBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE: AUDIT LOG ══════════════════ -->
+<div class="page" id="page-audit-log">
+  <div class="page-body">
+    <div class="page-title-row">
+      <div>
+        <div class="page-title">Audit Log</div>
+        <div class="page-subtitle">Every change is recorded &middot; 1,284 entries</div>
+      </div>
+      <div class="flex gap-8">
+        <select class="form-input form-select" style="width:180px" id="alAction" onchange="filterAudit()">
+          <option value="">All Actions</option>
+          <option value="approve">Approve</option><option value="reject">Reject</option>
+          <option value="override">Override</option><option value="pay">Pay</option>
+          <option value="reconcile">Reconcile</option><option value="config_update">Config Update</option>
+        </select>
+        <input class="form-input" placeholder="Search policy / user..." style="width:200px" id="alSearch" oninput="filterAudit()">
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Timestamp</th><th>Action</th><th>Policy</th><th>Changes</th><th>User</th></tr>
+        </thead>
+        <tbody id="auditBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE: IFA PORTAL ══════════════════ -->
+<div class="page" id="page-ifa">
+  <div class="page-body" style="max-width:1100px; margin:0 auto">
+    <div class="page-title-row">
+      <div>
+        <div class="page-title">My Commission</div>
+        <div class="page-subtitle">IFA Code: MART-001 &middot; Allianz &middot; Generali</div>
+      </div>
+      <div class="flex gap-8">
+        <button class="btn btn-secondary" onclick="toast('Statement PDF generated')">Export Statement</button>
+        <button class="btn btn-primary" onclick="toast('XLSX downloaded')">Download XLSX</button>
+      </div>
+    </div>
+
+    <div class="ifa-balance-strip">
+      <div class="ifa-balance-card"><div class="ifa-balance-label">Current Balance</div><div class="ifa-balance-value">$48,200</div></div>
+      <div class="ifa-balance-card"><div class="ifa-balance-label">Suspended</div><div class="ifa-balance-value" style="color:var(--cm-status-suspended-text)">$12,400</div></div>
+      <div class="ifa-balance-card"><div class="ifa-balance-label">Total Earned</div><div class="ifa-balance-value">$284,600</div></div>
+      <div class="ifa-balance-card"><div class="ifa-balance-label">Total Paid</div><div class="ifa-balance-value">$236,400</div></div>
+    </div>
+
+    <div class="card" style="padding:0">
+      <div class="tab-bar" id="ifaTabs">
+        <a class="active" onclick="setIfaTab(this,'transactions')">Transactions</a>
+        <a onclick="setIfaTab(this,'payments')">Payments</a>
+        <a onclick="setIfaTab(this,'ape')">APE Summary</a>
+      </div>
+
+      <div id="ifaTab-transactions">
+        <div class="toolbar" style="padding:12px 16px">
+          <input class="form-input" placeholder="Search policy..." style="width:200px">
+          <select class="form-input form-select" style="width:130px"><option>All Statuses</option></select>
+          <input type="date" class="form-input" value="2024-11-01">
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Policy</th><th>Holder</th><th>Platform</th><th>Type</th><th class="right">IFA Amount</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody id="ifaTxBody"></tbody>
+        </table>
+      </div>
+
+      <div id="ifaTab-payments" style="display:none">
+        <table class="data-table">
+          <thead><tr><th>Reference</th><th class="right">Amount</th><th class="center">Txns</th><th>Date</th></tr></thead>
+          <tbody id="ifaPayBody"></tbody>
+        </table>
+      </div>
+
+      <div id="ifaTab-ape" style="display:none">
+        <div class="toolbar" style="padding:12px 16px">
+          <select class="form-input form-select" style="width:120px"><option>2024</option><option>2023</option></select>
+          <div class="pill-toggle">
+            <button class="active">Month</button><button>Quarter</button><button>Year</button>
+          </div>
+          <span class="ml-auto mono font-bold text-navy" style="font-size:16px">Total APE: $1,284,000</span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Period</th><th class="right">APE</th><th class="right" style="width:50%">Share</th></tr></thead>
+          <tbody id="ifaApeBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODALS ══ -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">Record Payment</span><button class="modal-close" onclick="closeModal('payModal')">&times;</button></div>
+    <div class="modal-body">
+      <div class="info-note" id="payModalInfo">Paying <strong>Martinez, A. (MART-001)</strong> &mdash; $48,200.00 USD across 14 transactions.</div>
+      <div class="form-group"><label class="form-label">Payment Reference</label><input class="form-input" placeholder="e.g. WIRE-20241122-001"></div>
+      <div class="form-group"><label class="form-label">Payment Date</label><input type="date" class="form-input" value="2024-11-22"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('payModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('payModal'); toast('Payment recorded &middot; batch created')">Confirm Payment</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="overrideModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">Override Amount</span><button class="modal-close" onclick="closeModal('overrideModal')">&times;</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">New IFA Amount</label><input class="form-input mono" placeholder="0.00"></div>
+      <div class="form-group"><label class="form-label">Reason (required)</label><input class="form-input" placeholder="e.g. Negotiated rate adjustment"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('overrideModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('overrideModal'); toast('Override applied &middot; logged to audit')">Apply Override</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="matrixModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">New Payment Rule</span><button class="modal-close" onclick="closeModal('matrixModal')">&times;</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Platform</label><select class="form-input form-select"><option>Allianz</option><option>Generali</option><option>RL360</option></select></div>
+      <div class="form-group"><label class="form-label">IFA (optional)</label><select class="form-input form-select"><option>All IFAs (platform default)</option><option>MART-001</option></select></div>
+      <div class="form-group"><label class="form-label">Commission Type (optional)</label><select class="form-input form-select"><option>All Types</option><option>Initial</option><option>Renewal</option></select></div>
+      <div class="flex gap-12">
+        <div class="form-group" style="flex:1"><label class="form-label">IFA Rate %</label><input class="form-input mono" value="60"></div>
+        <div class="form-group" style="flex:1"><label class="form-label">WGI Rate %</label><input class="form-input mono" value="40"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('matrixModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('matrixModal'); toast('Rule created')">Create Rule</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════ DUMMY DATA ════════════════════════
+const IFA_NAMES = ['Martinez, A.','Reyes, C.','Gutierrez, L.','Hernandez, M.','Orozco, P.','Vega, R.','Santos, E.','Flores, D.'];
+const PLATFORMS = ['Allianz','Generali','RL360','Zurich'];
+const TYPES = ['Initial','Renewal','Advance','Top-up'];
+const STATUSES = ['Approved','Pending','Paid','Suspended'];
+const HOLDERS = ['Marcos Rodríguez','Ana Castillo','Luis Fernández','Sofia Morales','Rodrigo Vega','Elena Santos','Carmen Díaz','Pablo Ruiz','Isabel Torres','Javier Mora'];
+
+function money(n){ return '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function badgeClass(s){ return 'badge-' + s.toLowerCase().replace(/[^a-z]/g,''); }
+
+// Master file records
+const masterData = [];
+for(let i=0;i<8;i++){
+  const gross = Math.round((2000+Math.random()*12000));
+  const pct = [55,60,65][i%3];
+  const ifaAmt = Math.round(gross*pct/100);
+  masterData.push({
+    sel:i===1, policy:'POL-2024-00'+(441+i),
+    holder:HOLDERS[i], ifa:i===7?'—':['MART-001','REYE-002','GUTZ-003','HERN-004','OROZ-005','VEGA-006','SANT-007'][i%7],
+    platform:PLATFORMS[i%4], type:TYPES[i%4],
+    gross, pct, ifaAmt, wgiAmt:gross-ifaAmt,
+    status: i===7?'Unmapped':STATUSES[i%4], date:'2024-11-'+(15+i),
+    dirty:i===1
+  });
+}
+
+const approvalsData = [];
+for(let i=0;i<10;i++){
+  const gross=Math.round(3000+Math.random()*10000); const ifaAmt=Math.round(gross*0.6);
+  approvalsData.push({sel:false,policy:'POL-2024-00'+(450+i),ifa:['MART-001','REYE-002','GUTZ-003'][i%3],holder:HOLDERS[i],type:TYPES[i%4],gross,ifaAmt,wgiAmt:gross-ifaAmt,date:'2024-11-'+(10+i)});
+}
+
+const paymentsData = IFA_NAMES.map((n,i)=>({code:['MART-001','REYE-002','GUTZ-003','HERN-004','OROZ-005','VEGA-006','SANT-007','FLOR-008'][i],name:n,usd:Math.round(8000+Math.random()*40000),eur:i%2?Math.round(Math.random()*15000):0,gbp:i%3===0?Math.round(Math.random()*8000):0,txns:Math.round(5+Math.random()*20),neg:i>=6}));
+
+const batchesData = [
+  {ifa:'Reyes, C.',ref:'WIRE-20241115-008',amount:38740,date:'2024-11-15',status:'Paid'},
+  {ifa:'Gutierrez, L.',ref:'WIRE-20241114-003',amount:29600,date:'2024-11-14',status:'Paid'},
+  {ifa:'Hernandez, M.',ref:'WIRE-20241110-012',amount:20380,date:'2024-11-10',status:'Paid'},
+];
+
+const matrixData = [
+  {platform:'Allianz',ifa:'—',type:'—',ifaRate:60,wgiRate:40,est:'3 periods',eff:'2024-01-01',active:true},
+  {platform:'Generali',ifa:'—',type:'Initial',ifaRate:65,wgiRate:35,est:'—',eff:'2024-01-01',active:true},
+  {platform:'Allianz',ifa:'MART-001',type:'—',ifaRate:62,wgiRate:38,est:'3 periods',eff:'2024-06-01',active:true},
+  {platform:'RL360',ifa:'—',type:'Renewal',ifaRate:55,wgiRate:45,est:'—',eff:'2024-01-01',active:true},
+  {platform:'Zurich',ifa:'—',type:'—',ifaRate:58,wgiRate:42,est:'2 periods',eff:'2023-07-01',active:false},
+];
+
+const auditData = [
+  {ts:'22/11/24 14:32',action:'commission.approve',policy:'POL-2024-00441',changes:[{f:'Status',o:'Pending',n:'Approved'}],user:'gabriel@wgi.com'},
+  {ts:'22/11/24 14:30',action:'commission.override',policy:'POL-2024-00442',changes:[{f:'IFA Amount',o:'7200.00',n:'7800.00'},{f:'IFA %',o:'60.00',n:'65.00'}],user:'gabriel@wgi.com'},
+  {ts:'22/11/24 11:15',action:'commission.pay',policy:'POL-2024-00443',changes:[{f:'Paid',o:'0',n:'1760.00'},{f:'Status',o:'Approved',n:'Paid'}],user:'maria@wgi.com'},
+  {ts:'21/11/24 16:48',action:'commission.reject',policy:'POL-2024-00448',changes:[{f:'Status',o:'Pending',n:'Rejected'}],user:'gabriel@wgi.com'},
+  {ts:'21/11/24 09:22',action:'commission.reconcile',policy:'POL-2024-00440',changes:[{f:'Suspense Amt',o:'2400.00',n:'0.00'}],user:'system'},
+  {ts:'20/11/24 15:10',action:'commission.config_update',policy:'—',changes:[{f:'IFA Rate',o:'60.00',n:'62.00'}],user:'gabriel@wgi.com'},
+];
+
+const unmappedData = [];
+for(let i=0;i<6;i++) unmappedData.push({policy:'POL-2024-00'+(445+i*7),holder:HOLDERS[(i+3)%10],platform:PLATFORMS[i%4],created:'2024-11-'+(18+i)});
+
+const dashBars = [['Martinez, A.',48200,'var(--cm-chart-1)'],['Reyes, C.',38740,'var(--cm-chart-3)'],['Gutierrez, L.',29600,'var(--cm-chart-1)'],['Hernandez, M.',20380,'var(--cm-chart-2)'],['Orozco, P.',13200,'var(--cm-chart-1)']];
+const pieData = [['Allianz',38.2,'var(--cm-chart-1)'],['Generali',27.1,'var(--cm-chart-2)'],['RL360',18.4,'var(--cm-chart-3)'],['Zurich',10.6,'var(--cm-chart-4)'],['Other',5.7,'var(--cm-chart-5)']];
+const dashActivityData = [
+  ['14:32','commission.approve','POL-2024-00441 approved','gabriel@wgi.com'],
+  ['14:30','commission.override','POL-2024-00442 amount changed','gabriel@wgi.com'],
+  ['11:15','commission.pay','Reyes, C. paid $38,740','maria@wgi.com'],
+  ['09:00','upload','allianz_nov2024.csv (248 rows)','gabriel@wgi.com'],
+];
+
+// ════════════════════════ NAVIGATION ════════════════════════
+let currentRole = 'admin';
+
+function go(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el = document.getElementById('page-'+page);
+  if(el) el.classList.add('active');
+  document.querySelectorAll('#commissionNav a').forEach(a=>a.classList.toggle('active', a.dataset.page===page));
+  window.scrollTo(0,0);
+  if(page==='dashboard') setTimeout(animateBars,50);
+}
+
+function setRole(role){
+  currentRole = role;
+  document.getElementById('roleAdmin').classList.toggle('active', role==='admin');
+  document.getElementById('roleIfa').classList.toggle('active', role==='ifa');
+  const nav = document.getElementById('commissionNav');
+  if(role==='ifa'){
+    nav.style.display='none';
+    document.getElementById('avatar').textContent='AM';
+    document.getElementById('userName').textContent='A. Martinez';
+    go('ifa');
+  } else {
+    nav.style.display='flex';
+    document.getElementById('avatar').textContent='GS';
+    document.getElementById('userName').textContent='Gabriel S.';
+    go('dashboard');
+  }
+}
+
+// ════════════════════════ RENDER FUNCTIONS ════════════════════════
+function animateBars(){
+  const max = Math.max(...dashBars.map(b=>b[1]));
+  document.querySelectorAll('#dashBars .bar-fill').forEach((el,i)=>{ el.style.width='0%'; setTimeout(()=>el.style.width=(dashBars[i][1]/max*100)+'%',20); });
+}
+
+function renderDash(){
+  const max=Math.max(...dashBars.map(b=>b[1]));
+  document.getElementById('dashBars').innerHTML = dashBars.map(b=>`
+    <div class="bar-row"><div class="bar-label">${b[0]}</div><div class="bar-track"><div class="bar-fill" style="width:${b[1]/max*100}%;background:${b[2]}"></div></div><div class="bar-amount">${money(b[1]).replace('.00','')}</div></div>`).join('');
+
+  // pie
+  let cum=0; const r=50,cx=60,cy=60; let paths='';
+  pieData.forEach(p=>{
+    const start=cum/100*2*Math.PI-Math.PI/2; cum+=p[1]; const end=cum/100*2*Math.PI-Math.PI/2;
+    const x1=cx+r*Math.cos(start),y1=cy+r*Math.sin(start),x2=cx+r*Math.cos(end),y2=cy+r*Math.sin(end);
+    const large=p[1]>50?1:0;
+    paths+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2} Z" fill="${p[2]}"/>`;
+  });
+  document.getElementById('dashPie').innerHTML=paths+`<circle cx="60" cy="60" r="26" fill="white"/>`;
+  document.getElementById('dashPieLegend').innerHTML=pieData.map(p=>`<div class="pie-legend-item"><div class="pie-dot" style="background:${p[2]}"></div><span class="pie-name">${p[0]}</span><span class="pie-pct">${p[1]}%</span></div>`).join('');
+
+  document.getElementById('dashActivity').innerHTML=dashActivityData.map(a=>`<tr><td class="mono text-muted" style="font-size:11px">${a[0]}</td><td><span class="badge ${auditBadge(a[1])}">${a[1].replace('commission.','')}</span></td><td>${a[2]}</td><td class="text-muted">${a[3]}</td></tr>`).join('');
+}
+
+function renderMaster(data){
+  document.getElementById('masterBody').innerHTML = data.map((r,i)=>`
+    <tr class="${r.sel?'selected':''}">
+      <td><input type="checkbox" class="checkbox" ${r.sel?'checked':''} onclick="toggleMaster(${i},this)"></td>
+      <td class="td-policy">${r.policy}</td>
+      <td style="font-weight:600">${r.holder}</td>
+      <td class="td-ifa">${r.ifa}</td>
+      <td class="text-muted">${r.platform}</td>
+      <td><span class="badge badge-approved">${r.type}</span></td>
+      <td class="td-amount">${money(r.gross)}</td>
+      <td class="td-amount cell-editable ${r.dirty?'cell-dirty':''}" ondblclick="editCell(this)">${r.pct.toFixed(2)}%</td>
+      <td class="td-amount positive">${r.ifa==='—'?'—':money(r.ifaAmt)}</td>
+      <td class="td-amount">${r.ifa==='—'?'—':money(r.wgiAmt)}</td>
+      <td><span class="badge ${badgeClass(r.status)}">${r.status}</span></td>
+      <td class="mono text-muted" style="font-size:11px">${r.date}</td>
+    </tr>`).join('');
+}
+
+function renderApprovals(data){
+  document.getElementById('approvalsBody').innerHTML = data.map((r,i)=>`
+    <tr class="${r.sel?'selected':''}">
+      <td><input type="checkbox" class="checkbox" ${r.sel?'checked':''} onclick="toggleApproval(${i},this)"></td>
+      <td class="td-policy">${r.policy}</td>
+      <td class="td-ifa">${r.ifa}</td>
+      <td style="font-weight:600">${r.holder}</td>
+      <td><span class="badge badge-advance">${r.type}</span></td>
+      <td class="td-amount">${money(r.gross)}</td>
+      <td class="td-amount positive">${money(r.ifaAmt)}</td>
+      <td class="td-amount">${money(r.wgiAmt)}</td>
+      <td class="mono text-muted" style="font-size:11px">${r.date}</td>
+    </tr>`).join('');
+  updateApprovalBar();
+}
+
+function renderPayments(data){
+  document.getElementById('paymentsBody').innerHTML = data.map(r=>`
+    <tr>
+      <td class="td-ifa">${r.code}</td>
+      <td style="font-weight:600">${r.name} ${r.neg?'<span class="badge badge-rejected" style="margin-left:6px">Neg. Balance</span>':''}</td>
+      <td class="td-amount ${r.neg?'negative':''}">${r.neg?'-':''}${money(r.usd)}</td>
+      <td class="td-amount">${r.eur?money(r.eur):'—'}</td>
+      <td class="td-amount">${r.gbp?money(r.gbp):'—'}</td>
+      <td class="center mono">${r.txns}</td>
+      <td class="center">${r.neg?'<button class="btn btn-secondary btn-sm" disabled>Review</button>':'<button class="btn btn-primary btn-sm" onclick="openPay(\''+r.name+'\',\''+r.code+'\','+r.usd+')">Pay</button>'}</td>
+    </tr>`).join('');
+  document.getElementById('batchesBody').innerHTML = batchesData.map(b=>`<tr><td class="td-ifa">${b.ifa}</td><td class="td-policy">${b.ref}</td><td class="td-amount">${money(b.amount)}</td><td class="mono text-muted" style="font-size:11px">${b.date}</td><td><span class="badge badge-paid">${b.status}</span></td></tr>`).join('');
+}
+
+function renderMatrix(){
+  document.getElementById('matrixBody').innerHTML = matrixData.map(r=>`
+    <tr>
+      <td style="font-weight:600">${r.platform}</td>
+      <td class="td-ifa">${r.ifa}</td>
+      <td class="text-muted">${r.type}</td>
+      <td class="td-amount">${r.ifaRate.toFixed(2)}%</td>
+      <td class="td-amount">${r.wgiRate.toFixed(2)}%</td>
+      <td class="center">${r.est==='—'?'<span class="text-muted">—</span>':'<span class="badge badge-advance">'+r.est+'</span>'}</td>
+      <td class="mono text-muted" style="font-size:11px">${r.eff}</td>
+      <td class="center">${r.active?'<span class="badge badge-approved">Active</span>':'<span class="badge badge-suspended">Inactive</span>'}</td>
+    </tr>`).join('');
+}
+
+function renderKpi(){
+  document.getElementById('kpiTypeBody').innerHTML = [
+    ['Initial',684000,256000,428000,142],['Renewal',412000,164000,248000,98],
+    ['Advance',124600,48200,76400,28],['Top-up',64000,18000,46000,18]
+  ].map(t=>`<tr><td><span class="badge badge-approved">${t[0]}</span></td><td class="td-amount">${money(t[1])}</td><td class="td-amount">${money(t[2])}</td><td class="td-amount positive">${money(t[3])}</td><td class="center mono">${t[4]}</td></tr>`).join('');
+
+  const kpiBarsData=[['Martinez, A.',284600],['Reyes, C.',218400],['Gutierrez, L.',186200],['Hernandez, M.',142800],['Orozco, P.',98600]];
+  const max=Math.max(...kpiBarsData.map(b=>b[1]));
+  document.getElementById('kpiBars').innerHTML=kpiBarsData.map((b,i)=>`<div class="bar-row"><div class="bar-label">${b[0]}</div><div class="bar-track"><div class="bar-fill" style="width:${b[1]/max*100}%;background:var(--cm-chart-${(i%6)+1})"></div></div><div class="bar-amount">${money(b[1]).replace('.00','')}</div></div>`).join('');
+
+  // line chart
+  const pts=[42,48,45,52,58,55,62,68,64,72,78,82];
+  const w=560,h=200,pad=20; const stepX=(w-pad*2)/(pts.length-1); const maxV=90;
+  let path=''; pts.forEach((v,i)=>{ const x=pad+i*stepX; const y=h-pad-(v/maxV*(h-pad*2)); path+=(i===0?'M':'L')+x+','+y; });
+  let dots=pts.map((v,i)=>{const x=pad+i*stepX;const y=h-pad-(v/maxV*(h-pad*2));return `<circle cx="${x}" cy="${y}" r="3" fill="var(--cm-chart-1)"/>`;}).join('');
+  document.getElementById('kpiLine').innerHTML=`<path d="${path}" fill="none" stroke="var(--cm-chart-1)" stroke-width="2"/>${dots}`;
+}
+
+function renderUnmapped(){
+  document.getElementById('unmappedBody').innerHTML=unmappedData.map((r,i)=>`
+    <tr>
+      <td class="td-policy">${r.policy}</td>
+      <td style="font-weight:600">${r.holder}</td>
+      <td class="text-muted">${r.platform}</td>
+      <td class="mono text-muted" style="font-size:11px">${r.created}</td>
+      <td><span class="badge badge-unmapped">Unmapped</span></td>
+      <td><div class="flex gap-8"><select class="form-input form-select" style="flex:1"><option>Select IFA…</option><option>MART-001 — Martinez, A.</option><option>REYE-002 — Reyes, C.</option></select><button class="btn btn-primary btn-sm" onclick="assignUnmapped(${i})">Assign</button></div></td>
+    </tr>`).join('');
+}
+
+function auditBadge(action){
+  const map={'commission.approve':'badge-approved','commission.reject':'badge-rejected','commission.override':'badge-advance','commission.pay':'badge-paid','commission.reconcile':'badge-suspended','commission.config_update':'badge-pending'};
+  return map[action]||'badge-pending';
+}
+function renderAudit(data){
+  document.getElementById('auditBody').innerHTML=data.map(r=>`
+    <tr>
+      <td class="mono text-muted" style="font-size:11px">${r.ts}</td>
+      <td><span class="badge ${auditBadge(r.action)}">${r.action.replace('commission.','')}</span></td>
+      <td class="td-policy">${r.policy}</td>
+      <td>${r.changes.map(c=>`<div class="diff-row"><span class="diff-field">${c.f}</span><span class="diff-old">${c.o}</span><span class="diff-arrow">&rarr;</span><span class="diff-new">${c.n}</span></div>`).join('')}</td>
+      <td class="text-muted">${r.user}</td>
+    </tr>`).join('');
+}
+
+function renderIfa(){
+  const tx=[];
+  for(let i=0;i<8;i++){const amt=Math.round(2000+Math.random()*6000);tx.push({policy:'POL-2024-00'+(441+i),holder:HOLDERS[i],platform:PLATFORMS[i%2],type:TYPES[i%4],amt,status:STATUSES[i%4],date:'2024-11-'+(15+i)});}
+  document.getElementById('ifaTxBody').innerHTML=tx.map(r=>`<tr><td class="td-policy">${r.policy}</td><td style="font-weight:600">${r.holder}</td><td class="text-muted">${r.platform}</td><td><span class="badge badge-advance">${r.type}</span></td><td class="td-amount positive">${money(r.amt)}</td><td><span class="badge ${badgeClass(r.status)}">${r.status}</span></td><td class="mono text-muted" style="font-size:11px">${r.date}</td></tr>`).join('');
+
+  document.getElementById('ifaPayBody').innerHTML=[
+    ['WIRE-20241015-001',18400,9,'2024-10-15'],['WIRE-20240915-004',22100,12,'2024-09-15'],['WIRE-20240815-002',16800,8,'2024-08-15']
+  ].map(p=>`<tr><td class="td-policy">${p[0]}</td><td class="td-amount">${money(p[1])}</td><td class="center mono">${p[2]}</td><td class="mono text-muted" style="font-size:11px">${p[3]}</td></tr>`).join('');
+
+  const ape=[['Jan',98000],['Feb',104000],['Mar',112000],['Apr',96000],['May',128000],['Jun',134000],['Jul',118000],['Aug',142000],['Sep',124000],['Oct',136000],['Nov',92000]];
+  const max=Math.max(...ape.map(a=>a[1]));
+  document.getElementById('ifaApeBody').innerHTML=ape.map(a=>`<tr><td style="font-weight:600">${a[0]} 2024</td><td class="td-amount">${money(a[1])}</td><td><div class="bar-track"><div class="bar-fill" style="width:${a[1]/max*100}%;background:var(--cm-chart-2)"></div></div></td></tr>`).join('');
+}
+
+// ════════════════════════ INTERACTIONS ════════════════════════
+function toggleMaster(i,cb){ masterData[i].sel=cb.checked; cb.closest('tr').classList.toggle('selected',cb.checked); }
+function toggleAllMaster(cb){ masterData.forEach((r,i)=>r.sel=cb.checked); renderMaster(masterData); }
+let masterDirty=false;
+function editCell(td){
+  const old=td.textContent.trim();
+  const input=document.createElement('input');
+  input.value=old.replace('%',''); input.className='form-input mono'; input.style.width='70px'; input.style.padding='2px 4px';
+  td.textContent=''; td.appendChild(input); input.focus(); input.select();
+  function commit(){
+    const v=parseFloat(input.value)||0;
+    td.textContent=v.toFixed(2)+'%';
+    if(v.toFixed(2)+'%'!==old){ td.classList.add('cell-dirty'); masterDirty=true; document.getElementById('mfSaveBtn').disabled=false; document.getElementById('mfFooter').innerHTML='Showing 1&ndash;8 of 3,412 records &middot; <strong>unsaved changes</strong>'; }
+  }
+  input.onblur=commit; input.onkeydown=e=>{if(e.key==='Enter')input.blur();};
+}
+function saveMaster(){ document.querySelectorAll('#masterBody .cell-dirty').forEach(c=>c.classList.remove('cell-dirty')); document.getElementById('mfSaveBtn').disabled=true; masterDirty=false; document.getElementById('mfFooter').innerHTML='Showing 1&ndash;8 of 3,412 records'; toast('Changes saved &middot; logged to audit'); }
+function filterMaster(){
+  const p=document.getElementById('mfPlatform').value, s=document.getElementById('mfStatus').value, q=document.getElementById('mfSearch').value.toLowerCase();
+  renderMaster(masterData.filter(r=>(!p||r.platform===p)&&(!s||r.status===s)&&(!q||r.policy.toLowerCase().includes(q)||r.holder.toLowerCase().includes(q)||(r.ifa||'').toLowerCase().includes(q))));
+}
+
+function toggleApproval(i,cb){ approvalsData[i].sel=cb.checked; cb.closest('tr').classList.toggle('selected',cb.checked); updateApprovalBar(); }
+function toggleAllApprovals(cb){ approvalsData.forEach(r=>r.sel=cb.checked); renderApprovals(approvalsData); }
+function updateApprovalBar(){
+  const n=approvalsData.filter(r=>r.sel).length;
+  const bar=document.getElementById('approvalsActionBar');
+  bar.style.display=n>0?'flex':'none';
+  const sum=approvalsData.filter(r=>r.sel).reduce((a,r)=>a+r.ifaAmt,0);
+  document.getElementById('apCount').textContent=n+' selected &middot; '+money(sum)+' IFA total';
+  document.getElementById('apCount').innerHTML=n+' selected &middot; '+money(sum)+' IFA total';
+}
+function approveApprovals(){ const n=approvalsData.filter(r=>r.sel).length; toast(n+' transactions approved'); approvalsData.forEach(r=>r.sel=false); renderApprovals(approvalsData); }
+function rejectApprovals(){ const n=approvalsData.filter(r=>r.sel).length; toast(n+' transactions rejected'); approvalsData.forEach(r=>r.sel=false); renderApprovals(approvalsData); }
+function filterApprovals(){
+  const q=document.getElementById('apSearch').value.toLowerCase(), t=document.getElementById('apType').value;
+  renderApprovals(approvalsData.filter(r=>(!q||r.ifa.toLowerCase().includes(q)||r.holder.toLowerCase().includes(q))&&(!t||r.type===t)));
+}
+
+function filterPayments(){ const q=document.getElementById('paySearch').value.toLowerCase(); renderPayments(paymentsData.filter(r=>r.name.toLowerCase().includes(q)||r.code.toLowerCase().includes(q))); }
+function openPay(name,code,amt){ document.getElementById('payModalInfo').innerHTML=`Paying <strong>${name} (${code})</strong> &mdash; ${money(amt)} USD.`; openModal('payModal'); }
+
+function assignUnmapped(i){ unmappedData.splice(i,1); renderUnmapped(); toast('IFA assigned &middot; policy mapped'); }
+
+function filterAudit(){
+  const a=document.getElementById('alAction').value, q=document.getElementById('alSearch').value.toLowerCase();
+  renderAudit(auditData.filter(r=>(!a||r.action.includes(a))&&(!q||r.policy.toLowerCase().includes(q)||r.user.toLowerCase().includes(q))));
+}
+
+function simulateUpload(){
+  document.getElementById('uploadPreview').style.display='block';
+  document.getElementById('importBtn').disabled=false;
+  const rows=[
+    [1,'POL-2024-00501','Marcos Rodríguez',8400,'2024-11-15','ok'],
+    [2,'POL-2024-00502','Ana Castillo',12000,'2024-11-16','ok'],
+    [3,'POL-2024-00503','—',9100,'2024-11-17','warn'],
+    [4,'POL-2024-00504','Luis Fernández',3200,'2024-11-18','ok'],
+    [5,'POL-2024-00505','—',5800,'2024-11-19','warn'],
+  ];
+  document.getElementById('uploadRows').innerHTML=rows.map(r=>`<tr><td class="mono text-muted">${r[0]}</td><td class="td-policy">${r[1]}</td><td style="font-weight:600">${r[2]}</td><td class="td-amount">${money(r[3])}</td><td class="mono text-muted" style="font-size:11px">${r[4]}</td><td>${r[5]==='ok'?'<span class="badge badge-approved">OK</span>':'<span class="badge badge-pending">No IFA</span>'}</td></tr>`).join('');
+  toast('File parsed &middot; 248 rows, 2 warnings');
+}
+
+let kpiPeriod='This Month';
+function setKpiPeriod(btn,p){ document.querySelectorAll('#page-kpi .pill-toggle button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); toast('KPI period: '+p); }
+
+function setIfaTab(a,tab){
+  document.querySelectorAll('#ifaTabs a').forEach(x=>x.classList.remove('active')); a.classList.add('active');
+  ['transactions','payments','ape'].forEach(t=>document.getElementById('ifaTab-'+t).style.display=t===tab?'block':'none');
+}
+
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function openOverride(){ openModal('overrideModal'); }
+
+let toastTimer;
+function toast(msg){ const t=document.getElementById('toast'); t.innerHTML=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2600); }
+
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+// ════════════════════════ INIT ════════════════════════
+renderDash();
+renderMaster(masterData);
+renderApprovals(approvalsData);
+renderPayments(paymentsData);
+renderMatrix();
+renderKpi();
+renderUnmapped();
+renderAudit(auditData);
+renderIfa();
+setTimeout(animateBars,300);
+</script>
+</body>
+</html>
