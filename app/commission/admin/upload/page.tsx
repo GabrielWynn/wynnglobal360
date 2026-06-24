@@ -454,15 +454,13 @@ export default function UploadPage() {
   const currentStepIdx = steps.findIndex(s => s.key === step || (step === 'processing' && s.key === 'preview'))
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="min-h-[calc(100vh-105px)]" style={{ background: 'var(--wgi-bg)' }}>
+      <main className="mx-auto max-w-5xl px-6 py-5 space-y-5">
 
-        <button
-          onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[var(--wgi-navy)] font-medium transition-colors"
-        >
-          ← Back to Admin
-        </button>
+        <div>
+          <h1 className="text-[18px] font-bold text-[var(--wgi-navy)]">Upload Commission File</h1>
+          <p className="mt-0.5 text-[11px] font-medium text-[var(--wgi-text-muted)]">Import a CSV or PDF statement</p>
+        </div>
 
         {/* Step indicator */}
         {step !== 'done' && (
@@ -490,7 +488,7 @@ export default function UploadPage() {
 
         {/* ── STEP: SELECT ─────────────────────────────────────────────────── */}
         {step === 'select' && (
-          <div className="bg-white rounded-lg shadow p-6 space-y-6">
+          <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-6 space-y-6">
             {/* Platform selector */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -577,7 +575,7 @@ export default function UploadPage() {
 
         {/* ── STEP: MAP COLUMNS ────────────────────────────────────────────── */}
         {step === 'map' && (
-          <div className="bg-white rounded-lg shadow p-6 space-y-6">
+          <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-6 space-y-6">
             <div>
               <h2 className="text-lg font-semibold text-gray-900">Map CSV Columns</h2>
               <p className="text-sm text-gray-500 mt-1">
@@ -651,7 +649,7 @@ export default function UploadPage() {
 
         {/* ── STEP: PREVIEW ────────────────────────────────────────────────── */}
         {step === 'preview' && (
-          <div className="bg-white rounded-lg shadow p-6 space-y-6">
+          <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-6 space-y-6">
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">Confirm & Process</h2>
@@ -772,7 +770,7 @@ export default function UploadPage() {
 
         {/* ── STEP: PROCESSING ─────────────────────────────────────────────── */}
         {step === 'processing' && (
-          <div className="bg-white rounded-lg shadow p-12 text-center">
+          <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-12 text-center">
             <div className="animate-spin mx-auto h-10 w-10 border-4 border-[var(--wgi-navy)] border-t-transparent rounded-full mb-4" />
             <p className="text-lg font-medium text-gray-700">Processing {rowsToSubmit.length} rows…</p>
             <p className="text-sm text-gray-500 mt-1">Querying Azure SQL and saving to database</p>
@@ -781,7 +779,7 @@ export default function UploadPage() {
 
         {/* ── STEP: DONE ───────────────────────────────────────────────────── */}
         {step === 'done' && result && (
-          <div className="bg-white rounded-lg shadow p-6 space-y-6">
+          <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-6 space-y-6">
             <h2 className="text-lg font-semibold text-gray-900">Upload Complete</h2>
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

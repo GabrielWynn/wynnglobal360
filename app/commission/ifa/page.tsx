@@ -217,19 +217,24 @@ export default function IFAPortal() {
   // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--wgi-bg)' }}>
+    <div className="min-h-[calc(100vh-64px)]" style={{ background: 'var(--wgi-bg)' }}>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <main className="px-6 py-5 space-y-5">
 
-        <button
-          onClick={() => router.push('/advisors')}
-          className="flex items-center gap-1.5 text-sm font-medium transition-colors"
-          style={{ color: 'var(--wgi-text-muted)' }}
-          onMouseEnter={e => (e.currentTarget.style.color = 'var(--wgi-navy)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--wgi-text-muted)')}
-        >
-          ← Back to Hub
-        </button>
+        <div className="flex items-center justify-between">
+          <div>
+            <button
+              onClick={() => router.push('/advisors')}
+              className="mb-1 flex items-center gap-1.5 text-[11px] font-medium transition-colors"
+              style={{ color: 'var(--wgi-text-muted)' }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--wgi-navy)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--wgi-text-muted)')}
+            >
+              ← Back to Hub
+            </button>
+            <h1 className="text-[18px] font-bold text-[var(--wgi-navy)]">My Commission</h1>
+          </div>
+        </div>
 
         {/* Balance cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

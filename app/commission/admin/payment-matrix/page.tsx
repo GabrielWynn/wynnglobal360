@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { supabase, getAuthHeaders } from '@/lib/supabase'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -97,7 +96,6 @@ const FALLBACK_TYPES = [
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function PaymentMatrixPage() {
-  const router = useRouter()
 
   // Data
   const [loading, setLoading] = useState(true)
@@ -335,22 +333,16 @@ export default function PaymentMatrixPage() {
   // ─── Render ───────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-[calc(100vh-105px)]" style={{ background: 'var(--wgi-bg)' }}>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <button
-          onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[var(--wgi-navy)] font-medium transition-colors"
-        >
-          ← Back to Admin
-        </button>
-        <div className="flex items-center justify-between">
+      <main className="px-6 py-5 space-y-5">
+        <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold" style={{ color: 'var(--wgi-text)' }}>Payment Matrix</h1>
-            <p className="text-sm mt-0.5" style={{ color: 'var(--wgi-text-muted)' }}>Commission calculation rules per platform, IFA and type</p>
+            <h1 className="text-[18px] font-bold text-[var(--wgi-navy)]">Payment Matrix</h1>
+            <p className="mt-0.5 text-[11px] font-medium text-[var(--wgi-text-muted)]">Commission calculation rules per platform, IFA and type</p>
           </div>
           {!READ_ONLY && (
-            <button onClick={openAddModal} className="bg-[var(--wgi-navy)] text-white px-4 py-2 rounded-md hover:bg-[var(--wgi-navy-600)] text-sm font-medium">
+            <button onClick={openAddModal} className="rounded-[4px] bg-[var(--wgi-navy)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[var(--wgi-navy-600)]">
               + Add Rule
             </button>
           )}
@@ -358,7 +350,7 @@ export default function PaymentMatrixPage() {
 
         {/* ── Read-only notice ── */}
         {READ_ONLY && (
-          <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-md text-sm flex items-start gap-3">
+          <div className="bg-amber-50 border border-amber-200 text-amber-800 px-3 py-2.5 rounded-md text-sm flex items-start gap-3">
             <span className="text-amber-500 text-lg leading-tight">⚠</span>
             <div>
               <p className="font-semibold">Payment Matrix — View Only</p>
@@ -371,7 +363,7 @@ export default function PaymentMatrixPage() {
         )}
 
         {/* ── Priority Legend ── */}
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-4">
           <h2 className="text-sm font-semibold text-gray-700 mb-3">Rule Priority — first match wins when calculating commissions</h2>
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
             {[
@@ -390,7 +382,7 @@ export default function PaymentMatrixPage() {
         </div>
 
         {/* ── Filters ── */}
-        <div className="bg-white rounded-lg shadow p-4 flex flex-wrap gap-4 items-end">
+        <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-4 flex flex-wrap gap-4 items-end">
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">Platform</label>
             <select
@@ -420,7 +412,7 @@ export default function PaymentMatrixPage() {
         </div>
 
         {/* ── Rules Table ── */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] overflow-hidden">
           {filteredRules.length === 0 ? (
             <div className="p-12 text-center">
               <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -440,7 +432,7 @@ export default function PaymentMatrixPage() {
                 <thead className="bg-[var(--wgi-navy)]">
                   <tr>
                     {['Priority', 'Platform', 'IFA', 'Commission Type', 'IFA Rate', 'Co. Rate', 'Est. Periods', 'Effective', 'Status', ...(READ_ONLY ? [] : ['Actions'])].map(h => (
-                      <th key={h} className="px-4 py-3 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em] whitespace-nowrap">{h}</th>
+                      <th key={h} className="px-3 py-2.5 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em] whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -450,37 +442,37 @@ export default function PaymentMatrixPage() {
                     return (
                       <tr key={rule.id} className={`hover:bg-gray-50 ${!rule.is_active ? 'opacity-50' : ''}`}>
 
-                        <td className="px-4 py-3 whitespace-nowrap">
+                        <td className="px-3 py-2.5 whitespace-nowrap">
                           <span className={`px-2 py-0.5 rounded text-xs font-medium ${badge.color}`}>{badge.label}</span>
                         </td>
 
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-sm font-medium text-gray-900 whitespace-nowrap">
                           {rule.platform?.name || rule.platform_id}
                         </td>
 
-                        <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-sm text-gray-700 whitespace-nowrap">
                           {rule.ifa
                             ? <span><span className="cm-mono text-xs bg-gray-100 px-1 rounded">{rule.ifa.code}</span> <span className="text-gray-500">{rule.ifa.name}</span></span>
                             : <span className="text-gray-400 italic text-xs">All IFAs</span>
                           }
                         </td>
 
-                        <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-sm text-gray-700 whitespace-nowrap">
                           {rule.commission_type_code
                             ? <span className="font-medium">{rule.commission_type_code}</span>
                             : <span className="text-gray-400 italic text-xs">All types</span>
                           }
                         </td>
 
-                        <td className="px-4 py-3 text-sm font-semibold cm-mono text-[var(--cm-gain)] whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-sm font-semibold cm-mono text-[var(--cm-gain)] whitespace-nowrap">
                           {(rule.ifa_rate * 100).toFixed(2)}%
                         </td>
 
-                        <td className="px-4 py-3 text-sm font-semibold cm-mono text-[var(--wgi-navy)] whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-sm font-semibold cm-mono text-[var(--wgi-navy)] whitespace-nowrap">
                           {(rule.company_rate * 100).toFixed(2)}%
                         </td>
 
-                        <td className="px-4 py-3 text-sm text-gray-600">
+                        <td className="px-3 py-2.5 text-sm text-gray-600">
                           {rule.has_establishment_periods && rule.establishment_config ? (
                             <div className="min-w-0">
                               <span className="text-green-600 font-medium text-xs">{rule.establishment_config.periods} splits</span>
@@ -497,7 +489,7 @@ export default function PaymentMatrixPage() {
                           )}
                         </td>
 
-                        <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-xs text-gray-500 whitespace-nowrap">
                           <div>{rule.effective_start_date}</div>
                           {rule.effective_end_date
                             ? <div className="text-orange-500">→ {rule.effective_end_date}</div>
@@ -505,14 +497,14 @@ export default function PaymentMatrixPage() {
                           }
                         </td>
 
-                        <td className="px-4 py-3 whitespace-nowrap">
+                        <td className="px-3 py-2.5 whitespace-nowrap">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${rule.is_active ? 'bg-[var(--cm-status-approved-bg)] text-[var(--cm-status-approved-text)]' : 'bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)]'}`}>
                             {rule.is_active ? 'Active' : 'Inactive'}
                           </span>
                         </td>
 
                         {!READ_ONLY && (
-                          <td className="px-4 py-3 whitespace-nowrap">
+                          <td className="px-3 py-2.5 whitespace-nowrap">
                             <div className="flex items-center gap-3 text-sm">
                               <button onClick={() => openEditModal(rule)} className="text-[var(--wgi-navy)] hover:opacity-70 font-medium">
                                 Edit
@@ -559,7 +551,7 @@ export default function PaymentMatrixPage() {
             <div className="px-6 py-5 space-y-5">
 
               {formError && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-sm">{formError}</div>
+                <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2.5 rounded text-sm">{formError}</div>
               )}
 
               {/* ── Section 1: Scope ── */}

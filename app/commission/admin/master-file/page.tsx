@@ -1579,7 +1579,7 @@ export default function MasterFilePage() {
 
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
-    <div className={`bg-gray-50 flex flex-col ${fullScreen ? 'fixed inset-0 z-50' : 'h-[calc(100vh-4rem)] overflow-hidden'}`}>
+    <div className={`bg-[var(--wgi-bg)] flex flex-col ${fullScreen ? 'fixed inset-0 z-50' : 'h-[calc(100vh-105px)] overflow-hidden'}`}>
 
       {/* ── Single merged toolbar strip ── */}
       {!fullScreen && (

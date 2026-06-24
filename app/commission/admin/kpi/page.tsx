@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import { getAuthHeaders } from '@/lib/supabase'
 import { formatCurrency } from '@/lib/currency'
 import {
@@ -88,7 +87,7 @@ function KPICard({
   label: string; value: string; sub?: string; growth?: GrowthMetric; accent?: string
 }) {
   return (
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col">
+    <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] overflow-hidden flex flex-col">
       <div className="h-1" style={{ backgroundColor: accent }} />
       <div className="p-4 flex-1">
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{label}</p>
@@ -108,7 +107,6 @@ function KPICard({
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export default function KPIDashboard() {
-  const router = useRouter()
   const [loading, setLoading]           = useState(true)
   const [data, setData]                 = useState<KPIData | null>(null)
   const [error, setError]               = useState<string | null>(null)
@@ -209,22 +207,15 @@ export default function KPIDashboard() {
   const dateRange   = `${data.period.current.start} — ${data.period.current.end}`
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-[calc(100vh-105px)]" style={{ background: 'var(--wgi-bg)' }}>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-
-        <button
-          onClick={() => router.push('/commission/admin')}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[var(--wgi-navy)] font-medium transition-colors"
-        >
-          ← Back to Admin
-        </button>
+      <main className="px-6 py-5 space-y-5">
 
         {/* ── Date controls toolbar ─────────────────────────────────────────── */}
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-white rounded-xl border px-4 py-3" style={{ borderColor: 'var(--wgi-border)' }}>
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[6px] border bg-[var(--wgi-surface)] px-4 py-3" style={{ borderColor: 'var(--wgi-border)' }}>
           <div>
-            <p className="text-sm font-semibold" style={{ color: 'var(--wgi-text)' }}>WGI Revenue Dashboard</p>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--wgi-text-muted)' }}>{periodLabel} · {dateRange}</p>
+            <p className="text-[15px] font-bold" style={{ color: 'var(--wgi-navy)' }}>WGI Revenue Dashboard</p>
+            <p className="text-[11px] mt-0.5 font-medium" style={{ color: 'var(--wgi-text-muted)' }}>{periodLabel} · {dateRange}</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {dateMode === 'preset' && PRESETS.map(p => (
@@ -302,7 +293,7 @@ export default function KPIDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           {/* Commission Type breakdown */}
-          <section className="bg-white rounded-lg shadow-sm p-5">
+          <section className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-5">
             <p className="text-sm font-bold text-gray-800 uppercase tracking-wide mb-1">Revenue by Commission Type</p>
             <p className="text-xs text-gray-400 mb-4">Gross revenue (USD) · {periodLabel}</p>
 
@@ -353,7 +344,7 @@ export default function KPIDashboard() {
           </section>
 
           {/* Revenue by Life Company (Platform) */}
-          <section className="bg-white rounded-lg shadow-sm p-5">
+          <section className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-5">
             <p className="text-sm font-bold text-gray-800 uppercase tracking-wide mb-1">Revenue by Life Company</p>
             <p className="text-xs text-gray-400 mb-4">Gross vs WGI Net (USD) · {periodLabel}</p>
 
@@ -411,7 +402,7 @@ export default function KPIDashboard() {
         </div>
 
         {/* ══ ROW 4: APE by IFA ═════════════════════════════════════════════ */}
-        <section className="bg-white rounded-lg shadow-sm p-5">
+        <section className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-bold text-gray-800 uppercase tracking-wide">APE by Adviser (IFA)</p>
@@ -473,7 +464,7 @@ export default function KPIDashboard() {
         </section>
 
         {/* ══ ROW 4: Upload History ══════════════════════════════════════════ */}
-        <section className="bg-white rounded-lg shadow-sm p-5">
+        <section className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-bold text-gray-800 uppercase tracking-wide">Statement Upload History</p>
