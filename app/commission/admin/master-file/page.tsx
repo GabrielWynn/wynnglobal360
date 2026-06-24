@@ -22,6 +22,7 @@ import { ReconcileModal } from '@/components/commission/master-file/ReconcileMod
 import { DeleteModal } from '@/components/commission/master-file/DeleteModal'
 import { MergeModal } from '@/components/commission/master-file/MergeModal'
 import { AddRecordModal } from '@/components/commission/master-file/AddRecordModal'
+import { AllocationPanel } from '@/components/commission/master-file/AllocationPanel'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 
@@ -1830,103 +1831,14 @@ export default function MasterFilePage() {
       />
 
       {/* ── Allocation Breakdown Side Panel ─────────────────────────────────── */}
-      {detailRecord && (() => {
-        const allocations = allocationsByParent.get(detailRecord.id) ?? []
-        const wgiAllocd  = allocations.filter(a => a.source_bucket === 'wgi').reduce((s, a) => s + a.percentage, 0)
-        const ifaAllocd  = allocations.filter(a => a.source_bucket === 'ifa').reduce((s, a) => s + a.percentage, 0)
-        const suspAllocd = allocations.filter(a => a.source_bucket === 'suspense').reduce((s, a) => s + a.percentage, 0)
-        const origWgi    = detailRecord.wgi_percentage  + wgiAllocd
-        const origIfa    = detailRecord.ifa_percentage  + ifaAllocd
-        const origSusp   = detailRecord.suspense_percentage + suspAllocd
-        const fmtP = (v: number) => `${(v * 100).toFixed(2)}%`
-        const fmtA = (v: number) => `$${v.toFixed(3)}`
-
-        return (
-          <div className="fixed inset-0 z-40 flex justify-end pointer-events-none">
-            {/* backdrop — only covers area, closes panel on click */}
-            <div className="absolute inset-0 pointer-events-auto" onClick={() => setDetailRecord(null)} />
-            <div className="relative pointer-events-auto w-full max-w-xl bg-white shadow-2xl border-l border-[var(--wgi-border)] flex flex-col overflow-hidden">
-              {/* Header */}
-              <div className="flex items-center justify-between px-5 py-3 bg-[var(--wgi-bg)] border-b border-[var(--wgi-border)] flex-shrink-0">
-                <div>
-                  <p className="text-sm font-bold text-[var(--wgi-navy)]">Allocation Breakdown</p>
-                  <p className="text-xs text-[var(--wgi-text-muted)]">{detailRecord.policy_number} — {detailRecord.ifa_code} / {detailRecord.ifa_name}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => { openAllocModalCb(detailRecord) }}
-                    className="text-xs px-3 py-1.5 bg-[var(--wgi-navy)] text-white rounded font-medium hover:bg-[var(--wgi-navy-600)]"
-                  >
-                    + Add Allocation
-                  </button>
-                  <button onClick={() => setDetailRecord(null)} className="text-gray-400 hover:text-gray-600 text-lg leading-none ml-1">✕</button>
-                </div>
-              </div>
-              {/* Breakdown table */}
-              <div className="flex-1 overflow-y-auto p-5">
-                <table className="w-full text-xs border-collapse">
-                  <thead>
-                    <tr className="bg-[var(--wgi-bg)] text-[var(--wgi-text-muted)]">
-                      <th className="text-left px-3 py-2 border border-[var(--wgi-border)] font-semibold">Party</th>
-                      <th className="text-right px-3 py-2 border border-[var(--wgi-border)] font-semibold">Uploaded %</th>
-                      <th className="text-right px-3 py-2 border border-[var(--wgi-border)] font-semibold">Effective %</th>
-                      <th className="text-right px-3 py-2 border border-[var(--wgi-border)] font-semibold">Effective Amt</th>
-                      <th className="px-3 py-2 border border-[var(--wgi-border)]"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="hover:bg-gray-50">
-                      <td className="px-3 py-2 border border-gray-200 font-semibold">{detailRecord.ifa_code} <span className="font-normal text-gray-400">(Primary IFA)</span></td>
-                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtP(origIfa)}</td>
-                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtP(detailRecord.ifa_percentage)}</td>
-                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtA(detailRecord.ifa_amount)}</td>
-                      <td className="px-3 py-2 border border-gray-200"></td>
-                    </tr>
-                    <tr className="hover:bg-gray-50">
-                      <td className="px-3 py-2 border border-gray-200">WGI</td>
-                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtP(origWgi)}</td>
-                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtP(detailRecord.wgi_percentage)}</td>
-                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtA(detailRecord.wg_amount)}</td>
-                      <td className="px-3 py-2 border border-gray-200"></td>
-                    </tr>
-                    <tr className="hover:bg-gray-50">
-                      <td className="px-3 py-2 border border-gray-200">IFA Suspense</td>
-                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtP(origSusp)}</td>
-                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtP(detailRecord.suspense_percentage)}</td>
-                      <td className="px-3 py-2 border border-gray-200 text-right">{fmtA(detailRecord.suspense_amount)}</td>
-                      <td className="px-3 py-2 border border-gray-200"></td>
-                    </tr>
-                    {allocations.map(alloc => (
-                      <tr key={alloc.id} className="bg-amber-50">
-                        <td className="px-3 py-2 border border-amber-200">
-                          <span className="font-semibold text-amber-800">{alloc.secondary_ifa_code}</span>
-                          {alloc.secondary_ifa_name && <span className="text-amber-700"> — {alloc.secondary_ifa_name}</span>}
-                          <span className="ml-1 text-[10px] italic text-amber-500">(Secondary IFA · from {alloc.source_bucket.toUpperCase()})</span>
-                        </td>
-                        <td className="px-3 py-2 border border-amber-200 text-right text-gray-400">—</td>
-                        <td className="px-3 py-2 border border-amber-200 text-right font-bold text-amber-700">{fmtP(alloc.percentage)}</td>
-                        <td className="px-3 py-2 border border-amber-200 text-right font-bold text-amber-700">{fmtA(detailRecord.amount * alloc.percentage)}</td>
-                        <td className="px-3 py-2 border border-amber-200 text-center">
-                          <button
-                            onClick={() => handleDeleteAllocationCb(alloc.id)}
-                            disabled={deletingAllocId === alloc.id}
-                            className="text-[11px] px-2 py-0.5 bg-red-50 text-red-600 border border-red-200 rounded hover:bg-red-100 disabled:opacity-40"
-                          >
-                            {deletingAllocId === alloc.id ? '…' : 'Remove'}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {allocations.length === 0 && (
-                  <p className="text-xs text-gray-400 mt-4 text-center">No allocations yet. Click &quot;+ Add Allocation&quot; to create one.</p>
-                )}
-              </div>
-            </div>
-          </div>
-        )
-      })()}
+      <AllocationPanel
+        record={detailRecord}
+        allocations={detailRecord ? (allocationsByParent.get(detailRecord.id) ?? []) : []}
+        deletingAllocId={deletingAllocId}
+        onClose={() => setDetailRecord(null)}
+        onAddAllocation={() => { if (detailRecord) openAllocModalCb(detailRecord) }}
+        onDeleteAllocation={handleDeleteAllocationCb}
+      />
 
       {/* ── Add Allocation Modal ────────────────────────────────────────────── */}
       {allocModal.open && allocModal.parentRecord && (() => {
