@@ -417,6 +417,21 @@ export default function MasterFilePage() {
     return () => document.removeEventListener('mousedown', handleOutsideClick)
   }, [colPanelOpen])
 
+  // ── Toolbar popovers: Filters + View ──────────────────────────────────────────
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const [viewOpen, setViewOpen] = useState(false)
+  const filtersRef = useRef<HTMLDivElement>(null)
+  const viewRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!filtersOpen && !viewOpen) return
+    function handleOutsideClick(e: MouseEvent) {
+      if (filtersOpen && filtersRef.current && !filtersRef.current.contains(e.target as Node)) setFiltersOpen(false)
+      if (viewOpen && viewRef.current && !viewRef.current.contains(e.target as Node)) setViewOpen(false)
+    }
+    document.addEventListener('mousedown', handleOutsideClick)
+    return () => document.removeEventListener('mousedown', handleOutsideClick)
+  }, [filtersOpen, viewOpen])
+
   // ── Feedback ─────────────────────────────────────────────────────────────────
   const [feedback, setFeedback] = useState('')
   function showFeedback(msg: string) {
@@ -1246,245 +1261,196 @@ export default function MasterFilePage() {
   return (
     <div className={`bg-[var(--wgi-bg)] flex flex-col ${fullScreen ? 'fixed inset-0 z-50' : 'h-[calc(100vh-105px)] overflow-hidden'}`}>
 
-      {/* ── Single merged toolbar strip ── */}
+      {/* ── Toolbar (single row) ── */}
       {!fullScreen && (
-        <div className="bg-white border-b border-gray-200 flex-shrink-0 flex items-stretch h-12">
+        <div className="bg-white border-b border-[var(--wgi-border)] flex-shrink-0 flex items-center gap-2 h-11 px-3">
 
-          {/* LEFT — always visible: back link + title */}
-          <div className="flex items-center gap-2.5 px-4 flex-shrink-0 border-r border-gray-200 bg-slate-50">
+          {/* Back + title */}
+          <button
+            onClick={() => router.push('/commission/admin')}
+            className="flex items-center gap-1 text-[11px] text-slate-500 hover:text-[var(--wgi-navy)] font-medium whitespace-nowrap transition-colors"
+          >
+            <span className="text-slate-400">‹</span> Admin
+          </button>
+          <span className="h-4 w-px bg-slate-200" />
+          <h1 className="text-[13px] font-semibold text-slate-800 whitespace-nowrap tracking-tight">Master Commission File</h1>
+          {loading && <span className="text-[11px] text-[var(--wgi-gold)] animate-pulse" title="Loading">↻</span>}
+
+          {/* Filters popover */}
+          <div className="relative ml-1" ref={filtersRef}>
             <button
-              onClick={() => router.push('/commission/admin')}
-              className="flex items-center gap-1 text-[11px] text-slate-500 hover:text-[var(--wgi-navy)] font-medium whitespace-nowrap transition-colors"
+              onClick={() => { setFiltersOpen(o => !o); setViewOpen(false); setColPanelOpen(false) }}
+              className={`h-8 px-2.5 text-xs rounded border font-medium flex items-center gap-1.5 whitespace-nowrap transition-colors ${
+                filtersOpen || activeFilterCount > 0
+                  ? 'bg-[var(--wgi-navy)] text-white border-[var(--wgi-navy)]'
+                  : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+              }`}
             >
-              <span className="text-slate-400">‹</span> Admin
-            </button>
-            <span className="h-4 w-px bg-slate-200" />
-            <h1 className="text-[13px] font-semibold text-slate-800 whitespace-nowrap tracking-tight">
-              Master Commission File
-            </h1>
-          </div>
-
-          {/* MIDDLE — horizontally scrollable: KPIs → filters → actions → view */}
-          <div className="toolbar-scroll flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 px-3 h-12 min-w-max">
-
-              {/* KPI chips */}
-              {([
-                { label: 'Amt',    value: totalAmount, color: 'text-[var(--wgi-text)]' },
-                { label: 'IFA',    value: totalIFA,    color: 'text-[var(--wgi-navy)]' },
-                { label: 'Paid',   value: totalPaid,   color: 'text-[var(--cm-gain)]' },
-                { label: 'Unpaid', value: totalUnpaid, color: 'text-[var(--cm-loss)]' },
-              ] as const).map(({ label, value, color }) => (
-                <div key={label} className="flex items-baseline gap-0.5 whitespace-nowrap">
-                  <span className="text-[10px] text-gray-400">{label}</span>
-                  <span className={`text-xs font-bold ${color}`}>${fmtMoney(value)}</span>
-                </div>
-              ))}
-              <span className="text-[10px] text-gray-400 whitespace-nowrap">
-                · {rowData.length}{selectedRows.length > 0 ? ` · ${selectedRows.length} sel.` : ''} recs
-              </span>
-              {loading && <span className="text-[10px] text-amber-500 animate-pulse whitespace-nowrap">↻</span>}
-
-              <span className="w-px h-4 bg-gray-200 mx-0.5" />
-
-              {/* Dropdown filters */}
-              {([
-                { label: 'Status',   value: statusFilter,   setter: setStatusFilter,   field: 'status',        options: ['pending','approved','paid','cancelled','advance','reconciled'] },
-                { label: 'CCY',      value: currencyFilter, setter: setCurrencyFilter,  field: 'currency',      options: uniqueCurrencies },
-                { label: 'IFA',      value: ifaCodeFilter,  setter: setIfaCodeFilter,   field: 'ifa_code',      options: allIfaCodes },
-                { label: 'Platform', value: platformFilter, setter: setPlatformFilter,  field: 'platform.name', options: uniquePlatforms },
-              ] as const).map(({ label, value, setter, field, options }) => (
-                <div key={label} className="flex items-center gap-1">
-                  <span className="text-[11px] font-medium text-slate-500 whitespace-nowrap">{label}</span>
-                  <select
-                    value={value}
-                    onChange={e => applyDropdownFilter(field, e.target.value, setter as (v: string) => void)}
-                    className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none transition-colors ${
-                      value
-                        ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold'
-                        : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'
-                    }`}
-                  >
-                    <option value="">All</option>
-                    {(options as readonly string[]).map(o => <option key={o} value={o}>{o}</option>)}
-                  </select>
-                </div>
-              ))}
-
-              <span className="w-px h-4 bg-gray-200 mx-0.5" />
-
-              {/* Transaction date range */}
-              <div className="flex items-center gap-1">
-                <span className="text-[11px] font-medium text-slate-500">Date</span>
-                <input type="date" value={dateFrom}
-                  onChange={e => applyDateRangeFilter('transaction_date', dateFrom, setDateFrom, dateTo, setDateTo, e.target.value, undefined)}
-                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none transition-colors ${dateFrom ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
-                />
-                <span className="text-[11px] text-slate-400">–</span>
-                <input type="date" value={dateTo}
-                  onChange={e => applyDateRangeFilter('transaction_date', dateFrom, setDateFrom, dateTo, setDateTo, undefined, e.target.value)}
-                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none transition-colors ${dateTo ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
-                />
-                {(dateFrom || dateTo) && (
-                  <button onClick={() => applyDateRangeFilter('transaction_date', dateFrom, setDateFrom, dateTo, setDateTo, '', '')}
-                    className="text-[11px] text-slate-400 hover:text-slate-600 font-medium">✕</button>
-                )}
-              </div>
-
-              {/* Commencement date range */}
-              <div className="flex items-center gap-1">
-                <span className="text-[11px] font-medium text-slate-500">Comm.</span>
-                <input type="date" value={commDateFrom}
-                  onChange={e => applyDateRangeFilter('commencement_date', commDateFrom, setCommDateFrom, commDateTo, setCommDateTo, e.target.value, undefined)}
-                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none transition-colors ${commDateFrom ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
-                />
-                <span className="text-[11px] text-slate-400">–</span>
-                <input type="date" value={commDateTo}
-                  onChange={e => applyDateRangeFilter('commencement_date', commDateFrom, setCommDateFrom, commDateTo, setCommDateTo, undefined, e.target.value)}
-                  className={`text-[11px] border rounded-md px-1.5 h-6 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none transition-colors ${commDateTo ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'}`}
-                />
-                {(commDateFrom || commDateTo) && (
-                  <button onClick={() => applyDateRangeFilter('commencement_date', commDateFrom, setCommDateFrom, commDateTo, setCommDateTo, '', '')}
-                    className="text-[11px] text-slate-400 hover:text-slate-600 font-medium">✕</button>
-                )}
-              </div>
-
-              <span className="w-px h-4 bg-gray-200 mx-0.5" />
-
-              {/* Quick pills */}
-              {QUICK_FILTERS.map(qf => (
-                <button key={qf.label} onClick={() => toggleQuickFilter(qf)}
-                  className={`h-6 px-2 text-xs rounded-full font-medium transition-colors whitespace-nowrap ${
-                    activeQuickFilters.has(qf.label) ? 'bg-[var(--wgi-navy)] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  {qf.label}
-                </button>
-              ))}
+              <span>Filters</span>
               {activeFilterCount > 0 && (
-                <>
-                  <span className="text-[10px] text-amber-600 font-semibold whitespace-nowrap">⚡{activeFilterCount}</span>
-                  <button onClick={clearAllFilters}
-                    className="h-6 px-2 text-xs rounded-full bg-amber-100 text-amber-700 hover:bg-amber-200 font-medium whitespace-nowrap">
-                    ✕ Clear
-                  </button>
-                </>
+                <span className="text-[10px] px-1 py-0.5 rounded-full font-semibold bg-white/25 text-white">{activeFilterCount}</span>
               )}
+              <span className="opacity-60 text-[10px]">{filtersOpen ? '▲' : '▼'}</span>
+            </button>
 
-              <span className="w-px h-4 bg-gray-200 mx-0.5" />
+            {filtersOpen && (
+              <div className="absolute left-0 top-full mt-1 z-50 w-80 bg-white rounded-lg shadow-xl border border-gray-200">
+                <div className="flex items-center justify-between px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+                  <span className="text-xs font-semibold text-gray-700">Filters</span>
+                  {activeFilterCount > 0 && (
+                    <button onClick={clearAllFilters} className="text-xs font-medium text-[var(--cm-status-rejected-text)] hover:opacity-70">Clear all ({activeFilterCount})</button>
+                  )}
+                </div>
+                <div className="p-4 space-y-3">
+                  {([
+                    { label: 'Status',   value: statusFilter,   setter: setStatusFilter,   field: 'status',        options: ['pending','approved','paid','cancelled','advance','reconciled'] },
+                    { label: 'Currency', value: currencyFilter, setter: setCurrencyFilter,  field: 'currency',      options: uniqueCurrencies },
+                    { label: 'IFA',      value: ifaCodeFilter,  setter: setIfaCodeFilter,   field: 'ifa_code',      options: allIfaCodes },
+                    { label: 'Platform', value: platformFilter, setter: setPlatformFilter,  field: 'platform.name', options: uniquePlatforms },
+                  ] as const).map(({ label, value, setter, field, options }) => (
+                    <div key={label}>
+                      <label className="block text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1">{label}</label>
+                      <select
+                        value={value}
+                        onChange={e => applyDropdownFilter(field, e.target.value, setter as (v: string) => void)}
+                        className={`w-full text-xs border rounded-md px-2 h-7 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none transition-colors ${
+                          value ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'
+                        }`}
+                      >
+                        <option value="">All</option>
+                        {(options as readonly string[]).map(o => <option key={o} value={o}>{o}</option>)}
+                      </select>
+                    </div>
+                  ))}
 
-              {/* Primary actions */}
-              <button onClick={openAddModal}
-                className="h-6 px-2.5 bg-[var(--wgi-navy)] text-white text-xs rounded hover:bg-[var(--wgi-navy-600)] font-medium whitespace-nowrap transition-colors">
-                + New
-              </button>
-              {selectedRows.length > 0 && (
-                <button onClick={() => { setDeleteModal(true); setDeleteConfirm(false); setDeleteTyped('') }}
-                  className="h-6 px-2.5 bg-[var(--cm-status-rejected-bg)] text-[var(--cm-status-rejected-text)] text-xs rounded border border-[var(--wgi-border)] hover:border-[var(--cm-status-rejected-text)] font-medium whitespace-nowrap">
-                  🗑 ({selectedRows.length})
-                </button>
-              )}
-              {canReconcile && (
-                <button onClick={() => setReconcileModal(true)}
-                  className="h-6 px-2.5 bg-white text-[var(--wgi-navy)] text-xs rounded border border-[var(--wgi-border)] hover:border-[var(--wgi-navy)] font-medium whitespace-nowrap">
-                  🔗 Reconcile
-                </button>
-              )}
-              {selectedRows.length >= 2 && (
-                <button
-                  onClick={openMergeModal}
-                  disabled={!!mergeBlockReason}
-                  title={mergeBlockReason ?? 'Merge selected rows into one'}
-                  className="h-6 px-2.5 bg-white text-[var(--wgi-navy)] text-xs rounded border border-[var(--wgi-border)] hover:border-[var(--wgi-navy)] font-medium whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  ⊕ Merge ({selectedRows.length})
-                </button>
-              )}
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Transaction date</label>
+                    <div className="flex items-center gap-1.5">
+                      <input type="date" value={dateFrom}
+                        onChange={e => applyDateRangeFilter('transaction_date', dateFrom, setDateFrom, dateTo, setDateTo, e.target.value, undefined)}
+                        className={`flex-1 text-xs border rounded-md px-2 h-7 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none ${dateFrom ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold' : 'border-slate-300 bg-white text-slate-600'}`} />
+                      <span className="text-slate-400">–</span>
+                      <input type="date" value={dateTo}
+                        onChange={e => applyDateRangeFilter('transaction_date', dateFrom, setDateFrom, dateTo, setDateTo, undefined, e.target.value)}
+                        className={`flex-1 text-xs border rounded-md px-2 h-7 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none ${dateTo ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold' : 'border-slate-300 bg-white text-slate-600'}`} />
+                      {(dateFrom || dateTo) && (
+                        <button onClick={() => applyDateRangeFilter('transaction_date', dateFrom, setDateFrom, dateTo, setDateTo, '', '')}
+                          className="text-xs text-slate-400 hover:text-slate-600">✕</button>
+                      )}
+                    </div>
+                  </div>
 
-              <span className="w-px h-4 bg-gray-200 mx-0.5" />
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Commencement date</label>
+                    <div className="flex items-center gap-1.5">
+                      <input type="date" value={commDateFrom}
+                        onChange={e => applyDateRangeFilter('commencement_date', commDateFrom, setCommDateFrom, commDateTo, setCommDateTo, e.target.value, undefined)}
+                        className={`flex-1 text-xs border rounded-md px-2 h-7 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none ${commDateFrom ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold' : 'border-slate-300 bg-white text-slate-600'}`} />
+                      <span className="text-slate-400">–</span>
+                      <input type="date" value={commDateTo}
+                        onChange={e => applyDateRangeFilter('commencement_date', commDateFrom, setCommDateFrom, commDateTo, setCommDateTo, undefined, e.target.value)}
+                        className={`flex-1 text-xs border rounded-md px-2 h-7 focus:ring-1 focus:ring-[var(--wgi-gold)] focus:outline-none ${commDateTo ? 'border-[var(--wgi-gold)] bg-[#FFFBF4] text-[var(--wgi-navy)] font-semibold' : 'border-slate-300 bg-white text-slate-600'}`} />
+                      {(commDateFrom || commDateTo) && (
+                        <button onClick={() => applyDateRangeFilter('commencement_date', commDateFrom, setCommDateFrom, commDateTo, setCommDateTo, '', '')}
+                          className="text-xs text-slate-400 hover:text-slate-600">✕</button>
+                      )}
+                    </div>
+                  </div>
 
-              {/* Selection */}
-              <button onClick={selectAllFiltered}
-                className="h-6 px-2.5 text-xs border border-gray-300 text-gray-600 rounded hover:bg-gray-50 whitespace-nowrap">
-                Sel. Filtered
-              </button>
-              {selectedRows.length > 0 && (
-                <button onClick={selectNone}
-                  className="h-6 px-2.5 text-xs border border-gray-300 text-gray-600 rounded hover:bg-gray-50 whitespace-nowrap">
-                  Sel. None
-                </button>
-              )}
-
-              {/* Bulk status */}
-              {selectedRows.length > 0 && (
-                <>
-                  <span className="w-px h-4 bg-gray-200 mx-0.5" />
-                  <button onClick={() => bulkUpdateStatus('approved')}
-                    className="h-6 px-2.5 bg-[var(--wgi-navy)] text-white text-xs rounded hover:bg-[var(--wgi-navy-600)] whitespace-nowrap">Approve</button>
-                  <button onClick={bulkMarkAsPaid}
-                    className="h-6 px-2.5 bg-[var(--wgi-navy)] text-white text-xs rounded hover:bg-[var(--wgi-navy-600)] whitespace-nowrap">Mark Paid</button>
-                  <button onClick={() => bulkUpdateStatus('cancelled')}
-                    className="h-6 px-2.5 bg-white text-[var(--cm-status-rejected-text)] text-xs rounded border border-[var(--wgi-border)] hover:border-[var(--cm-status-rejected-text)] whitespace-nowrap">Cancel</button>
-                </>
-              )}
-
-              <span className="w-px h-4 bg-gray-200 mx-0.5" />
-
-              {/* Utility */}
-              <button onClick={exportToExcel}
-                className="h-6 px-2.5 bg-white text-[var(--wgi-navy)] text-xs rounded border border-[var(--wgi-border)] hover:border-[var(--wgi-navy)] font-medium whitespace-nowrap">Export</button>
-              <button onClick={() => loadData()} disabled={loading}
-                className="h-6 px-2 bg-gray-100 text-gray-600 text-xs rounded border border-gray-300 hover:bg-gray-200 disabled:opacity-50">
-                {loading ? '…' : '↻'}
-              </button>
-              <button onClick={() => setFullScreen(f => !f)}
-                title="Full screen"
-                className="h-6 px-2 bg-gray-100 text-gray-600 text-xs rounded border border-gray-300 hover:bg-gray-200">⛶</button>
-              <button
-                onClick={() => { const next = !showDeleted; setShowDeleted(next); filtersRestoredRef.current = false; loadData(next) }}
-                className={`h-6 px-2.5 text-xs rounded border whitespace-nowrap ${
-                  showDeleted ? 'bg-red-50 text-red-700 border-red-200' : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200'
-                }`}
-              >
-                {showDeleted ? '👁 Hide Del.' : '👁 Deleted'}
-              </button>
-
-              <span className="w-px h-4 bg-gray-200 mx-0.5" />
-
-              {/* Density */}
-              {(['compact', 'normal', 'cozy'] as const).map(d => (
-                <button key={d} onClick={() => setDensity(d)}
-                  title={{ compact: 'Compact', normal: 'Normal', cozy: 'Cozy' }[d]}
-                  className={`h-6 w-6 text-xs rounded border font-bold ${
-                    density === d ? 'bg-[var(--wgi-navy)] text-white border-[var(--wgi-navy)]' : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200'
-                  }`}
-                >
-                  {d === 'compact' ? '−' : d === 'normal' ? '○' : '+'}
-                </button>
-              ))}
-
-              <span className="w-px h-4 bg-gray-200 mx-0.5" />
-
-              {/* Column sizing */}
-              <button onClick={() => gridRef.current?.api.autoSizeAllColumns()}
-                className="h-6 px-2 bg-gray-100 text-gray-600 text-xs rounded border border-gray-300 hover:bg-gray-200 whitespace-nowrap">
-                ⟺ Auto-fit
-              </button>
-              <button onClick={() => gridRef.current?.api.sizeColumnsToFit()}
-                className="h-6 px-2 bg-gray-100 text-gray-600 text-xs rounded border border-gray-300 hover:bg-gray-200 whitespace-nowrap">
-                ⊞ Fit
-              </button>
-
-            </div>
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Quick filters</label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {QUICK_FILTERS.map(qf => (
+                        <button key={qf.label} onClick={() => toggleQuickFilter(qf)}
+                          className={`h-7 px-2.5 text-xs rounded-full font-medium transition-colors ${
+                            activeQuickFilters.has(qf.label) ? 'bg-[var(--wgi-navy)] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          }`}
+                        >
+                          {qf.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* RIGHT — always visible: Columns panel + Upload CSV */}
-          <div className="flex items-center gap-2 px-3 flex-shrink-0 border-l border-gray-100">
+          {/* + New */}
+          <button onClick={openAddModal}
+            className="h-8 px-3 bg-[var(--wgi-navy)] text-white text-xs rounded hover:bg-[var(--wgi-navy-600)] font-medium whitespace-nowrap transition-colors">
+            + New
+          </button>
 
-            <div className="relative" ref={colPanelRef}>
-              <button
-                onClick={() => colPanelOpen ? setColPanelOpen(false) : openColPanel()}
-                title="Show/hide and freeze columns"
+          {/* spacer */}
+          <div className="flex-1 min-w-0" />
+
+          {/* KPI summary */}
+          <div className="hidden md:flex items-center gap-3 whitespace-nowrap">
+            {([
+              { label: 'Amt',    value: totalAmount, color: 'text-[var(--wgi-text)]' },
+              { label: 'IFA',    value: totalIFA,    color: 'text-[var(--wgi-navy)]' },
+              { label: 'Paid',   value: totalPaid,   color: 'text-[var(--cm-gain)]' },
+              { label: 'Unpaid', value: totalUnpaid, color: 'text-[var(--cm-loss)]' },
+            ] as const).map(({ label, value, color }) => (
+              <div key={label} className="flex items-baseline gap-1">
+                <span className="text-[10px] uppercase tracking-wider text-gray-400">{label}</span>
+                <span className={`cm-mono text-[11px] font-bold ${color}`}>${fmtMoney(value)}</span>
+              </div>
+            ))}
+            <span className="cm-mono text-[10px] text-gray-400">· {rowData.length} recs</span>
+          </div>
+          <span className="hidden md:block h-5 w-px bg-gray-200" />
+
+          {/* View menu */}
+          <div className="relative" ref={viewRef}>
+            <button
+              onClick={() => { setViewOpen(o => !o); setFiltersOpen(false); setColPanelOpen(false) }}
+              className={`h-8 px-2.5 text-xs rounded border font-medium flex items-center gap-1.5 whitespace-nowrap transition-colors ${
+                viewOpen ? 'bg-[var(--wgi-navy)] text-white border-[var(--wgi-navy)]' : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              <span>View</span>
+              <span className="opacity-60 text-[10px]">{viewOpen ? '▲' : '▼'}</span>
+            </button>
+
+            {viewOpen && (
+              <div className="absolute right-0 top-full mt-1 z-50 w-56 bg-white rounded-lg shadow-xl border border-gray-200 py-1 text-xs">
+                <div className="flex items-center justify-between px-3 py-1.5">
+                  <span className="text-gray-500">Density</span>
+                  <div className="flex gap-1">
+                    {(['compact', 'normal', 'cozy'] as const).map(d => (
+                      <button key={d} onClick={() => setDensity(d)}
+                        title={{ compact: 'Compact', normal: 'Normal', cozy: 'Cozy' }[d]}
+                        className={`h-6 w-6 text-xs rounded border font-bold ${
+                          density === d ? 'bg-[var(--wgi-navy)] text-white border-[var(--wgi-navy)]' : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200'
+                        }`}
+                      >
+                        {d === 'compact' ? '−' : d === 'normal' ? '○' : '+'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="border-t border-gray-100 my-1" />
+                <button onClick={() => { gridRef.current?.api.autoSizeAllColumns(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">⟺ Auto-fit columns</button>
+                <button onClick={() => { gridRef.current?.api.sizeColumnsToFit(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">⊞ Fit to width</button>
+                <button onClick={() => { selectAllFiltered(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">☑ Select all filtered</button>
+                <div className="border-t border-gray-100 my-1" />
+                <button onClick={() => { setFullScreen(true); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">⛶ Full screen</button>
+                <button onClick={() => { const next = !showDeleted; setShowDeleted(next); filtersRestoredRef.current = false; loadData(next); setViewOpen(false) }}
+                  className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">👁 {showDeleted ? 'Hide deleted' : 'Show deleted'}</button>
+                <div className="border-t border-gray-100 my-1" />
+                <button onClick={() => { loadData(); setViewOpen(false) }} disabled={loading} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700 disabled:opacity-50">↻ Refresh</button>
+                <button onClick={() => { exportToExcel(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">⤓ Export to Excel</button>
+              </div>
+            )}
+          </div>
+
+          {/* Columns popover */}
+          <div className="relative" ref={colPanelRef}>
+            <button
+              onClick={() => { setFiltersOpen(false); setViewOpen(false); colPanelOpen ? setColPanelOpen(false) : openColPanel() }}
+              title="Show/hide and freeze columns"
                 className={`h-8 px-2.5 text-xs rounded border font-medium flex items-center gap-1.5 whitespace-nowrap transition-colors ${
                   colPanelOpen
                     ? 'bg-[var(--wgi-navy)] text-white border-[var(--wgi-navy)]'
@@ -1574,11 +1540,38 @@ export default function MasterFilePage() {
               })()}
             </div>
 
-            <button onClick={() => router.push('/commission/admin/upload')}
-              className="h-8 px-2.5 bg-[var(--wgi-navy)] text-white text-xs rounded hover:bg-[var(--wgi-navy-600)] whitespace-nowrap font-medium transition-colors">
-              Upload CSV
-            </button>
+          <button onClick={() => router.push('/commission/admin/upload')}
+            className="h-8 px-2.5 bg-[var(--wgi-navy)] text-white text-xs rounded hover:bg-[var(--wgi-navy-600)] whitespace-nowrap font-medium transition-colors">
+            Upload CSV
+          </button>
+        </div>
+      )}
 
+      {/* ── Contextual action bar (only when rows are selected) ── */}
+      {!fullScreen && selectedRows.length > 0 && (
+        <div className="flex items-center gap-3 border-b border-[var(--wgi-border)] bg-[var(--wgi-bg)] px-4 h-9 flex-shrink-0">
+          <span className="text-xs font-semibold text-[var(--wgi-navy)] whitespace-nowrap">
+            {selectedRows.length} selected · <span className="cm-mono">${fmtMoney(selectedRows.reduce((s, r) => s + (r.ifa_amount ?? 0), 0))}</span> IFA
+          </span>
+          <div className="ml-auto flex items-center gap-2">
+            <button onClick={selectNone}
+              className="h-7 px-2.5 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--wgi-text-muted)] hover:border-[var(--wgi-navy)] whitespace-nowrap">Clear</button>
+            <button onClick={() => bulkUpdateStatus('approved')}
+              className="h-7 px-3 text-xs rounded bg-[var(--wgi-navy)] text-white hover:bg-[var(--wgi-navy-600)] whitespace-nowrap font-medium">Approve</button>
+            <button onClick={bulkMarkAsPaid}
+              className="h-7 px-3 text-xs rounded bg-[var(--wgi-navy)] text-white hover:bg-[var(--wgi-navy-600)] whitespace-nowrap font-medium">Mark Paid</button>
+            <button onClick={() => bulkUpdateStatus('cancelled')}
+              className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--cm-status-rejected-text)] hover:border-[var(--cm-status-rejected-text)] whitespace-nowrap font-medium">Cancel</button>
+            {canReconcile && (
+              <button onClick={() => setReconcileModal(true)}
+                className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--wgi-navy)] hover:border-[var(--wgi-navy)] whitespace-nowrap font-medium">🔗 Reconcile</button>
+            )}
+            {selectedRows.length >= 2 && (
+              <button onClick={openMergeModal} disabled={!!mergeBlockReason} title={mergeBlockReason ?? 'Merge selected rows into one'}
+                className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--wgi-navy)] hover:border-[var(--wgi-navy)] whitespace-nowrap font-medium disabled:opacity-40 disabled:cursor-not-allowed">⊕ Merge</button>
+            )}
+            <button onClick={() => { setDeleteModal(true); setDeleteConfirm(false); setDeleteTyped('') }}
+              className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--cm-status-rejected-text)] hover:border-[var(--cm-status-rejected-text)] whitespace-nowrap font-medium">🗑 Delete</button>
           </div>
         </div>
       )}
