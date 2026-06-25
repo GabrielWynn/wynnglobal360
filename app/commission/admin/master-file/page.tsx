@@ -421,18 +421,21 @@ export default function MasterFilePage() {
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [viewOpen, setViewOpen] = useState(false)
   const [searchText, setSearchText] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
   const [displayedCount, setDisplayedCount] = useState(0)
   const filtersRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<HTMLDivElement>(null)
+  const searchRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    if (!filtersOpen && !viewOpen) return
+    if (!filtersOpen && !viewOpen && !searchOpen) return
     function handleOutsideClick(e: MouseEvent) {
       if (filtersOpen && filtersRef.current && !filtersRef.current.contains(e.target as Node)) setFiltersOpen(false)
       if (viewOpen && viewRef.current && !viewRef.current.contains(e.target as Node)) setViewOpen(false)
+      if (searchOpen && searchRef.current && !searchRef.current.contains(e.target as Node)) setSearchOpen(false)
     }
     document.addEventListener('mousedown', handleOutsideClick)
     return () => document.removeEventListener('mousedown', handleOutsideClick)
-  }, [filtersOpen, viewOpen])
+  }, [filtersOpen, viewOpen, searchOpen])
 
   // ── Feedback ─────────────────────────────────────────────────────────────────
   const [feedback, setFeedback] = useState('')
@@ -1272,7 +1275,7 @@ export default function MasterFilePage() {
           </button>
           <span className="h-4 w-px bg-slate-200" />
           <h1 className="text-[13px] font-semibold text-slate-800 whitespace-nowrap tracking-tight">Master Commission File</h1>
-          {loading && <span className="text-[11px] text-[var(--wgi-gold)] animate-pulse" title="Loading">↻</span>}
+          {loading && <span className="inline-block w-3 h-3 border-2 border-gray-200 border-t-[var(--wgi-navy)] rounded-full animate-spin" title="Loading" />}
 
           {/* Filters popover */}
           <div className="relative ml-1" ref={filtersRef}>
@@ -1380,25 +1383,43 @@ export default function MasterFilePage() {
             + New
           </button>
 
-          {/* Global search — fills the middle */}
-          <div className="flex-1 min-w-0 flex items-center justify-center px-2">
-            <div className="relative w-full max-w-lg">
-              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none">🔍</span>
-              <input
-                type="text"
-                value={searchText}
-                onChange={e => setSearchText(e.target.value)}
-                placeholder="Search all columns — policy, IFA, holder, platform, amount…"
-                className="w-full h-8 pl-8 pr-14 text-xs border border-gray-300 rounded-md bg-white focus:ring-1 focus:ring-[var(--wgi-gold)] focus:border-[var(--wgi-gold)] focus:outline-none placeholder:text-gray-400 transition-colors"
-              />
-              {searchText && (
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
-                  <span className="cm-mono text-[10px] text-gray-400 whitespace-nowrap">{displayedCount} match{displayedCount === 1 ? '' : 'es'}</span>
-                  <button onClick={() => setSearchText('')} title="Clear search"
-                    className="text-gray-400 hover:text-gray-600 text-xs leading-none">✕</button>
-                </div>
-              )}
-            </div>
+          {/* spacer */}
+          <div className="flex-1 min-w-0" />
+
+          {/* Global search — icon that expands on click */}
+          <div className="relative" ref={searchRef}>
+            {searchOpen || searchText ? (
+              <div className="relative">
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+                </span>
+                <input
+                  autoFocus
+                  type="text"
+                  value={searchText}
+                  onChange={e => setSearchText(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Escape') { setSearchText(''); setSearchOpen(false) } }}
+                  className="w-56 h-8 pl-7 pr-16 text-xs border border-gray-300 rounded-md bg-white focus:ring-1 focus:ring-[var(--wgi-gold)] focus:border-[var(--wgi-gold)] focus:outline-none transition-colors"
+                />
+                {searchText && (
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                    <span className="cm-mono text-[10px] text-gray-400 whitespace-nowrap">{displayedCount}</span>
+                    <button onClick={() => { setSearchText(''); setSearchOpen(true) }} title="Clear"
+                      className="text-gray-400 hover:text-gray-600 leading-none">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => setSearchOpen(true)}
+                title="Search"
+                className="h-8 w-8 flex items-center justify-center rounded border border-gray-300 text-gray-500 hover:bg-gray-50 transition-colors"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+              </button>
+            )}
           </div>
 
           {/* View menu */}
@@ -1431,16 +1452,16 @@ export default function MasterFilePage() {
                   </div>
                 </div>
                 <div className="border-t border-gray-100 my-1" />
-                <button onClick={() => { gridRef.current?.api.autoSizeAllColumns(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">⟺ Auto-fit columns</button>
-                <button onClick={() => { gridRef.current?.api.sizeColumnsToFit(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">⊞ Fit to width</button>
-                <button onClick={() => { selectAllFiltered(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">☑ Select all filtered</button>
+                <button onClick={() => { gridRef.current?.api.autoSizeAllColumns(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">Auto-fit columns</button>
+                <button onClick={() => { gridRef.current?.api.sizeColumnsToFit(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">Fit to width</button>
+                <button onClick={() => { selectAllFiltered(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">Select all filtered</button>
                 <div className="border-t border-gray-100 my-1" />
-                <button onClick={() => { setFullScreen(true); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">⛶ Full screen</button>
+                <button onClick={() => { setFullScreen(true); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">Full screen</button>
                 <button onClick={() => { const next = !showDeleted; setShowDeleted(next); filtersRestoredRef.current = false; loadData(next); setViewOpen(false) }}
-                  className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">👁 {showDeleted ? 'Hide deleted' : 'Show deleted'}</button>
+                  className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">{showDeleted ? 'Hide deleted' : 'Show deleted'}</button>
                 <div className="border-t border-gray-100 my-1" />
-                <button onClick={() => { loadData(); setViewOpen(false) }} disabled={loading} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700 disabled:opacity-50">↻ Refresh</button>
-                <button onClick={() => { exportToExcel(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">⤓ Export to Excel</button>
+                <button onClick={() => { loadData(); setViewOpen(false) }} disabled={loading} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700 disabled:opacity-50">Refresh</button>
+                <button onClick={() => { exportToExcel(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">Export to Excel</button>
               </div>
             )}
           </div>
@@ -1563,14 +1584,14 @@ export default function MasterFilePage() {
               className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--cm-status-rejected-text)] hover:border-[var(--cm-status-rejected-text)] whitespace-nowrap font-medium">Cancel</button>
             {canReconcile && (
               <button onClick={() => setReconcileModal(true)}
-                className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--wgi-navy)] hover:border-[var(--wgi-navy)] whitespace-nowrap font-medium">🔗 Reconcile</button>
+                className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--wgi-navy)] hover:border-[var(--wgi-navy)] whitespace-nowrap font-medium">Reconcile</button>
             )}
             {selectedRows.length >= 2 && (
               <button onClick={openMergeModal} disabled={!!mergeBlockReason} title={mergeBlockReason ?? 'Merge selected rows into one'}
-                className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--wgi-navy)] hover:border-[var(--wgi-navy)] whitespace-nowrap font-medium disabled:opacity-40 disabled:cursor-not-allowed">⊕ Merge</button>
+                className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--wgi-navy)] hover:border-[var(--wgi-navy)] whitespace-nowrap font-medium disabled:opacity-40 disabled:cursor-not-allowed">Merge</button>
             )}
             <button onClick={() => { setDeleteModal(true); setDeleteConfirm(false); setDeleteTyped('') }}
-              className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--cm-status-rejected-text)] hover:border-[var(--cm-status-rejected-text)] whitespace-nowrap font-medium">🗑 Delete</button>
+              className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--cm-status-rejected-text)] hover:border-[var(--cm-status-rejected-text)] whitespace-nowrap font-medium">Delete</button>
           </div>
         </div>
       )}
