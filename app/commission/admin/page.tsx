@@ -4,13 +4,8 @@ import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { getAuthHeaders } from '@/lib/supabase'
 import { formatCurrency } from '@/lib/currency'
-import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend,
-} from 'recharts'
 import { AlertBanner } from '@/components/commission/AlertBanner'
 import { StatCard } from '@/components/commission/StatCard'
-import { CM_CHART_COLORS } from '@/lib/commission-chart-colors'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -29,10 +24,44 @@ interface DashboardStats {
 interface BarItem { name: string; balance: number }
 interface PieItem { name: string; value: number }
 
-// Smart Y-axis formatter: uses plain $ for sub-$1000, $k for thousands
-function formatYAxis(v: number): string {
-  if (v >= 1000) return `$${(v / 1000).toFixed(0)}k`
-  return `$${v.toFixed(0)}`
+// ── Percentage table (replaces the dashboard bar/pie charts) ────────────────────
+function PercentTable({ rows, nameLabel, valueLabel, formatValue }: {
+  rows: { name: string; value: number }[]
+  nameLabel: string
+  valueLabel: string
+  formatValue: (v: number) => string
+}) {
+  const total = rows.reduce((s, r) => s + (r.value || 0), 0)
+  return (
+    <table className="w-full text-xs">
+      <thead>
+        <tr className="text-[10px] uppercase tracking-[0.08em] text-[var(--wgi-text-muted)]">
+          <th className="pb-2 text-left font-semibold">{nameLabel}</th>
+          <th className="pb-2 text-right font-semibold">{valueLabel}</th>
+          <th className="pb-2 pl-3 text-right font-semibold">Share</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r, i) => {
+          const pct = total > 0 ? r.value / total : 0
+          return (
+            <tr key={`${r.name}-${i}`} className="border-t border-[var(--wgi-border)]">
+              <td className="max-w-[150px] truncate py-1.5 text-[var(--wgi-text)]" title={r.name}>{r.name}</td>
+              <td className="cm-mono py-1.5 text-right font-semibold text-[var(--wgi-navy)]">{formatValue(r.value)}</td>
+              <td className="py-1.5 pl-3">
+                <div className="flex items-center justify-end gap-2">
+                  <div className="h-1.5 w-16 overflow-hidden rounded-full bg-[var(--wgi-bg)]">
+                    <div className="h-full rounded-full bg-[var(--wgi-navy)]" style={{ width: `${(pct * 100).toFixed(1)}%` }} />
+                  </div>
+                  <span className="cm-mono w-11 text-right text-[var(--wgi-text-muted)]">{(pct * 100).toFixed(1)}%</span>
+                </div>
+              </td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
+  )
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -209,14 +238,12 @@ export default function AdminDashboard() {
               {topIFAs.length === 0 ? (
                 <p style={{ fontSize: '14px', color: 'var(--wgi-text-light)', textAlign: 'center', padding: '32px 0' }}>No approved balances yet</p>
               ) : (
-                <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={topIFAs} margin={{ top: 0, right: 10, left: 10, bottom: 0 }}>
-                    <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#64748B' }} />
-                    <YAxis tick={{ fontSize: 11, fill: '#64748B' }} tickFormatter={formatYAxis} />
-                    <Tooltip formatter={(v: any) => formatCurrency(v ?? 0, 'USD')} />
-                    <Bar dataKey="balance" fill="var(--cm-chart-1)" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+                <PercentTable
+                  rows={topIFAs.map(r => ({ name: r.name, value: r.balance }))}
+                  nameLabel="IFA"
+                  valueLabel="Balance"
+                  formatValue={(v) => formatCurrency(v, 'USD')}
+                />
               )}
             </div>
           </div>
@@ -230,14 +257,12 @@ export default function AdminDashboard() {
               {platformPie.length === 0 ? (
                 <p style={{ fontSize: '14px', color: 'var(--wgi-text-light)', textAlign: 'center', padding: '32px 0' }}>No transactions uploaded yet</p>
               ) : (
-                <ResponsiveContainer width="100%" height={200}>
-                  <PieChart>
-                    <Pie data={platformPie} cx="50%" cy="50%" outerRadius={75} dataKey="value" label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`} labelLine={false}>
-                      {platformPie.map((_, i) => <Cell key={i} fill={CM_CHART_COLORS[i % CM_CHART_COLORS.length]} />)}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
+                <PercentTable
+                  rows={platformPie}
+                  nameLabel="Platform"
+                  valueLabel="Transactions"
+                  formatValue={(v) => v.toLocaleString()}
+                />
               )}
             </div>
           </div>
