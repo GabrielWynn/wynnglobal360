@@ -420,6 +420,8 @@ export default function MasterFilePage() {
   // ── Toolbar popovers: Filters + View ──────────────────────────────────────────
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [viewOpen, setViewOpen] = useState(false)
+  const [searchText, setSearchText] = useState('')
+  const [displayedCount, setDisplayedCount] = useState(0)
   const filtersRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -1240,10 +1242,6 @@ export default function MasterFilePage() {
   }
 
   // ── Derived values ────────────────────────────────────────────────────────────
-  const totalAmount = rowData.reduce((s, r) => s + (r.allocation_parent_id ? 0 : (r.amount ?? 0)), 0)
-  const totalIFA    = rowData.reduce((s, r) => s + (r.ifa_amount ?? 0), 0)
-  const totalPaid   = rowData.reduce((s, r) => s + (r.paid ?? 0), 0)
-  const totalUnpaid = rowData.reduce((s, r) => s + (r.unpaid ?? 0), 0)
   const currentHint = FORMULA_FIELDS.find(f => f.value === formulaField)?.hint ?? ''
 
   const prevAmt   = parseFloat(addForm.amount || '0')
@@ -1382,25 +1380,26 @@ export default function MasterFilePage() {
             + New
           </button>
 
-          {/* spacer */}
-          <div className="flex-1 min-w-0" />
-
-          {/* KPI summary */}
-          <div className="hidden md:flex items-center gap-3 whitespace-nowrap">
-            {([
-              { label: 'Amt',    value: totalAmount, color: 'text-[var(--wgi-text)]' },
-              { label: 'IFA',    value: totalIFA,    color: 'text-[var(--wgi-navy)]' },
-              { label: 'Paid',   value: totalPaid,   color: 'text-[var(--cm-gain)]' },
-              { label: 'Unpaid', value: totalUnpaid, color: 'text-[var(--cm-loss)]' },
-            ] as const).map(({ label, value, color }) => (
-              <div key={label} className="flex items-baseline gap-1">
-                <span className="text-[10px] uppercase tracking-wider text-gray-400">{label}</span>
-                <span className={`cm-mono text-[11px] font-bold ${color}`}>${fmtMoney(value)}</span>
-              </div>
-            ))}
-            <span className="cm-mono text-[10px] text-gray-400">· {rowData.length} recs</span>
+          {/* Global search — fills the middle */}
+          <div className="flex-1 min-w-0 flex items-center justify-center px-2">
+            <div className="relative w-full max-w-lg">
+              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none">🔍</span>
+              <input
+                type="text"
+                value={searchText}
+                onChange={e => setSearchText(e.target.value)}
+                placeholder="Search all columns — policy, IFA, holder, platform, amount…"
+                className="w-full h-8 pl-8 pr-14 text-xs border border-gray-300 rounded-md bg-white focus:ring-1 focus:ring-[var(--wgi-gold)] focus:border-[var(--wgi-gold)] focus:outline-none placeholder:text-gray-400 transition-colors"
+              />
+              {searchText && (
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                  <span className="cm-mono text-[10px] text-gray-400 whitespace-nowrap">{displayedCount} match{displayedCount === 1 ? '' : 'es'}</span>
+                  <button onClick={() => setSearchText('')} title="Clear search"
+                    className="text-gray-400 hover:text-gray-600 text-xs leading-none">✕</button>
+                </div>
+              )}
+            </div>
           </div>
-          <span className="hidden md:block h-5 w-px bg-gray-200" />
 
           {/* View menu */}
           <div className="relative" ref={viewRef}>
@@ -1614,6 +1613,8 @@ export default function MasterFilePage() {
             rowData={rowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
+            quickFilterText={searchText}
+            cacheQuickFilter={true}
             getRowId={(params) => String(params.data.id ?? '')}
             animateRows={true}
             rowHeight={ROW_HEIGHTS[density]}
@@ -1690,7 +1691,7 @@ export default function MasterFilePage() {
                 vp?.addEventListener('scroll', syncHScroll, { passive: true })
               }, 150)
             }}
-            onModelUpdated={() => { recomputeSummary(); setTimeout(syncHScroll, 50) }}
+            onModelUpdated={(e) => { recomputeSummary(); setDisplayedCount(e.api.getDisplayedRowCount()); setTimeout(syncHScroll, 50) }}
             onColumnMoved={(p) => { saveColumnState(); syncHScroll() }}
             onColumnVisible={(p) => { saveColumnState(); syncHScroll() }}
             onColumnPinned={(p) => { saveColumnState(); syncHScroll() }}
