@@ -69,3 +69,102 @@
   font-family: var(--font-jetbrains-mono), "JetBrains Mono", monospace;
   font-variant-numeric: tabular-nums;
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Header & filtering polish
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Subtle hover lift on header cells. */
+.ag-theme-commission.ag-theme-alpine .ag-header-cell:not(.ag-header-cell-filtered):hover {
+  background: var(--wgi-navy-600);
+}
+
+/* Declutter: the menu / filter buttons are hidden until the column is hovered
+   or has an active filter — so the header reads clean, not a wall of funnels. */
+.ag-theme-commission .ag-header-cell-menu-button,
+.ag-theme-commission .ag-header-icon.ag-header-cell-filter-button,
+.ag-theme-commission .ag-floating-filter-button {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.ag-theme-commission .ag-header-cell:hover .ag-header-cell-menu-button,
+.ag-theme-commission .ag-header-cell:hover .ag-header-icon.ag-header-cell-filter-button,
+.ag-theme-commission .ag-floating-filter:hover .ag-floating-filter-button {
+  opacity: 0.65;
+}
+
+/* Active filter: persistent gold funnel + gold underline + brighter label so
+   filtered columns are obvious at a glance. */
+.ag-theme-commission .ag-header-cell.ag-header-cell-filtered {
+  box-shadow: inset 0 -2px 0 0 var(--wgi-gold);
+}
+.ag-theme-commission .ag-header-cell.ag-header-cell-filtered .ag-header-cell-text {
+  color: #fff;
+}
+.ag-theme-commission .ag-header-cell.ag-header-cell-filtered .ag-header-icon.ag-header-cell-filter-button {
+  opacity: 1;
+  color: var(--wgi-gold);
+}
+
+/* Sort arrows in WGI gold rather than default grey. */
+.ag-theme-commission .ag-header-cell .ag-sort-indicator-icon .ag-icon,
+.ag-theme-commission .ag-header-cell .ag-sort-ascending-icon .ag-icon,
+.ag-theme-commission .ag-header-cell .ag-sort-descending-icon .ag-icon {
+  color: var(--wgi-gold);
+}
+
+/* Inline filter row (floating filters) — a light strip under the navy header. */
+.ag-theme-commission .ag-header-row-floating-filter {
+  background: var(--wgi-bg);
+  border-bottom: 1px solid var(--wgi-border);
+}
+.ag-theme-commission .ag-floating-filter {
+  background: var(--wgi-bg);
+}
+.ag-theme-commission .ag-floating-filter-input .ag-input-field-input {
+  height: 24px;
+  font-size: 11px;
+  background: #fff;
+  border-radius: 6px;
+  border-color: var(--wgi-border);
+  color: var(--wgi-text);
+}
+.ag-theme-commission .ag-floating-filter-button-button {
+  color: var(--wgi-navy);
+}
+
+/* Branded filter popup (text/number/date filters + column menu). The popup is
+   rendered under document.body but ag-grid copies the theme class onto it, so
+   these scoped rules still apply. */
+.ag-theme-commission.ag-theme-alpine .ag-menu,
+.ag-theme-commission.ag-theme-alpine .ag-filter {
+  border-radius: 8px;
+  border: 1px solid var(--wgi-border);
+  box-shadow: 0 10px 30px rgba(27, 45, 69, 0.14);
+  overflow: hidden;
+}
+.ag-theme-commission .ag-filter .ag-input-field-input,
+.ag-theme-commission .ag-filter .ag-picker-field-wrapper,
+.ag-theme-commission .ag-menu .ag-input-field-input {
+  border-radius: 6px;
+  border-color: var(--wgi-border);
+}
+.ag-theme-commission .ag-filter .ag-input-field-input:focus,
+.ag-theme-commission .ag-menu .ag-input-field-input:focus,
+.ag-theme-commission .ag-floating-filter-input .ag-input-field-input:focus,
+.ag-theme-commission .ag-filter .ag-picker-field-wrapper:focus-within {
+  border-color: var(--wgi-gold);
+  box-shadow: 0 0 0 1px var(--wgi-gold);
+  outline: none;
+}
+/* Filter "Apply" button → navy primary. */
+.ag-theme-commission .ag-filter-apply-panel-button {
+  background: var(--wgi-navy);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 12px;
+}
+.ag-theme-commission .ag-filter-apply-panel-button:hover {
+  background: var(--wgi-navy-600);
+}

@@ -422,6 +422,7 @@ export default function MasterFilePage() {
   const [viewOpen, setViewOpen] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [displayedCount, setDisplayedCount] = useState(0)
+  const [showFilterRow, setShowFilterRow] = useState(false)
   const filtersRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -710,11 +711,12 @@ export default function MasterFilePage() {
 
   const defaultColDef = useMemo<ColDef>(() => ({
     sortable: true, resizable: true, filter: true,
+    floatingFilter: showFilterRow,
     cellClass: (p: CellClassParams) => {
       const key = p.colDef.field ?? p.colDef.colId ?? ''
       return MONO_FIELDS.has(key) ? 'cm-cell-mono' : ''
     },
-  }), [])
+  }), [showFilterRow])
 
   // ── Cell edit ────────────────────────────────────────────────────────────────
   const onCellValueChanged = useCallback(async (event: CellValueChangedEvent) => {
@@ -1436,6 +1438,10 @@ export default function MasterFilePage() {
                   </div>
                 </div>
                 <div className="border-t border-gray-100 my-1" />
+                <button onClick={() => { setShowFilterRow(v => !v); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700 flex items-center justify-between">
+                  <span>Filter row</span>
+                  <span className={showFilterRow ? 'text-[var(--wgi-navy)] font-semibold' : 'text-gray-400'}>{showFilterRow ? 'On' : 'Off'}</span>
+                </button>
                 <button onClick={() => { gridRef.current?.api.autoSizeAllColumns(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">Auto-fit columns</button>
                 <button onClick={() => { gridRef.current?.api.sizeColumnsToFit(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">Fit to width</button>
                 <button onClick={() => { selectAllFiltered(); setViewOpen(false) }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700">Select all filtered</button>
