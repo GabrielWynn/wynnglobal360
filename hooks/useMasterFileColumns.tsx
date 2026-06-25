@@ -308,14 +308,18 @@ export function useMasterFileColumns({
         cellEditor: 'agLargeTextCellEditor', cellEditorPopup: true,
         cellEditorParams: { maxLength: 2000, rows: 6, cols: 50 },
         wrapText: true, autoHeight: true,
-        cellStyle: { backgroundColor: '#FAF5EA', borderLeft: '2px solid #C8A96E', whiteSpace: 'pre-wrap', lineHeight: '1.4' } as Record<string, string | number>,
+        cellStyle: (p: CellClassParams): any => p.node.rowPinned
+          ? null
+          : { backgroundColor: '#FAF5EA', borderLeft: '2px solid #C8A96E', whiteSpace: 'pre-wrap', lineHeight: '1.4' },
       },
       {
         headerName: 'IFA Notes', field: 'ifa_notes', width: 200, editable: true, filter: 'agTextColumnFilter',
         cellEditor: 'agLargeTextCellEditor', cellEditorPopup: true,
         cellEditorParams: { maxLength: 2000, rows: 6, cols: 50 },
         wrapText: true, autoHeight: true,
-        cellStyle: { backgroundColor: '#FAF5EA', borderLeft: '2px solid #C8A96E', whiteSpace: 'pre-wrap', lineHeight: '1.4' } as Record<string, string | number>,
+        cellStyle: (p: CellClassParams): any => p.node.rowPinned
+          ? null
+          : { backgroundColor: '#FAF5EA', borderLeft: '2px solid #C8A96E', whiteSpace: 'pre-wrap', lineHeight: '1.4' },
       },
       { headerName: 'Platform', field: 'platform.name', width: 120, filter: 'agTextColumnFilter' },
       {
