@@ -421,21 +421,18 @@ export default function MasterFilePage() {
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [viewOpen, setViewOpen] = useState(false)
   const [searchText, setSearchText] = useState('')
-  const [searchOpen, setSearchOpen] = useState(false)
   const [displayedCount, setDisplayedCount] = useState(0)
   const filtersRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<HTMLDivElement>(null)
-  const searchRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    if (!filtersOpen && !viewOpen && !searchOpen) return
+    if (!filtersOpen && !viewOpen) return
     function handleOutsideClick(e: MouseEvent) {
       if (filtersOpen && filtersRef.current && !filtersRef.current.contains(e.target as Node)) setFiltersOpen(false)
       if (viewOpen && viewRef.current && !viewRef.current.contains(e.target as Node)) setViewOpen(false)
-      if (searchOpen && searchRef.current && !searchRef.current.contains(e.target as Node)) setSearchOpen(false)
     }
     document.addEventListener('mousedown', handleOutsideClick)
     return () => document.removeEventListener('mousedown', handleOutsideClick)
-  }, [filtersOpen, viewOpen, searchOpen])
+  }, [filtersOpen, viewOpen])
 
   // ── Feedback ─────────────────────────────────────────────────────────────────
   const [feedback, setFeedback] = useState('')
@@ -1383,43 +1380,30 @@ export default function MasterFilePage() {
             + New
           </button>
 
-          {/* spacer */}
-          <div className="flex-1 min-w-0" />
-
-          {/* Global search — icon that expands on click */}
-          <div className="relative" ref={searchRef}>
-            {searchOpen || searchText ? (
-              <div className="relative">
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+          {/* Global search — centered pill, magnifier on the right */}
+          <div className="flex-1 min-w-0 flex justify-center px-3">
+            <div className="relative w-full max-w-md">
+              <input
+                type="text"
+                value={searchText}
+                onChange={e => setSearchText(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Escape') setSearchText('') }}
+                className="w-full h-8 pl-4 pr-9 text-xs border border-gray-300 rounded-full bg-white focus:ring-1 focus:ring-[var(--wgi-gold)] focus:border-[var(--wgi-gold)] focus:outline-none transition-colors"
+              />
+              {searchText ? (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                  <span className="cm-mono text-[10px] text-gray-400 whitespace-nowrap">{displayedCount}</span>
+                  <button onClick={() => setSearchText('')} title="Clear"
+                    className="text-gray-400 hover:text-gray-600 leading-none">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                  </button>
+                </div>
+              ) : (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
                 </span>
-                <input
-                  autoFocus
-                  type="text"
-                  value={searchText}
-                  onChange={e => setSearchText(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Escape') { setSearchText(''); setSearchOpen(false) } }}
-                  className="w-56 h-8 pl-7 pr-16 text-xs border border-gray-300 rounded-md bg-white focus:ring-1 focus:ring-[var(--wgi-gold)] focus:border-[var(--wgi-gold)] focus:outline-none transition-colors"
-                />
-                {searchText && (
-                  <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
-                    <span className="cm-mono text-[10px] text-gray-400 whitespace-nowrap">{displayedCount}</span>
-                    <button onClick={() => { setSearchText(''); setSearchOpen(true) }} title="Clear"
-                      className="text-gray-400 hover:text-gray-600 leading-none">
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <button
-                onClick={() => setSearchOpen(true)}
-                title="Search"
-                className="h-8 w-8 flex items-center justify-center rounded border border-gray-300 text-gray-500 hover:bg-gray-50 transition-colors"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-              </button>
-            )}
+              )}
+            </div>
           </div>
 
           {/* View menu */}
