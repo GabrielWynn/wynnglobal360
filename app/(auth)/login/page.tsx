@@ -172,7 +172,10 @@ function LoginContent() {
   async function handleMicrosoftLogin() {
     await supabase.auth.signInWithOAuth({
       provider: "azure",
-      options: { redirectTo: `${siteUrl}/advisors` },
+      options: {
+        redirectTo: `${siteUrl}/api/auth/callback?next=${encodeURIComponent(redirectTo)}`,
+        scopes: "email",
+      },
     });
   }
 

@@ -5,6 +5,8 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { requireAdmin, unauthorised } from '@/lib/auth-guard'
+import { getResendClient, EMAIL_FROM } from '@/lib/email/resend'
+import { renderInviteEmail, renderPasswordResetEmail } from '@/lib/email/templates'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -47,7 +49,7 @@ export async function PATCH(
     const { id } = await params
     const { data: ifa, error: fetchError } = await supabaseAdmin
       .from('ifas')
-      .select('email')
+      .select('email, name')
       .eq('id', id)
       .single()
 
@@ -55,13 +57,49 @@ export async function PATCH(
       return NextResponse.json({ error: 'IFA not found' }, { status: 404 })
     }
 
-    const { error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(ifa.email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://wgi-comm-ifa.vercel.app'}/accept-invite`,
-      data: { ifa_id: id, role: 'ifa' },
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+
+    const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+      type: 'invite',
+      email: ifa.email,
+      options: { redirectTo: `${siteUrl}/accept-invite`, data: { ifa_id: id, role: 'ifa' } },
     })
 
-    if (inviteError) return NextResponse.json({ error: inviteError.message }, { status: 500 })
-    return NextResponse.json({ invite_sent: true })
+    if (!linkError) {
+      const { error: sendError } = await getResendClient().emails.send({
+        from: EMAIL_FROM,
+        to: ifa.email,
+        subject: "You've been invited to Wynn Global 360",
+        html: renderInviteEmail({ name: ifa.name, actionLink: linkData.properties.action_link }),
+      })
+      if (!sendError) return NextResponse.json({ invite_sent: true })
+      return NextResponse.json({ error: sendError.message }, { status: 500 })
+    }
+
+    // The email already has a Supabase Auth account — generateLink({type:'invite'})
+    // rejects those like inviteUserByEmail did, so send a password-reset email
+    // instead. That account gets linked to this ifas row automatically on next
+    // login via /api/auth/link-ifa.
+    const alreadyRegistered = /already.*registered/i.test(linkError.message)
+    if (!alreadyRegistered) {
+      return NextResponse.json({ error: linkError.message }, { status: 500 })
+    }
+
+    const { data: resetLinkData, error: resetLinkError } = await supabaseAdmin.auth.admin.generateLink({
+      type: 'recovery',
+      email: ifa.email,
+      options: { redirectTo: `${siteUrl}/reset-password` },
+    })
+    if (resetLinkError) return NextResponse.json({ error: resetLinkError.message }, { status: 500 })
+
+    const { error: sendError } = await getResendClient().emails.send({
+      from: EMAIL_FROM,
+      to: ifa.email,
+      subject: 'Reset your Wynn Global 360 password',
+      html: renderPasswordResetEmail({ actionLink: resetLinkData.properties.action_link }),
+    })
+    if (sendError) return NextResponse.json({ error: sendError.message }, { status: 500 })
+    return NextResponse.json({ invite_sent: true, already_registered: true })
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 })
   }

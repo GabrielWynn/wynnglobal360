@@ -47,6 +47,7 @@ export default function IFAManagementPage() {
   const [saving, setSaving] = useState(false)
   const [modalError, setModalError] = useState('')
   const [inviteSent, setInviteSent] = useState(false)
+  const [inviteAlreadyRegistered, setInviteAlreadyRegistered] = useState(false)
 
   // Resend invite
   const [resendingId, setResendingId] = useState<string | null>(null)
@@ -89,6 +90,7 @@ export default function IFAManagementPage() {
     setModalMode('create')
     setModalError('')
     setInviteSent(false)
+    setInviteAlreadyRegistered(false)
   }
 
   const openEdit = (ifa: IFA) => {
@@ -97,6 +99,7 @@ export default function IFAManagementPage() {
     setModalMode('edit')
     setModalError('')
     setInviteSent(false)
+    setInviteAlreadyRegistered(false)
   }
 
   const handleSave = async () => {
@@ -118,10 +121,13 @@ export default function IFAManagementPage() {
         const data = await res.json()
         if (!res.ok) throw new Error(data.error)
         setInviteSent(data.invite_sent)
+        setInviteAlreadyRegistered(!!data.already_registered)
         await loadIFAs()
-        if (!data.invite_sent) setModalMode(null)
-        // leave modal open briefly to show invite status
-        else setTimeout(() => setModalMode(null), 2000)
+        if (!data.invite_sent) {
+          setModalError('Could not send invite email — check server logs for details.')
+        } else {
+          setTimeout(() => setModalMode(null), 2500)
+        }
       } else {
         const authHeaders = await getAuthHeaders()
         const res = await fetch(`/api/commission/ifas/${editingId}`, {
@@ -148,8 +154,14 @@ export default function IFAManagementPage() {
     const res = await fetch(`/api/commission/ifas/${id}`, { method: 'PATCH', headers: authHeaders })
     const data = await res.json()
     setResendingId(null)
-    setActionMsg(data.invite_sent ? 'Invite email re-sent.' : `Failed: ${data.error}`)
-    setTimeout(() => setActionMsg(''), 4000)
+    setActionMsg(
+      !data.invite_sent
+        ? `Failed: ${data.error}`
+        : data.already_registered
+          ? 'That email already has an account — sent a password-reset link instead of an invite.'
+          : 'Invite email re-sent.'
+    )
+    setTimeout(() => setActionMsg(''), 5000)
   }
 
   // ── Deactivate / Reactivate ──────────────────────────────────────────────────
@@ -384,7 +396,9 @@ export default function IFAManagementPage() {
 
             {inviteSent && (
               <div className="bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded text-sm">
-                IFA created and invite email sent!
+                {inviteAlreadyRegistered
+                  ? 'IFA created. That email already has an account — sent a password-reset link instead of an invite.'
+                  : 'IFA created and invite email sent!'}
               </div>
             )}
 

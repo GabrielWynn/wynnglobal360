@@ -13,6 +13,7 @@
 --   B. Site URL & redirect URLs
 --   C. Azure / Microsoft OAuth provider
 --   D. Verification — SQL you CAN run to confirm current values
+--   E. Custom SMTP (Resend) — branded sender for invite/reset/magic-link emails
 -- ═══════════════════════════════════════════════════════════════════════════
 
 
@@ -43,20 +44,26 @@
 -- ─────────────────────────────────────────────────────────────────────────────
 -- Where:  Supabase Dashboard → Authentication → URL Configuration
 --
+-- INCIDENT (2026-08-05): live config did not match this doc — Redirect URLs
+-- was completely empty and Site URL was "https://wynnglobal360.vercel.app/login".
+-- Every redirectTo the app passes (accept-invite, reset-password, /advisors
+-- post-OAuth landing) was silently rejected and fell back to that raw Site
+-- URL, so invite/reset links sent users to /login instead of the intended
+-- page. Found while testing the Resend invite integration (see
+-- app/api/commission/ifas/route.ts) — the generated action_link's redirect_to
+-- came back as the Site URL, not the requested redirectTo. Fixed in the
+-- dashboard same day and re-verified: action_link now correctly resolves to
+-- .../accept-invite instead of falling back to .../login.
+--
 -- Site URL (the canonical origin Supabase uses in auth emails):
 --   https://www.wynnglobal360.com
 --
--- Additional redirect URLs (add all of these):
---   https://www.wynnglobal360.com/advisors
---   https://www.wynnglobal360.com/reset-password
---   https://www.wynnglobal360.com/accept-invite
---   https://www.wynnglobal360.com/api/auth/callback
---   https://wynnglobal360.vercel.app/reset-password
---   https://wynnglobal360.vercel.app/accept-invite
---   http://localhost:3000/advisors          ← keep for local dev
---   http://localhost:3000/reset-password    ← keep for local dev
---   http://localhost:3000/accept-invite     ← keep for local dev
---   http://localhost:3000/api/auth/callback ← keep for local dev
+-- Redirect URLs — one wildcard entry per domain covers every path
+-- (Supabase glob-matches redirect_to against this list; ** crosses path
+-- separators, see https://supabase.com/docs/guides/auth/concepts/redirect-urls):
+--   https://www.wynnglobal360.com/**
+--   https://wynnglobal360.vercel.app/**
+--   http://localhost:3000/**        ← keep for local dev
 --
 -- Notes:
 --   • Supabase matches redirect_to against this allowlist; any URL not listed
@@ -151,3 +158,53 @@ FROM information_schema.columns
 WHERE table_schema = 'public'
   AND table_name   = 'ifas'
 ORDER BY ordinal_position;
+
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- E. Custom SMTP (Resend) — branded sender for invite/reset/magic-link emails
+-- ─────────────────────────────────────────────────────────────────────────────
+-- Where:  Supabase Dashboard → Project Settings → Authentication → SMTP Settings
+--
+-- Why:
+--   Without custom SMTP, all Auth emails (invite, password reset, magic link)
+--   send from the shared "noreply@mail.app.supabase.io" address with no
+--   branding and a low built-in rate limit — fine for dev, not for production.
+--   This also fixed a real incident: an admin invited an IFA whose email
+--   already had a Supabase Auth account from an earlier deleted/recreated
+--   IFA record — inviteUserByEmail() rejected it with 422 "already
+--   registered" and the app silently swallowed the error (see
+--   app/api/commission/ifas/route.ts). The code now falls back to a
+--   password-reset email in that case; this section is unrelated to that
+--   fix, just recorded here since both surfaced in the same investigation.
+--
+-- Resend prerequisites (resend.com dashboard):
+--   1. Domains → verify wynnglobal360.com (add the SPF/DKIM/DMARC records
+--      Resend provides — required before sending from @wynnglobal360.com).
+--   2. API Keys → create a key with "Sending access".
+--
+-- Supabase SMTP Settings fields:
+--   Sender email     noreply@wynnglobal360.com   (must be on verified domain)
+--   Sender name      Wynn Global 360
+--   Host             smtp.resend.com
+--   Port             587                          (STARTTLS)
+--   Username         resend                       (literal string)
+--   Password         <Resend API key>              — enter directly in the
+--                                                     dashboard, never commit it
+--
+-- Management API equivalent (requires a personal access token from
+-- https://supabase.com/dashboard/account/tokens — NOT the service_role key):
+--   curl -X PATCH https://api.supabase.com/v1/projects/{ref}/config/auth \
+--     -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+--     -H "Content-Type: application/json" \
+--     -d '{
+--       "smtp_admin_email": "noreply@wynnglobal360.com",
+--       "smtp_host": "smtp.resend.com",
+--       "smtp_port": 587,
+--       "smtp_user": "resend",
+--       "smtp_pass": "<Resend API key>",
+--       "smtp_sender_name": "Wynn Global 360"
+--     }'
+--
+-- After saving, send a test invite/reset and confirm in the dashboard
+-- (Authentication → Logs) that mail_from shows noreply@wynnglobal360.com
+-- instead of noreply@mail.app.supabase.io.
