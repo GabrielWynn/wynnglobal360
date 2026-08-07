@@ -24,21 +24,19 @@ export function createServerClient() {
 
   return _createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
-      get(name: string) {
-        return cookieStore.get(name)?.value;
+      // Prefer getAll/setAll so chunked auth cookies are written/cleared
+      // atomically. The deprecated get/set/remove API can leave stale chunks
+      // that decode as "Invalid UTF-8 sequence" and crash Edge middleware.
+      getAll() {
+        return cookieStore.getAll();
       },
-      set(name: string, value: string, options: CookieOptions) {
+      setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
         try {
-          cookieStore.set({ name, value, ...options });
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set({ name, value, ...options });
+          });
         } catch {
           // Server Components cannot set cookies; the middleware handles this.
-        }
-      },
-      remove(name: string, options: CookieOptions) {
-        try {
-          cookieStore.set({ name, value: "", ...options });
-        } catch {
-          // Same as above — safe to ignore in Server Components.
         }
       },
     },

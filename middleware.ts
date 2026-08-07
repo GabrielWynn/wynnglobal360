@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 
 // ---------------------------------------------------------------------------
@@ -15,6 +15,47 @@ const PUBLIC_PATHS = [
 function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.some(
     (p) => pathname === p || pathname.startsWith(p + "/")
+  );
+}
+
+function isSupabaseAuthCookie(name: string): boolean {
+  return name.startsWith("sb-") && name.includes("-auth-token");
+}
+
+/** Expire all Supabase auth cookies (including leftover chunked cookies). */
+function clearAuthCookies(response: NextResponse, request: NextRequest) {
+  for (const { name } of request.cookies.getAll()) {
+    if (!isSupabaseAuthCookie(name)) continue;
+    response.cookies.set(name, "", {
+      path: "/",
+      maxAge: 0,
+      httpOnly: true,
+      sameSite: "lax",
+      secure: true,
+    });
+  }
+}
+
+/** Copy Set-Cookie values from one response onto another (e.g. redirects). */
+function copyCookies(from: NextResponse, to: NextResponse) {
+  from.cookies.getAll().forEach((cookie) => {
+    to.cookies.set(cookie);
+  });
+}
+
+function isCorruptSessionError(error: unknown): boolean {
+  const message =
+    error instanceof Error
+      ? error.message
+      : typeof error === "string"
+        ? error
+        : String(error ?? "");
+
+  return (
+    /Invalid UTF-8 sequence/i.test(message) ||
+    /refresh[_ ]token/i.test(message) ||
+    /JWT/i.test(message) ||
+    /base64/i.test(message)
   );
 }
 
@@ -39,38 +80,66 @@ export async function middleware(request: NextRequest) {
     request: { headers: request.headers },
   });
 
-  // Create a request-scoped Supabase client that reads/writes cookies on the
-  // NextRequest / NextResponse pair (required by @supabase/ssr in middleware)
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          // Write back to the request so the updated value is visible downstream
-          request.cookies.set({ name, value, ...options });
-          response = NextResponse.next({
-            request: { headers: request.headers },
-          });
-          response.cookies.set({ name, value, ...options });
-        },
-        remove(name: string, options: CookieOptions) {
-          request.cookies.set({ name, value: "", ...options });
-          response = NextResponse.next({
-            request: { headers: request.headers },
-          });
-          response.cookies.set({ name, value: "", ...options });
-        },
-      },
-    }
-  );
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  // Missing env should never take the whole site down with a 500
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error("middleware: missing Supabase env vars");
+    if (isPublicPath(pathname) || pathname.startsWith("/api/")) {
+      return response;
+    }
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // getAll/setAll is required so leftover auth-token chunks are cleared
+  // correctly (the deprecated get/set/remove API leaves stale chunks that
+  // decode as "Invalid UTF-8 sequence" and crash middleware on Vercel).
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => {
+          request.cookies.set(name, value);
+        });
+        response = NextResponse.next({
+          request: { headers: request.headers },
+        });
+        cookiesToSet.forEach(({ name, value, options }) => {
+          response.cookies.set(name, value, options);
+        });
+      },
+    },
+  });
+
+  // Prefer getUser() over getSession() — validates with Auth server.
+  // Corrupt/chunked cookies throw "Invalid UTF-8 sequence" and must not 500.
+  let user: { id: string; email?: string | null } | null = null;
+  let clearedCorruptCookies = false;
+
+  try {
+    const {
+      data: { user: authUser },
+      error,
+    } = await supabase.auth.getUser();
+
+    if (error) {
+      if (isCorruptSessionError(error)) {
+        clearAuthCookies(response, request);
+        clearedCorruptCookies = true;
+      }
+      user = null;
+    } else {
+      user = authUser;
+    }
+  } catch (error) {
+    console.error("middleware: auth cookie error", error);
+    clearAuthCookies(response, request);
+    clearedCorruptCookies = true;
+    user = null;
+  }
 
   // ------------------------------------------------------------------
   // Root path ( / ) — role-aware redirect
@@ -78,39 +147,59 @@ export async function middleware(request: NextRequest) {
   //   unauthenticated → /login
   // ------------------------------------------------------------------
   if (pathname === "/") {
-    if (session) {
-      return NextResponse.redirect(new URL("/advisors", request.url));
+    if (user) {
+      const redirect = NextResponse.redirect(new URL("/advisors", request.url));
+      copyCookies(response, redirect);
+      return redirect;
     }
     const loginUrl = new URL("/login", request.url);
     loginUrl.search = request.nextUrl.search;
-    return NextResponse.redirect(loginUrl);
+    const redirect = NextResponse.redirect(loginUrl);
+    copyCookies(response, redirect);
+    if (clearedCorruptCookies) clearAuthCookies(redirect, request);
+    return redirect;
   }
 
   // ------------------------------------------------------------------
   // Unauthenticated request to a protected route → /login?redirectTo=…
   // ------------------------------------------------------------------
-  if (!session && !isPublicPath(pathname)) {
+  if (!user && !isPublicPath(pathname)) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirectTo", pathname);
-    return NextResponse.redirect(loginUrl);
+    const redirect = NextResponse.redirect(loginUrl);
+    copyCookies(response, redirect);
+    if (clearedCorruptCookies) clearAuthCookies(redirect, request);
+    return redirect;
   }
 
   // ------------------------------------------------------------------
   // Authenticated user landing on /login → bounce to /advisors
   // ------------------------------------------------------------------
-  if (session && pathname === "/login") {
-    return NextResponse.redirect(new URL("/advisors", request.url));
+  if (user && pathname === "/login") {
+    const redirect = NextResponse.redirect(new URL("/advisors", request.url));
+    copyCookies(response, redirect);
+    return redirect;
   }
 
   // ------------------------------------------------------------------
   // Admin-only section: /admin and all sub-paths
   // ------------------------------------------------------------------
-  if (session && pathname.startsWith("/admin")) {
-    const role = await resolveRole(session.user.id, session.user.email);
+  if (user && pathname.startsWith("/admin")) {
+    try {
+      const role = await resolveRole(user.id, user.email ?? undefined);
 
-    if (role !== "admin") {
-      // IFA (or unknown) user → back to their default landing page
-      return NextResponse.redirect(new URL("/advisors", request.url));
+      if (role !== "admin") {
+        const redirect = NextResponse.redirect(
+          new URL("/advisors", request.url)
+        );
+        copyCookies(response, redirect);
+        return redirect;
+      }
+    } catch (error) {
+      console.error("middleware: role resolution failed", error);
+      const redirect = NextResponse.redirect(new URL("/advisors", request.url));
+      copyCookies(response, redirect);
+      return redirect;
     }
   }
 
@@ -129,11 +218,13 @@ async function resolveRole(
   userId: string,
   email: string | undefined
 ): Promise<string | null> {
-  const admin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  );
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!serviceKey || !supabaseUrl) return null;
+
+  const admin = createClient(supabaseUrl, serviceKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
 
   // Primary: match by user_id
   const { data: byUserId } = await admin
