@@ -2,16 +2,23 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { getAuthHeaders } from "@/lib/supabase";
 import type { FFFormVersion } from "@/lib/financial-planner/fact-find-types";
+import SaveToast from "./SaveToast";
+
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--wgi-text-muted)" }}>
+      {children}
+    </span>
+  );
+}
 
 interface FormBuilderProps {
   versions: FFFormVersion[];
 }
 
 export default function FormBuilder({ versions: initialVersions }: FormBuilderProps) {
-  const router = useRouter();
   const [versions, setVersions] = useState<FFFormVersion[]>(initialVersions);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newName, setNewName] = useState("");
@@ -20,6 +27,7 @@ export default function FormBuilder({ versions: initialVersions }: FormBuilderPr
   const [activating, setActivating] = useState<string | null>(null);
   const [confirmActivate, setConfirmActivate] = useState<{ id: string; inProgress: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
 
   async function handleCreate() {
     if (!newName.trim()) return;
@@ -41,6 +49,7 @@ export default function FormBuilder({ versions: initialVersions }: FormBuilderPr
       setShowCreateForm(false);
       setNewName("");
       setNewNotes("");
+      setToast("Version created");
     } catch {
       setError("Network error. Please try again.");
     } finally {
@@ -74,6 +83,7 @@ export default function FormBuilder({ versions: initialVersions }: FormBuilderPr
         prev.map((v) => ({ ...v, is_active: v.id === id }))
       );
       setConfirmActivate(null);
+      setToast("Version activated");
     } catch {
       setError("Network error. Please try again.");
     } finally {
@@ -108,22 +118,28 @@ export default function FormBuilder({ versions: initialVersions }: FormBuilderPr
             New Form Version
           </h3>
           <div className="flex flex-col gap-3">
-            <input
-              type="text"
-              placeholder="Version name (e.g. Análisis Financiero v2)"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border text-sm focus:outline-none"
-              style={{ borderColor: "var(--wgi-border)", color: "var(--wgi-text)", background: "white" }}
-            />
-            <textarea
-              placeholder="Internal notes (optional)"
-              value={newNotes}
-              onChange={(e) => setNewNotes(e.target.value)}
-              rows={2}
-              className="w-full px-3 py-2 rounded-lg border text-sm resize-none focus:outline-none"
-              style={{ borderColor: "var(--wgi-border)", color: "var(--wgi-text)", background: "white" }}
-            />
+            <label className="flex flex-col gap-1">
+              <FieldLabel>Version name</FieldLabel>
+              <input
+                type="text"
+                placeholder="e.g. Análisis Financiero v2"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border text-sm focus:outline-none"
+                style={{ borderColor: "var(--wgi-border)", color: "var(--wgi-text)", background: "white" }}
+              />
+            </label>
+            <label className="flex flex-col gap-1">
+              <FieldLabel>Internal notes (optional)</FieldLabel>
+              <textarea
+                placeholder="Why this version exists, what changed…"
+                value={newNotes}
+                onChange={(e) => setNewNotes(e.target.value)}
+                rows={2}
+                className="w-full px-3 py-2 rounded-lg border text-sm resize-none focus:outline-none"
+                style={{ borderColor: "var(--wgi-border)", color: "var(--wgi-text)", background: "white" }}
+              />
+            </label>
             {error && (
               <p className="text-xs" style={{ color: "#ef4444" }}>
                 {error}
@@ -266,6 +282,8 @@ export default function FormBuilder({ versions: initialVersions }: FormBuilderPr
           </p>
         </div>
       )}
+
+      <SaveToast message={toast} onDone={() => setToast(null)} />
     </div>
   );
 }
