@@ -172,6 +172,10 @@ export async function POST(request: Request) {
           : NaN
         const platformPaymentPct = isNaN(paymentPctRaw) ? null : paymentPctRaw
 
+        // Optional APE (e.g. IDAD Cash Invested emitted by PDF extraction as row.ape)
+        const apeRaw = parseAmount(row.ape ?? '')
+        const ape = row.ape !== undefined && row.ape !== '' && !Number.isNaN(apeRaw) ? apeRaw : null
+
         // Capture policy commencement date if present
         const commencementDate = mapping.commencement_date_col
           ? normalizeDate((row[mapping.commencement_date_col] || '').trim())
@@ -211,6 +215,7 @@ export async function POST(request: Request) {
             currency,
             platform_payment_pct: platformPaymentPct,
             commencement_date:    commencementDate,
+            ape,
             ifa_percentage:       null,
             suspense_percentage:  null,
             wgi_percentage:       null,
@@ -321,6 +326,7 @@ export async function POST(request: Request) {
           currency,
           platform_payment_pct: platformPaymentPct,
           commencement_date:   commencementDate,
+          ape,
           ifa_percentage:      null,
           suspense_percentage: null,
           wgi_percentage:      null,

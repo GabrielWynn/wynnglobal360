@@ -110,6 +110,58 @@ export const DEFAULT_EXTRACTION_SCHEMA: Record<string, unknown> = {
   required: ['rows'],
 }
 
+/** IDAD: extract Commission and Marketing Support separately — summed in platform-extraction. */
+const IDAD_ROW_ITEM_SCHEMA = {
+  type: 'object',
+  properties: {
+    policy_number: {
+      type: 'string',
+      description: 'Client or account reference for this line, exactly as printed.',
+      'x-alternativeNames': [
+        'Policy No', 'Policy Number', 'Account Number', 'Reference', 'Client Ref',
+      ],
+    },
+    policy_holder_name: {
+      type: 'string',
+      description: 'Full name of the client / investor for this line.',
+      'x-alternativeNames': ['Client Name', 'Client', 'Investor Name', 'Policy Holder'],
+    },
+    transaction_date: {
+      type: 'string',
+      description:
+        'Statement or transaction date formatted as YYYY-MM-DD. Convert DD/MM/YYYY to YYYY-MM-DD.',
+      'x-alternativeNames': ['Date', 'Transaction Date', 'Statement Date', 'Payment Date'],
+    },
+    currency: {
+      type: 'string',
+      description: '3-letter ISO currency code (USD, GBP, EUR). Convert symbols if needed.',
+      'x-alternativeNames': ['Currency', 'Ccy'],
+    },
+    commission: {
+      type: 'number',
+      description:
+        'Value from the Commission column only — do NOT include Marketing Support in this field.',
+      'x-alternativeNames': ['Commission', 'Comm'],
+    },
+    marketing_support: {
+      type: 'number',
+      description: 'Value from the Marketing Support column only.',
+      'x-alternativeNames': ['Marketing Support', 'Mkt Support', 'Marketing'],
+    },
+    cash_invested: {
+      type: 'number',
+      description: 'Value from the Cash Invested column as a plain number (no currency symbols).',
+      'x-alternativeNames': ['Cash Invested', 'Cash Inv', 'Investment Amount'],
+    },
+    isin: {
+      type: 'string',
+      description: 'ISIN identifier for the product, e.g. XS3406628654.',
+      'x-alternativeNames': ['ISIN', 'ISIN Number', 'ISIN No'],
+    },
+  },
+  required: ['policy_number', 'commission', 'transaction_date', 'isin'],
+}
+
 /**
  * Per-platform schema overrides, keyed by `platforms.code`.
  * Add an entry here when a platform's statement layout needs tighter
@@ -117,7 +169,20 @@ export const DEFAULT_EXTRACTION_SCHEMA: Record<string, unknown> = {
  *
  *   RL360: { ...DEFAULT_EXTRACTION_SCHEMA, properties: { rows: { ...customised items... } } }
  */
-const PLATFORM_SCHEMA_OVERRIDES: Record<string, Record<string, unknown>> = {}
+const PLATFORM_SCHEMA_OVERRIDES: Record<string, Record<string, unknown>> = {
+  IDAD: {
+    type: 'object',
+    properties: {
+      rows: {
+        type: 'array',
+        description:
+          'Every commission line in the IDAD statement table. One entry per data row. Do NOT include subtotal or total rows.',
+        items: IDAD_ROW_ITEM_SCHEMA,
+      },
+    },
+    required: ['rows'],
+  },
+}
 
 /**
  * Return the ADE extraction schema for a platform code.

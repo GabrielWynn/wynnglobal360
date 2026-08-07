@@ -19,6 +19,7 @@ import {
   normalizeCommissionType,
   normalizeExtractedRow,
 } from '../lib/commission/normalize'
+import { transformExtractedRow } from '../lib/commission/platform-extraction'
 
 let passed = 0
 let failed = 0
@@ -86,6 +87,57 @@ test('schema uses only supported ADE keywords', () => {
 test('getExtractionSchema falls back to the default for unknown platforms', () => {
   assert.equal(getExtractionSchema('SOME_UNKNOWN_PLATFORM'), DEFAULT_EXTRACTION_SCHEMA)
   assert.equal(getExtractionSchema('rl360'), getExtractionSchema('RL360'))
+})
+
+test('getExtractionSchema returns IDAD-specific schema', () => {
+  const s = getExtractionSchema('IDAD') as any
+  assert.notEqual(s, DEFAULT_EXTRACTION_SCHEMA)
+  assert.ok(s.properties.rows.items.properties.commission)
+  assert.ok(s.properties.rows.items.properties.marketing_support)
+  assert.ok(s.properties.rows.items.properties.isin)
+  assert.ok(s.properties.rows.items.properties.cash_invested)
+})
+
+// ── 1b. Platform transforms (IDAD) ───────────────────────────────────────────
+
+console.log('\nplatform-extraction (IDAD)')
+
+test('IDAD transform sums Commission + Marketing Support into amount', () => {
+  const raw = {
+    policy_number: 'ACC-001',
+    policy_holder_name: 'Jane Client',
+    transaction_date: '2026-01-15',
+    currency: 'USD',
+    commission: 100,
+    marketing_support: 25.5,
+    cash_invested: 50000,
+    isin: 'XS3406628654',
+  }
+  const out = transformExtractedRow('IDAD', raw)
+  assert.equal(out.amount, 125.5)
+  assert.equal(out.commission_type, 'XS3406628654')
+  assert.equal(out.ape, 50000)
+})
+
+test('IDAD transform + normalize produces clean preview row', () => {
+  const raw = {
+    policy_number: 'ACC-001',
+    transaction_date: '2026-01-15',
+    commission: 80,
+    marketing_support: 20,
+    cash_invested: 100000,
+    isin: 'XS3406628654',
+  }
+  const { row, warnings } = normalizeExtractedRow(transformExtractedRow('IDAD', raw), 0)
+  assert.equal(row.amount, '100')
+  assert.equal(row.commission_type, 'XS3406628654')
+  assert.equal(row.ape, '100000')
+  assert.deepEqual(warnings, [])
+})
+
+test('non-IDAD platforms pass through unchanged', () => {
+  const raw = { policy_number: 'P1', amount: 50, transaction_date: '2026-01-01' }
+  assert.equal(transformExtractedRow('RL360', raw), raw)
 })
 
 // ── 2. normalizeDate ──────────────────────────────────────────────────────────

@@ -14,6 +14,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { requireAdmin, unauthorised } from '@/lib/auth-guard'
 import { createParseJob, getParseJob, extractFromMarkdown, LandingAIError } from '@/lib/landingai'
 import { getExtractionSchema } from '@/lib/commission/extraction-schemas'
+import { transformExtractedRow } from '@/lib/commission/platform-extraction'
 import { normalizeExtractedRow, type RowWarning } from '@/lib/commission/normalize'
 
 // Extraction on a completed parse can still take minutes — needs fluid compute.
@@ -145,7 +146,8 @@ export async function GET(request: Request) {
     const rows: Record<string, string>[] = []
     const rowWarnings: RowWarning[] = []
     rawRows.forEach((raw, i) => {
-      const { row, warnings } = normalizeExtractedRow(raw, i)
+      const transformed = transformExtractedRow(platform.code, raw)
+      const { row, warnings } = normalizeExtractedRow(transformed, i)
       rows.push(row)
       rowWarnings.push(...warnings)
     })
