@@ -133,6 +133,12 @@ export function useMasterFileColumns({
       { headerName: 'IFA Name',  field: 'ifa_name',           width: 150, filter: 'agTextColumnFilter' },
       { headerName: 'Type',      field: 'commission_type',    width: 130, filter: 'agTextColumnFilter' },
       {
+        headerName: 'Type2', field: 'type2',
+        headerTooltip: 'ISIN for Structured Notes',
+        width: 130, editable: true, filter: 'agTextColumnFilter',
+        cellStyle: (p: CellClassParams) => p.node.rowPinned ? null : yellowCell,
+      },
+      {
         headerName: 'Received', field: 'amount',
         width: 120, filter: 'agNumberColumnFilter', type: 'numericColumn', valueFormatter: fmtNum,
         cellStyle: { fontWeight: 'bold' } as Record<string, string | number>,

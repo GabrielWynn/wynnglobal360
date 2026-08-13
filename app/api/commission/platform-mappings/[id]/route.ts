@@ -28,6 +28,7 @@ export async function PUT(
       policy_holder_col,
       commencement_date_col,
       payment_pct_col,
+      type2_col,
       default_currency,
     } = body
 
@@ -49,6 +50,7 @@ export async function PUT(
         policy_holder_col: policy_holder_col || null,
         commencement_date_col: commencement_date_col || null,
         payment_pct_col: payment_pct_col || null,
+        type2_col: type2_col || null,
         default_currency: default_currency || 'USD',
       })
       .eq('id', id)

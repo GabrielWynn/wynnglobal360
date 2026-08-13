@@ -27,6 +27,7 @@ interface ColumnMapping {
   policy_holder_col?: string | null
   commencement_date_col?: string | null
   payment_pct_col?: string | null
+  type2_col?: string | null
   default_currency: string
 }
 
@@ -166,6 +167,11 @@ export async function POST(request: Request) {
           ? (row[mapping.policy_holder_col] || '').trim()
           : ''
 
+        // Type2 (Structured Notes ISIN) — optional, mapped like any other column
+        const type2 = mapping.type2_col
+          ? (row[mapping.type2_col] || '').trim() || null
+          : null
+
         // Capture platform-supplied payment/advisory fee percentage if present
         const paymentPctRaw = mapping.payment_pct_col
           ? parseFloat(row[mapping.payment_pct_col] || '')
@@ -211,6 +217,7 @@ export async function POST(request: Request) {
             platform_id,
             commission_type:      rawCommissionType || null,
             commission_type_code: commissionTypeCode || null,
+            type2,
             amount:               grossAmount,
             currency,
             platform_payment_pct: platformPaymentPct,
@@ -322,6 +329,7 @@ export async function POST(request: Request) {
           platform_id,
           commission_type:      rawCommissionType || null,
           commission_type_code: commissionTypeCode || null,
+          type2,
           amount:              grossAmount,
           currency,
           platform_payment_pct: platformPaymentPct,

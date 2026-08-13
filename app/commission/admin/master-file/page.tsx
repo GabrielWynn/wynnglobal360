@@ -39,6 +39,7 @@ interface CommissionRecord {
   platform_id: string | null
   commission_type: string | null
   commission_type_code: string | null
+  type2: string | null
   amount: number
   variable_amount: number
   currency: string
@@ -94,6 +95,7 @@ interface AddForm {
   ifa_id: string
   platform_id: string
   commission_type: string
+  type2: string
   amount: string
   currency: string
   ifa_percentage: string
@@ -114,7 +116,7 @@ const COLUMN_STATE_KEY    = 'wgi_master_file_columns'
 // (DESIGN-COMMISSION.md). Applied via defaultColDef.cellClass → `.cm-cell-mono`
 // (defined in ag-theme-commission.css). Text columns stay in the UI font.
 const MONO_FIELDS = new Set<string>([
-  'policy_number', 'ifa_code',
+  'policy_number', 'ifa_code', 'type2',
   'amount', 'variable_amount', 'adjusted', 'ape', 'ape_wgi',
   'platform_payment_pct', 'rate',
   'ifa_percentage', 'ifa_amount', 'suspense_percentage', 'suspense_amount',
@@ -125,7 +127,7 @@ const MONO_FIELDS = new Set<string>([
 // Column panel groups — maps colIds to labelled sections in the dropdown
 const COL_GROUPS: { label: string; ids: string[] }[] = [
   { label: 'Identity',   ids: ['expand', 'transaction_date', 'commencement_date', 'policy_number', 'policy_holder_name', 'ifa_code', 'ifa_name'] },
-  { label: 'Commission', ids: ['commission_type', 'amount', 'variable_amount', 'adjusted', 'currency', 'platform_payment_pct', 'ape', 'ape_wgi', 'ifa_percentage', 'ifa_amount', 'suspense_percentage', 'suspense_amount', 'wgi_percentage', 'wg_amount', 'pending_percentage', 'pending_amount'] },
+  { label: 'Commission', ids: ['commission_type', 'type2', 'amount', 'variable_amount', 'adjusted', 'currency', 'platform_payment_pct', 'ape', 'ape_wgi', 'ifa_percentage', 'ifa_amount', 'suspense_percentage', 'suspense_amount', 'wgi_percentage', 'wg_amount', 'pending_percentage', 'pending_amount'] },
   { label: 'Payment',    ids: ['due_wg', 'paid', 'unpaid', 'status'] },
   { label: 'Metadata',   ids: ['rate', 'notes', 'ifa_notes', 'platform.name', 'upload_batch.filename'] },
 ]
@@ -180,6 +182,7 @@ const defaultAddForm: AddForm = {
   ifa_id: '',
   platform_id: '',
   commission_type: '',
+  type2: '',
   amount: '',
   currency: 'USD',
   ifa_percentage: '',
@@ -722,7 +725,7 @@ export default function MasterFilePage() {
   const onCellValueChanged = useCallback(async (event: CellValueChangedEvent) => {
     const { data, colDef } = event
     const field = colDef.field as string
-    const editableFields = ['ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage', 'variable_amount', 'ape', 'ape_wgi', 'due_wg', 'paid', 'status', 'rate', 'notes', 'ifa_notes']
+    const editableFields = ['ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage', 'variable_amount', 'ape', 'ape_wgi', 'due_wg', 'paid', 'status', 'rate', 'notes', 'ifa_notes', 'type2']
     if (!editableFields.includes(field)) return
 
     const updatePayload: Record<string, unknown> = { [field]: data[field], updated_at: new Date().toISOString() }
@@ -1046,6 +1049,7 @@ export default function MasterFilePage() {
         platform_id:         addForm.platform_id || null,
         commission_type:      addForm.commission_type.trim() || null,
         commission_type_code: normalizeCommissionType(addForm.commission_type.trim()),
+        type2:               addForm.type2.trim() || null,
         amount:              amt,
         currency:            addForm.currency || 'USD',
         ifa_percentage:      addForm.ifa_percentage      ? parseFloat(addForm.ifa_percentage)      / 100 : null,

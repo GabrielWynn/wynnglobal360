@@ -15,6 +15,7 @@ export interface AddRecordFormState {
   ifa_id: string
   platform_id: string
   commission_type: string
+  type2: string
   amount: string
   currency: string
   ifa_percentage: string
@@ -98,8 +99,14 @@ export function AddRecordModal({
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">Commission Type</label>
-            <input type="text" placeholder="e.g. Initial, Renewal" value={form.commission_type}
+            <input type="text" placeholder="e.g. Initial, Renewal, Structured Note" value={form.commission_type}
               onChange={e => setForm(f => ({ ...f, commission_type: e.target.value }))}
+              className={PLAIN} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Type2 / ISIN <span className="text-gray-400 font-normal">(Structured Notes)</span></label>
+            <input type="text" placeholder="e.g. XS3406628654" value={form.type2}
+              onChange={e => setForm(f => ({ ...f, type2: e.target.value }))}
               className={PLAIN} />
           </div>
           <div>

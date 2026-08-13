@@ -54,7 +54,7 @@ export async function GET(request: Request) {
 const EDITABLE_FIELDS = new Set([
   'ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage',
   'variable_amount', 'ape', 'ape_wgi', 'due_wg',
-  'paid', 'paid_at', 'status', 'rate', 'notes', 'ifa_notes', 'updated_at',
+  'paid', 'paid_at', 'status', 'rate', 'notes', 'ifa_notes', 'type2', 'updated_at',
 ])
 
 export async function PATCH(request: Request) {

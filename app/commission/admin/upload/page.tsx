@@ -25,6 +25,7 @@ interface ColumnMapping {
   policy_holder_col: string
   commencement_date_col: string
   payment_pct_col: string
+  type2_col: string
   default_currency: string
 }
 
@@ -59,11 +60,14 @@ const EMPTY_MAPPING: Omit<ColumnMapping, 'platform_id' | 'id'> = {
   policy_holder_col: '',
   commencement_date_col: '',
   payment_pct_col: '',
+  type2_col: '',
   default_currency: 'USD',
 }
 
 // PDF extraction emits canonical field names, so the mapping step is skipped
 // and this identity mapping is passed straight to process-upload.
+// type2 is included so platform transforms (e.g. IDAD's ISIN for Structured
+// Notes — see lib/commission/platform-extraction.ts) reach commission_records.
 const PDF_IDENTITY_MAPPING: Omit<ColumnMapping, 'platform_id' | 'id'> = {
   policy_number_col: 'policy_number',
   amount_col: 'amount',
@@ -73,6 +77,7 @@ const PDF_IDENTITY_MAPPING: Omit<ColumnMapping, 'platform_id' | 'id'> = {
   policy_holder_col: 'policy_holder_name',
   commencement_date_col: 'commencement_date',
   payment_pct_col: '',
+  type2_col: 'type2',
   default_currency: 'USD',
 }
 
@@ -321,6 +326,7 @@ export default function UploadPage() {
             policy_holder_col: savedMapping.policy_holder_col ?? '',
             commencement_date_col: savedMapping.commencement_date_col ?? '',
             payment_pct_col: savedMapping.payment_pct_col ?? '',
+            type2_col: savedMapping.type2_col ?? '',
             default_currency: savedMapping.default_currency ?? 'USD',
           })
           setStep('preview')
@@ -604,6 +610,7 @@ export default function UploadPage() {
               <ColSelect label="Policy Holder Name" field="policy_holder_col" />
               <ColSelect label="Commencement Date" field="commencement_date_col" />
               <ColSelect label="Payment %" field="payment_pct_col" />
+              <ColSelect label="Type2 / ISIN (Structured Notes)" field="type2_col" />
             </div>
 
             {/* Default currency (used when currency_col is not mapped) */}
@@ -721,6 +728,7 @@ export default function UploadPage() {
                 {mapping.policy_holder_col && <span>Holder: <strong>{mapping.policy_holder_col}</strong></span>}
                 {mapping.commencement_date_col && <span>Commencement: <strong>{mapping.commencement_date_col}</strong></span>}
                 {mapping.payment_pct_col && <span>Payment %: <strong>{mapping.payment_pct_col}</strong></span>}
+                {mapping.type2_col && <span>Type2 / ISIN: <strong>{mapping.type2_col}</strong></span>}
               </div>
             </div>
 
@@ -734,6 +742,7 @@ export default function UploadPage() {
                     <th className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-[0.1em] text-white/85">Holder</th>
                     <th className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-[0.1em] text-white/85">Date</th>
                     <th className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-[0.1em] text-white/85">Type</th>
+                    {mapping.type2_col && <th className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-[0.1em] text-white/85">Type2 / ISIN</th>}
                     <th className="px-3 py-2 text-right text-[10px] font-bold uppercase tracking-[0.1em] text-white/85">Amount</th>
                     <th className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-[0.1em] text-white/85">Currency</th>
                   </tr>
@@ -745,6 +754,7 @@ export default function UploadPage() {
                       <td className="px-3 py-2">{mapping.policy_holder_col ? (row[mapping.policy_holder_col] || '—') : '—'}</td>
                       <td className="px-3 py-2">{mapping.date_col ? (row[mapping.date_col] || '—') : '—'}</td>
                       <td className="px-3 py-2">{mapping.commission_type_col ? (row[mapping.commission_type_col] || '—') : '—'}</td>
+                      {mapping.type2_col && <td className="px-3 py-2 cm-mono">{row[mapping.type2_col] || '—'}</td>}
                       <td className="px-3 py-2 text-right cm-mono">{row[mapping.amount_col] || '0'}</td>
                       <td className="px-3 py-2">{mapping.currency_col ? (row[mapping.currency_col] || mapping.default_currency) : mapping.default_currency}</td>
                     </tr>
