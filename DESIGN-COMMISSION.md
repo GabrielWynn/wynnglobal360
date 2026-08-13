@@ -64,7 +64,7 @@ Raleway is the WGI brand font, already loaded globally. JetBrains Mono is added 
 |------|------|------|--------|-------|
 | Page heading | Raleway | 18px | 700 | navy `#1B2D45` |
 | Section label / tab | Raleway | 12px | 600 | uppercase, letter-spacing 0.06em, muted |
-| Table header | Raleway | 10px | 700 | uppercase, letter-spacing 0.1em, white on navy header |
+| Table header | Raleway | 11px | 800 | uppercase, letter-spacing 0.1em, white on navy header |
 | Stat card value | Raleway | 22px | 700 | navy; monetary values use JetBrains Mono at 18px |
 | Stat card label | Raleway | 10px | 600 | uppercase, letter-spacing 0.1em, muted |
 | Table body / form label | Raleway | 12px | 500 | `#1A202C` |
@@ -493,3 +493,4 @@ Open in browser to see all three mockups (dashboard, master file, IFA portal), c
 | 2026-06-22 | Navy primary buttons (not blue) | `--wgi-accent` blue reserved for external links; navy avoids false hierarchy against chart series colors |
 | 2026-06-22 | Reject = white bg + red text (not red fill) | Reject is a secondary action, not the primary CTA; red fill would over-signal danger |
 | 2026-06-22 | IFA portal max-w-5xl centered | No grid — comfortable reading width for a statement-style view |
+| 2026-08-13 | Master file header text 11px/800 (was 10px/700); filter icon gold by default (was white, gold only when active) | User-requested readability pass — sort/filter controls and column titles were too easy to miss against the navy header |

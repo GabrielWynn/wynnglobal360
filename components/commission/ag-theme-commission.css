@@ -48,8 +48,8 @@
 
 .ag-theme-commission.ag-theme-alpine .ag-header-cell {
   color: rgba(255, 255, 255, 0.85);
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 11px; /* bumped from 10px for readability */
+  font-weight: 800; /* bumped from 700 to stand out clearly from data rows */
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -79,18 +79,35 @@
   background: var(--wgi-navy-600);
 }
 
-/* Declutter: the menu / filter buttons are hidden until the column is hovered
-   or has an active filter — so the header reads clean, not a wall of funnels. */
-.ag-theme-commission .ag-header-cell-menu-button,
+/* Column menu icon: soft white so it reads clearly against the navy header,
+   brightening to solid white on hover. */
+.ag-theme-commission .ag-header-cell-menu-button {
+  color: rgba(255, 255, 255, 0.75);
+  opacity: 1;
+  transition: color 0.15s ease;
+}
+.ag-theme-commission .ag-header-cell:hover .ag-header-cell-menu-button {
+  color: #fff;
+}
+
+/* Filter icon: gold (WGI's accent "yellow") by default, not just on hover or
+   when active, so it's immediately visible against the navy header.
+   Targets the inner .ag-icon glyph directly, not just the wrapper span —
+   AG Grid v35's built-in theme sets `color` on .ag-icon itself (higher up
+   the cascade than this stylesheet loads), which otherwise wins over a rule
+   placed only on the wrapper. */
 .ag-theme-commission .ag-header-icon.ag-header-cell-filter-button,
 .ag-theme-commission .ag-floating-filter-button {
-  opacity: 0;
-  transition: opacity 0.15s ease;
+  opacity: 1;
 }
-.ag-theme-commission .ag-header-cell:hover .ag-header-cell-menu-button,
-.ag-theme-commission .ag-header-cell:hover .ag-header-icon.ag-header-cell-filter-button,
-.ag-theme-commission .ag-floating-filter:hover .ag-floating-filter-button {
-  opacity: 0.65;
+.ag-theme-commission .ag-header-icon.ag-header-cell-filter-button .ag-icon,
+.ag-theme-commission .ag-floating-filter-button .ag-icon {
+  color: var(--wgi-gold);
+  transition: color 0.15s ease;
+}
+.ag-theme-commission .ag-header-cell:hover .ag-header-icon.ag-header-cell-filter-button .ag-icon,
+.ag-theme-commission .ag-floating-filter:hover .ag-floating-filter-button .ag-icon {
+  color: #fff;
 }
 
 /* Active filter: persistent gold funnel + gold underline + brighter label so
@@ -103,6 +120,32 @@
 }
 .ag-theme-commission .ag-header-cell.ag-header-cell-filtered .ag-header-icon.ag-header-cell-filter-button {
   opacity: 1;
+  color: var(--wgi-gold);
+}
+
+/* Header menu / filter buttons: gold on hover or focus, overriding ag-Grid's
+   default Alpine blue (--ag-alpine-active-color) so the accent stays on-brand. */
+.ag-theme-commission.ag-theme-alpine .ag-header-cell-menu-button:hover,
+.ag-theme-commission.ag-theme-alpine .ag-header-cell-filter-button:hover,
+.ag-theme-commission.ag-theme-alpine .ag-floating-filter-button-button:hover {
+  color: var(--wgi-gold);
+}
+.ag-theme-commission .ag-header-cell-menu-button:focus-visible,
+.ag-theme-commission .ag-header-cell-filter-button:focus-visible,
+.ag-theme-commission .ag-floating-filter-button-button:focus-visible {
+  outline: 2px solid var(--wgi-gold);
+  outline-offset: 1px;
+}
+/* Clicking these buttons focuses a native <button class="ag-…">, which pulls
+   in ag-Grid's own `button[class^=ag-]:focus { box-shadow: var(--ag-input-
+   focus-box-shadow) }` rule — a blue glow by default. Override the box-shadow
+   directly (rather than relying on the --ag-input-focus-border-color variable
+   cascade, which can lose to ag-theme-alpine's own definition depending on
+   CSS load order) so the focus ring is gold, not blue. */
+.ag-theme-commission button.ag-header-cell-menu-button:focus,
+.ag-theme-commission button.ag-header-cell-filter-button:focus,
+.ag-theme-commission button.ag-floating-filter-button-button:focus {
+  box-shadow: 0 0 0 2px var(--wgi-gold);
   color: var(--wgi-gold);
 }
 
