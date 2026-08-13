@@ -98,6 +98,27 @@ test('getExtractionSchema returns IDAD-specific schema', () => {
   assert.ok(s.properties.rows.items.properties.cash_invested)
 })
 
+test('getExtractionSchema returns ARDAN-specific schema', () => {
+  const s = getExtractionSchema('ARDAN') as any
+  assert.notEqual(s, DEFAULT_EXTRACTION_SCHEMA)
+  assert.notEqual(s, getExtractionSchema('IDAD'))
+  assert.ok(s.properties.rows.items.properties.commission)
+  assert.ok(s.properties.rows.items.properties.marketing_support)
+  assert.ok(s.properties.rows.items.properties.isin)
+  assert.ok(s.properties.rows.items.properties.cash_invested)
+})
+
+test('getExtractionSchema returns Portman-specific schema', () => {
+  const s = getExtractionSchema('PORTMAN') as any
+  assert.notEqual(s, DEFAULT_EXTRACTION_SCHEMA)
+  assert.notEqual(s, getExtractionSchema('IDAD'))
+  assert.ok(s.properties.rows.items.properties.investment_amount)
+  assert.ok(s.properties.rows.items.properties.commission_percentage)
+  assert.ok(s.properties.rows.items.properties.isin)
+  // Portman has no printed commission amount — unlike IDAD/ARDAN it must NOT have a `commission` field
+  assert.equal(s.properties.rows.items.properties.commission, undefined)
+})
+
 // ── 1b. Platform transforms (IDAD) ───────────────────────────────────────────
 
 console.log('\nplatform-extraction (IDAD)')
@@ -115,7 +136,8 @@ test('IDAD transform sums Commission + Marketing Support into amount', () => {
   }
   const out = transformExtractedRow('IDAD', raw)
   assert.equal(out.amount, 125.5)
-  assert.equal(out.commission_type, 'XS3406628654')
+  assert.equal(out.commission_type, 'Structured Note')
+  assert.equal(out.type2, 'XS3406628654')
   assert.equal(out.ape, 50000)
 })
 
@@ -130,7 +152,8 @@ test('IDAD transform + normalize produces clean preview row', () => {
   }
   const { row, warnings } = normalizeExtractedRow(transformExtractedRow('IDAD', raw), 0)
   assert.equal(row.amount, '100')
-  assert.equal(row.commission_type, 'XS3406628654')
+  assert.equal(row.commission_type, 'Structured Note')
+  assert.equal(row.type2, 'XS3406628654')
   assert.equal(row.ape, '100000')
   assert.deepEqual(warnings, [])
 })
@@ -138,6 +161,111 @@ test('IDAD transform + normalize produces clean preview row', () => {
 test('non-IDAD platforms pass through unchanged', () => {
   const raw = { policy_number: 'P1', amount: 50, transaction_date: '2026-01-01' }
   assert.equal(transformExtractedRow('RL360', raw), raw)
+})
+
+// ── 1c. Platform transforms (ARDAN) ──────────────────────────────────────────
+
+console.log('\nplatform-extraction (ARDAN)')
+
+test('ARDAN transform sums Commission + Marketing Support into Received', () => {
+  const raw = {
+    policy_number: 'ACC-002',
+    policy_holder_name: 'John Client',
+    transaction_date: '2026-02-10',
+    currency: 'USD',
+    commission: 200,
+    marketing_support: 40,
+    cash_invested: 75000,
+    isin: 'XS3406628654',
+  }
+  const out = transformExtractedRow('ARDAN', raw)
+  assert.equal(out.amount, 240)
+  assert.equal(out.commission_type, 'Structured Note')
+  assert.equal(out.type2, 'XS3406628654')
+  assert.equal(out.ape, 75000)
+})
+
+test('ARDAN transform + normalize produces clean preview row', () => {
+  const raw = {
+    policy_number: 'ACC-002',
+    transaction_date: '2026-02-10',
+    commission: 80,
+    marketing_support: 20,
+    cash_invested: 100000,
+    isin: 'XS3406628654',
+  }
+  const { row, warnings } = normalizeExtractedRow(transformExtractedRow('ARDAN', raw), 0)
+  assert.equal(row.amount, '100')
+  assert.equal(row.commission_type, 'Structured Note')
+  assert.equal(row.type2, 'XS3406628654')
+  assert.equal(row.ape, '100000')
+  assert.deepEqual(warnings, [])
+})
+
+test('ARDAN transform is independent of IDAD (mutating one does not affect the other)', () => {
+  const raw = { policy_number: 'P1', commission: 10, marketing_support: 5, isin: 'XS0000000001', transaction_date: '2026-01-01' }
+  const idadOut = transformExtractedRow('IDAD', raw)
+  const ardanOut = transformExtractedRow('ARDAN', raw)
+  assert.deepEqual(idadOut, ardanOut) // same shape by design, but computed independently
+})
+
+// ── 1d. Platform transforms (Portman) ────────────────────────────────────────
+// Fixture values from PA010.pdf: $2,000 @ 5% = 100, $7,000 @ 5% = 350.
+
+console.log('\nplatform-extraction (Portman)')
+
+test('Portman transform computes Received as investment x commission %', () => {
+  const rowA = transformExtractedRow('PORTMAN', {
+    policy_number: 'AP10036284',
+    policy_holder_name: 'PAULA M',
+    transaction_date: '2026-08-06',
+    currency: 'USD',
+    investment_amount: 2000,
+    commission_percentage: 5,
+    isin: 'XS3414109325',
+  })
+  assert.equal(rowA.amount, 100)
+  assert.equal(rowA.commission_type, 'Structured Note')
+  assert.equal(rowA.type2, 'XS3414109325')
+  assert.equal(rowA.policy_number, 'AP10036284')
+  assert.equal(rowA.policy_holder_name, 'PAULA M')
+
+  const rowB = transformExtractedRow('PORTMAN', {
+    policy_number: 'AX10035993',
+    policy_holder_name: 'TINA P CRESPO',
+    transaction_date: '2026-08-06',
+    currency: 'USD',
+    investment_amount: 7000,
+    commission_percentage: 5,
+    isin: 'XS3414109325',
+  })
+  assert.equal(rowB.amount, 350)
+  assert.equal(rowB.policy_holder_name, 'TINA P CRESPO')
+})
+
+test('Portman transform + normalize produces clean preview row', () => {
+  const raw = {
+    policy_number: 'AP10036284',
+    policy_holder_name: 'PAULA M',
+    transaction_date: '2026-08-06',
+    currency: 'USD',
+    investment_amount: 2000,
+    commission_percentage: 5,
+    isin: 'XS3414109325',
+  }
+  const { row, warnings } = normalizeExtractedRow(transformExtractedRow('PORTMAN', raw), 0)
+  assert.equal(row.amount, '100')
+  assert.equal(row.commission_type, 'Structured Note')
+  assert.equal(row.type2, 'XS3414109325')
+  assert.deepEqual(warnings, [])
+})
+
+test('Portman transform does not fabricate an ape field (unlike IDAD/ARDAN)', () => {
+  const out = transformExtractedRow('PORTMAN', {
+    policy_number: 'AP1', investment_amount: 2000, commission_percentage: 5,
+    isin: 'XS1', transaction_date: '2026-08-06',
+  })
+  assert.equal('ape' in out, false)
 })
 
 // ── 2. normalizeDate ──────────────────────────────────────────────────────────
