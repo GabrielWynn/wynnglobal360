@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase, getAuthHeaders } from '@/lib/supabase'
 import { formatCurrency } from '@/lib/currency'
+import { parseLocalDate } from '@/lib/commission-format'
 
 interface IFASummary {
   ifa: { id: string; code: string; name: string; email: string; advisor_notes: string | null }
@@ -333,7 +334,7 @@ export default function PaymentsPage() {
                       </td>
                       <td className="px-3 py-2.5 text-gray-600">{b.transaction_count}</td>
                       <td className="px-3 py-2.5 text-gray-600">
-                        {new Date(b.payment_date).toLocaleDateString()}
+                        {parseLocalDate(b.payment_date).toLocaleDateString()}
                       </td>
                       <td className="px-3 py-2.5 text-gray-500 cm-mono text-xs">
                         {b.payment_reference ?? <span className="italic text-gray-400">—</span>}

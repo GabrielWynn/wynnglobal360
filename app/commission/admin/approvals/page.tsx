@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { getAuthHeaders } from '@/lib/supabase'
 import { formatCurrency } from '@/lib/currency'
+import { parseLocalDate } from '@/lib/commission-format'
 
 interface Transaction {
   id: string
@@ -258,7 +259,7 @@ export default function ApprovalsPage() {
                     <td className="cm-mono px-3 py-2 text-[11px] text-[var(--wgi-text-muted)]">{t.policies?.policy_number ?? '—'}</td>
                     <td className="px-3 py-2 text-[var(--wgi-text)]">{t.policies?.policy_holder_name ?? '—'}</td>
                     <td className="px-3 py-2 text-[var(--wgi-text-muted)]">{t.commission_type_code || '—'}</td>
-                    <td className="cm-mono px-3 py-2 text-[11px] text-[var(--wgi-text-muted)]">{t.transaction_date ? new Date(t.transaction_date).toLocaleDateString() : '—'}</td>
+                    <td className="cm-mono px-3 py-2 text-[11px] text-[var(--wgi-text-muted)]">{t.transaction_date ? parseLocalDate(t.transaction_date).toLocaleDateString() : '—'}</td>
                     <td className="cm-mono px-3 py-2 text-right font-medium text-[var(--wgi-text)]">{fmt(t.gross_amount, t.currency)}</td>
                     <td className="cm-mono px-3 py-2 text-right font-medium text-[var(--cm-gain)]">{fmt(t.ifa_amount, t.currency)}</td>
                     <td className="cm-mono px-3 py-2 text-right text-[var(--wgi-text-muted)]">{fmt(t.company_amount, t.currency)}</td>

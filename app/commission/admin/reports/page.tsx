@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { getAuthHeaders } from '@/lib/supabase'
 import { formatCurrency } from '@/lib/currency'
+import { parseLocalDate } from '@/lib/commission-format'
 
 type ReportType = 'monthly_ifa' | 'monthly_platform' | 'ytd' | 'unmapped' | 'payments' | 'ape'
 
@@ -238,7 +239,7 @@ export default function ReportsPage() {
                   <div className="font-mono text-xs">{r.ifas?.code}</div>
                   <div className="text-gray-500 text-xs">{r.ifas?.name}</div>
                 </td>
-                <td className="px-4 py-3 text-xs">{r.payment_date ? new Date(r.payment_date).toLocaleDateString() : '—'}</td>
+                <td className="px-4 py-3 text-xs">{r.payment_date ? parseLocalDate(r.payment_date).toLocaleDateString() : '—'}</td>
                 <td className="px-4 py-3 font-medium text-green-700">{formatCurrency(r.total_amount, r.currency)}</td>
                 <td className="px-4 py-3 text-gray-600">{r.transaction_count}</td>
                 <td className="px-4 py-3 text-xs text-gray-500 font-mono">{r.payment_reference ?? '—'}</td>

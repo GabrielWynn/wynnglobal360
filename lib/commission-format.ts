@@ -43,6 +43,17 @@ export const fmtDate = (p: ValueFormatterParams): string => {
 }
 
 /**
+ * Parse an ISO date-only string ("YYYY-MM-DD") as a local calendar date.
+ * `new Date("YYYY-MM-DD")` parses as UTC midnight, which rolls back a day
+ * once formatted in any timezone behind UTC — use this instead wherever a
+ * date-only field needs to go through `Date`/`toLocaleDateString`.
+ */
+export const parseLocalDate = (dateStr: string): Date => {
+  const [y, m, d] = dateStr.split('-').map(Number)
+  return new Date(y, (m ?? 1) - 1, d ?? 1)
+}
+
+/**
  * Normalize a raw commission-type string to a canonical label.
  * Mirror of the server-side normalizer in process-upload/route.ts.
  */
