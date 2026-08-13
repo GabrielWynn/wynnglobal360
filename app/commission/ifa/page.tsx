@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase, getIFADetails, getAuthHeaders, linkIFAOnLogin } from '@/lib/supabase'
 import { formatCurrency } from '@/lib/currency'
+import { parseLocalDate } from '@/lib/commission-format'
 import * as XLSX from 'xlsx'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -249,8 +250,7 @@ export default function IFAPortal() {
               className="wgi-card"
               style={{ padding: '18px 20px', borderTop: `4px solid ${accent}` }}
             >
-              <p style={{ fontSize: '11px', fontWeight: 600, color: 'var(--wgi-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{label}</p>
-              <p style={{ fontSize: '24px', fontWeight: 700, color: accent, marginTop: '6px', letterSpacing: '-0.02em', fontFamily: 'var(--font-jetbrains-mono)', fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(value, 'USD')}</p>
+              <p style={{ fontSize: '24px', fontWeight: 700, color: accent, letterSpacing: '-0.02em', fontFamily: 'var(--font-jetbrains-mono)', fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(value, 'USD')}</p>
               <p style={{ fontSize: '12px', color: 'var(--wgi-text-light)', marginTop: '4px' }}>{note}</p>
             </div>
           ))}
@@ -345,7 +345,7 @@ export default function IFAPortal() {
                       {transactions.map((t, i) => (
                         <tr key={t.id} style={{ borderBottom: '1px solid var(--wgi-border)', background: i % 2 === 0 ? '#fff' : '#FAFBFC' }}>
                           <td style={{ padding: '10px 14px', color: 'var(--wgi-text-muted)', whiteSpace: 'nowrap' }}>
-                            {t.transaction_date ? new Date(t.transaction_date).toLocaleDateString() : '—'}
+                            {t.transaction_date ? parseLocalDate(t.transaction_date).toLocaleDateString() : '—'}
                           </td>
                           <td style={{ padding: '10px 14px', color: 'var(--wgi-text-muted)' }}>{t.platform?.name ?? '—'}</td>
                           <td style={{ padding: '10px 14px', fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '12px' }}>{t.policy_number}</td>
@@ -469,7 +469,7 @@ export default function IFAPortal() {
                     <tbody>
                       {payments.map((p, i) => (
                         <tr key={p.id} style={{ borderBottom: '1px solid var(--wgi-border)', background: i % 2 === 0 ? '#fff' : '#FAFBFC' }}>
-                          <td style={{ padding: '10px 14px', color: 'var(--wgi-text-muted)' }}>{p.payment_date ? new Date(p.payment_date).toLocaleDateString() : '—'}</td>
+                          <td style={{ padding: '10px 14px', color: 'var(--wgi-text-muted)' }}>{p.payment_date ? parseLocalDate(p.payment_date).toLocaleDateString() : '—'}</td>
                           <td style={{ padding: '10px 14px', fontWeight: 600, color: 'var(--cm-gain)', fontFamily: 'var(--font-jetbrains-mono), monospace', fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(p.total_amount, p.currency || 'USD')}</td>
                           <td style={{ padding: '10px 14px', color: 'var(--wgi-text-muted)' }}>{p.transaction_count}</td>
                           <td style={{ padding: '10px 14px', fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '12px', color: 'var(--wgi-text-muted)' }}>{p.payment_reference ?? '—'}</td>
