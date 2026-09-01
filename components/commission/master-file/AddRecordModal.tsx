@@ -180,7 +180,7 @@ export function AddRecordModal({
             </label>
             {form.is_advance && (
               <p className="text-xs text-[var(--cm-status-advance-text)] mt-1 ml-5">
-                Record will be tagged as <strong>Advance</strong>. Once the official statement arrives, select both records and click <strong>Reconcile</strong>.
+                Record will be tagged as <strong>Advance</strong>. Once the official statement arrives, select both records and click <strong>Merge</strong>.
               </p>
             )}
           </div>

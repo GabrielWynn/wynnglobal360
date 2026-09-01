@@ -90,6 +90,7 @@ export function useMasterFileColumns({
       {
         headerName: 'Trans Date', field: 'transaction_date',
         width: 120, sort: 'desc', pinned: 'left',
+        editable: true, cellEditor: 'agDateStringCellEditor',
         filter: 'agDateColumnFilter',
         filterParams: {
           comparator: (filterDate: Date, cellValue: string) => {
@@ -102,11 +103,13 @@ export function useMasterFileColumns({
           },
         },
         valueFormatter: fmtDate,
+        cellStyle: (p: CellClassParams) => p.node.rowPinned ? null : yellowCell,
       },
       // Commencement date — sourced from CSV (RL360 and similar); null for platforms that don't supply it
       {
         headerName: 'Issue Date', field: 'commencement_date',
         width: 120, hide: true,
+        editable: true, cellEditor: 'agDateStringCellEditor',
         filter: 'agDateColumnFilter',
         filterParams: {
           comparator: (filterDate: Date, cellValue: string) => {
@@ -119,19 +122,32 @@ export function useMasterFileColumns({
           },
         },
         valueFormatter: fmtDate,
-        cellStyle: { color: '#6b7280' } as Record<string, string | number>,
+        cellStyle: (p: CellClassParams) => p.node.rowPinned ? null : yellowCell,
       },
-      // Policy — shows summary label when pinned
+      // Policy — shows summary label when pinned.
+      // Read-only: the exact-match key for the Merge feature and IFA statement
+      // reconciliation; also feeds the Unmapped Azure re-lookup tool.
       {
         headerName: 'Policy', field: 'policy_number',
         width: 130, filter: 'agTextColumnFilter', pinned: 'left',
         valueFormatter: (p: ValueFormatterParams) =>
           p.node?.rowPinned === 'bottom' ? ((p.data as any)?._label ?? '') : p.value,
       },
-      { headerName: 'Holder',    field: 'policy_holder_name', width: 180, filter: 'agTextColumnFilter' },
-      { headerName: 'IFA Code',  field: 'ifa_code',           width: 100, filter: 'agTextColumnFilter' },
-      { headerName: 'IFA Name',  field: 'ifa_name',           width: 150, filter: 'agTextColumnFilter' },
-      { headerName: 'Type',      field: 'commission_type',    width: 130, filter: 'agTextColumnFilter' },
+      {
+        headerName: 'Holder', field: 'policy_holder_name',
+        width: 180, editable: true, filter: 'agTextColumnFilter',
+        cellStyle: (p: CellClassParams) => p.node.rowPinned ? null : yellowCell,
+      },
+      // Read-only: dashboard/report balances group by ifa_code (not ifa_id, which
+      // stays untouched), so editing this splits the record's balance from its
+      // actual payment routing instead of reassigning it.
+      { headerName: 'IFA Code', field: 'ifa_code', width: 100, filter: 'agTextColumnFilter' },
+      { headerName: 'IFA Name', field: 'ifa_name', width: 150, filter: 'agTextColumnFilter' },
+      {
+        headerName: 'Type', field: 'commission_type',
+        width: 130, editable: true, filter: 'agTextColumnFilter',
+        cellStyle: (p: CellClassParams) => p.node.rowPinned ? null : yellowCell,
+      },
       {
         headerName: 'Type2', field: 'type2',
         headerTooltip: 'ISIN for Structured Notes',
@@ -140,8 +156,9 @@ export function useMasterFileColumns({
       },
       {
         headerName: 'Received', field: 'amount',
-        width: 120, filter: 'agNumberColumnFilter', type: 'numericColumn', valueFormatter: fmtNum,
-        cellStyle: { fontWeight: 'bold' } as Record<string, string | number>,
+        width: 120, editable: true, filter: 'agNumberColumnFilter', type: 'numericColumn', valueFormatter: fmtNum,
+        valueParser: parseAmt,
+        cellStyle: (p: CellClassParams) => p.node.rowPinned ? null : { ...yellowCell, fontWeight: 'bold' },
       },
       {
         headerName: 'Expect', field: 'variable_amount',
@@ -172,15 +189,17 @@ export function useMasterFileColumns({
       },
       {
         headerName: 'CCY', field: 'currency',
-        width: 70, filter: 'agTextColumnFilter',
-        cellStyle: { color: '#6b7280', fontWeight: 500, textAlign: 'center' } as Record<string, string | number>,
+        width: 70, editable: true, filter: 'agTextColumnFilter',
+        cellStyle: (p: CellClassParams) =>
+          p.node.rowPinned ? null : { ...yellowCell, fontWeight: 500, textAlign: 'center' },
       },
       {
         headerName: 'IA Rate', field: 'platform_payment_pct',
-        width: 90, type: 'numericColumn', filter: 'agNumberColumnFilter',
+        width: 90, editable: true, type: 'numericColumn', filter: 'agNumberColumnFilter',
         valueFormatter: (p: ValueFormatterParams) =>
           p.node?.rowPinned || p.value == null ? '' : String(parseFloat(Number(p.value).toFixed(4))),
-        cellStyle: { color: '#6b7280' } as Record<string, string | number>,
+        valueParser: parseAmt,
+        cellStyle: (p: CellClassParams) => p.node.rowPinned ? null : yellowCell,
       },
       // APE IFA — manually entered Annual Premium Equivalent (IFA-facing)
       {

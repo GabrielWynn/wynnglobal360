@@ -725,7 +725,12 @@ export default function MasterFilePage() {
   const onCellValueChanged = useCallback(async (event: CellValueChangedEvent) => {
     const { data, colDef } = event
     const field = colDef.field as string
-    const editableFields = ['ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage', 'variable_amount', 'ape', 'ape_wgi', 'due_wg', 'paid', 'status', 'rate', 'notes', 'ifa_notes', 'type2']
+    const editableFields = [
+      'transaction_date', 'commencement_date', 'policy_holder_name',
+      'commission_type', 'amount', 'currency', 'platform_payment_pct',
+      'ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage',
+      'variable_amount', 'ape', 'ape_wgi', 'due_wg', 'paid', 'status', 'rate', 'notes', 'ifa_notes', 'type2',
+    ]
     if (!editableFields.includes(field)) return
 
     const updatePayload: Record<string, unknown> = { [field]: data[field], updated_at: new Date().toISOString() }
@@ -1576,12 +1581,11 @@ export default function MasterFilePage() {
               className="h-7 px-3 text-xs rounded bg-[var(--wgi-navy)] text-white hover:bg-[var(--wgi-navy-600)] whitespace-nowrap font-medium">Mark Paid</button>
             <button onClick={() => bulkUpdateStatus('cancelled')}
               className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--cm-status-rejected-text)] hover:border-[var(--cm-status-rejected-text)] whitespace-nowrap font-medium">Cancel</button>
-            {canReconcile && (
-              <button onClick={() => setReconcileModal(true)}
-                className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--wgi-navy)] hover:border-[var(--wgi-navy)] whitespace-nowrap font-medium">Reconcile</button>
-            )}
             {selectedRows.length >= 2 && (
-              <button onClick={openMergeModal} disabled={!!mergeBlockReason} title={mergeBlockReason ?? 'Merge selected rows into one'}
+              <button
+                onClick={() => { if (canReconcile) setReconcileModal(true); else openMergeModal() }}
+                disabled={!canReconcile && !!mergeBlockReason}
+                title={canReconcile ? 'Reconcile advance payment with statement' : (mergeBlockReason ?? 'Merge selected rows into one')}
                 className="h-7 px-3 text-xs rounded border border-[var(--wgi-border)] bg-white text-[var(--wgi-navy)] hover:border-[var(--wgi-navy)] whitespace-nowrap font-medium disabled:opacity-40 disabled:cursor-not-allowed">Merge</button>
             )}
             <button onClick={() => { setDeleteModal(true); setDeleteConfirm(false); setDeleteTyped('') }}

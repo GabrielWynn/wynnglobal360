@@ -50,8 +50,17 @@ export async function GET(request: Request) {
 }
 
 // Whitelist of fields editable from the master file.
-// Prevents arbitrary column overwrites via the API.
+// Prevents arbitrary column overwrites via the API — deliberately excludes
+// primary/foreign keys (id, ifa_id, platform_id, upload_batch_id, ...) and the
+// DB-generated amount columns (ifa_amount, suspense_amount, wg_amount,
+// pending_amount, unpaid), which Postgres rejects direct writes to anyway.
+// Also excludes policy_number and ifa_code/ifa_name: dashboard/report balances
+// group by ifa_code (not ifa_id) and Merge requires an exact policy_number
+// match, so editing these desyncs a record from its actual routing/reporting
+// instead of reassigning it.
 const EDITABLE_FIELDS = new Set([
+  'transaction_date', 'commencement_date', 'policy_holder_name',
+  'commission_type', 'amount', 'currency', 'platform_payment_pct',
   'ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage',
   'variable_amount', 'ape', 'ape_wgi', 'due_wg',
   'paid', 'paid_at', 'status', 'rate', 'notes', 'ifa_notes', 'type2', 'updated_at',
