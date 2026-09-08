@@ -58,7 +58,6 @@ interface CommissionRecord {
   rate: number | null
   notes: string | null
   ifa_notes: string | null
-  platform_payment_pct: number | null
   commencement_date: string | null
   ape: number | null
   ape_wgi: number | null
@@ -118,7 +117,7 @@ const COLUMN_STATE_KEY    = 'wgi_master_file_columns'
 const MONO_FIELDS = new Set<string>([
   'policy_number', 'ifa_code', 'type2',
   'amount', 'variable_amount', 'adjusted', 'ape', 'ape_wgi',
-  'platform_payment_pct', 'rate',
+  'rate',
   'ifa_percentage', 'ifa_amount', 'suspense_percentage', 'suspense_amount',
   'wgi_percentage', 'wg_amount', 'pending_percentage', 'pending_amount',
   'due_wg', 'paid', 'unpaid',
@@ -127,7 +126,7 @@ const MONO_FIELDS = new Set<string>([
 // Column panel groups — maps colIds to labelled sections in the dropdown
 const COL_GROUPS: { label: string; ids: string[] }[] = [
   { label: 'Identity',   ids: ['expand', 'transaction_date', 'commencement_date', 'policy_number', 'policy_holder_name', 'ifa_code', 'ifa_name'] },
-  { label: 'Commission', ids: ['commission_type', 'type2', 'amount', 'variable_amount', 'adjusted', 'currency', 'platform_payment_pct', 'ape', 'ape_wgi', 'ifa_percentage', 'ifa_amount', 'suspense_percentage', 'suspense_amount', 'wgi_percentage', 'wg_amount', 'pending_percentage', 'pending_amount'] },
+  { label: 'Commission', ids: ['commission_type', 'type2', 'amount', 'variable_amount', 'adjusted', 'currency', 'ape', 'ape_wgi', 'ifa_percentage', 'ifa_amount', 'suspense_percentage', 'suspense_amount', 'wgi_percentage', 'wg_amount', 'pending_percentage', 'pending_amount'] },
   { label: 'Payment',    ids: ['due_wg', 'paid', 'unpaid', 'status'] },
   { label: 'Metadata',   ids: ['rate', 'notes', 'ifa_notes', 'platform.name', 'upload_batch.filename'] },
 ]
@@ -281,7 +280,7 @@ function AllocationDetailPanel(params: any) {
               </td>
               <td style={{ ...tdS, color: '#9ca3af' }}>—</td>
               <td style={{ ...tdS, color: '#9A3412', fontWeight: 700 }}>{fmtP(alloc.percentage)}</td>
-              <td style={{ ...tdS, color: '#9A3412', fontWeight: 700 }}>{fmtA(record.amount * alloc.percentage)}</td>
+              <td style={{ ...tdS, color: '#9A3412', fontWeight: 700 }}>{fmtA((record.amount + record.variable_amount) * alloc.percentage)}</td>
               <td style={tdS}>{alloc.source_bucket.toUpperCase()}</td>
               <td style={tdS}>{alloc.notes ?? ''}</td>
               <td style={tdS}>
@@ -727,7 +726,7 @@ export default function MasterFilePage() {
     const field = colDef.field as string
     const editableFields = [
       'transaction_date', 'commencement_date', 'policy_holder_name',
-      'commission_type', 'amount', 'currency', 'platform_payment_pct',
+      'commission_type', 'amount', 'currency',
       'ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage',
       'variable_amount', 'ape', 'ape_wgi', 'due_wg', 'paid', 'status', 'rate', 'notes', 'ifa_notes', 'type2',
     ]
@@ -978,9 +977,20 @@ export default function MasterFilePage() {
   async function bulkApplyFormula() {
     const eligibleRows = selectedRows.filter(r => !r.allocation_parent_id)
     if (!eligibleRows.length) { alert('No eligible rows selected (child allocation records cannot be bulk-edited)'); return }
-    if (!formulaValue.trim()) { alert('Enter a value'); return }
-    let dbValue: string | number = formulaValue.trim()
-    if (['ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage'].includes(formulaField)) {
+
+    const trimmed = formulaValue.trim()
+    const isBlank = trimmed === ''
+
+    // 'status' is a fixed enum with no "unset" state anywhere else in the app
+    // (its single-cell editor is a dropdown with no blank option) — still require a value.
+    if (isBlank && formulaField === 'status') { alert('Enter a value'); return }
+
+    let dbValue: string | number | null = trimmed
+    if (isBlank) {
+      // Match each field's own blank convention, same as clearing it via a single-cell edit:
+      // 'paid' clears to 0 (see its column valueParser), everything else clears to null.
+      dbValue = formulaField === 'paid' ? 0 : null
+    } else if (['ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage'].includes(formulaField)) {
       const v = parseFloat(formulaValue.replace('%', '').trim())
       if (isNaN(v) || v < 0 || v > 100) { alert('Enter a valid % between 0 and 100'); return }
       dbValue = v / 100
@@ -998,7 +1008,8 @@ export default function MasterFilePage() {
       dbValue = v
     }
     const label = FORMULA_FIELDS.find(f => f.value === formulaField)?.label ?? formulaField
-    if (!confirm(`Apply "${label} = ${formulaValue}" to ${eligibleRows.length} record(s)?`)) return
+    const valueDesc = isBlank ? '(blank)' : formulaValue
+    if (!confirm(`Apply "${label} = ${valueDesc}" to ${eligibleRows.length} record(s)?`)) return
     setFormulaApplying(true)
     const authHeaders = await getAuthHeaders()
     const res = await fetch('/api/commission/commission-records', {
@@ -1009,7 +1020,7 @@ export default function MasterFilePage() {
     const data = await res.json()
     setFormulaApplying(false)
     if (!res.ok) { alert(`Failed: ${data.error}`); return }
-    showFeedback(`Applied "${label} = ${formulaValue}" to ${eligibleRows.length} record(s).`)
+    showFeedback(`Applied "${label} = ${valueDesc}" to ${eligibleRows.length} record(s).`)
     setFormulaValue('')
     await loadData()
   }
@@ -1210,7 +1221,7 @@ export default function MasterFilePage() {
         'Trans Date': r.transaction_date, 'Issue Date': r.commencement_date ?? '', Policy: r.policy_number, Holder: r.policy_holder_name ?? '',
         'IFA Code': r.ifa_code ?? '', 'IFA Name': r.ifa_name ?? '', Type: r.commission_type ?? '',
         Received: r.amount, Expect: r.variable_amount ?? 0, Gross: (r.amount ?? 0) + (r.variable_amount ?? 0),
-        Currency: r.currency, 'IA Rate': r.platform_payment_pct ?? '', 'APE IFA': r.ape ?? '', 'APE WGI': r.ape_wgi ?? '',
+        Currency: r.currency, 'APE IFA': r.ape ?? '', 'APE WGI': r.ape_wgi ?? '',
         'IFA %': r.ifa_percentage, 'IFA Comm': r.ifa_amount,
         'IFA Susp %': r.suspense_percentage, 'IFA Susp': r.suspense_amount,
         'WGI %': r.wgi_percentage, 'WG O/R': r.wg_amount,
@@ -1253,7 +1264,8 @@ export default function MasterFilePage() {
   }
 
   // ── Derived values ────────────────────────────────────────────────────────────
-  const currentHint = FORMULA_FIELDS.find(f => f.value === formulaField)?.hint ?? ''
+  const currentHint = (FORMULA_FIELDS.find(f => f.value === formulaField)?.hint ?? '')
+    + (formulaField === 'status' ? '' : '  ·  blank clears it')
 
   const prevAmt   = parseFloat(addForm.amount || '0')
   const previewIFA  = prevAmt * parseFloat(addForm.ifa_percentage  || '0') / 100

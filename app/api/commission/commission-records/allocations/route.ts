@@ -64,7 +64,7 @@ export async function POST(request: Request) {
     // ── Fetch parent record ────────────────────────────────────────────────────
     const { data: parent, error: parentErr } = await supabaseAdmin
       .from('commission_records')
-      .select('id, amount, currency, ifa_percentage, suspense_percentage, wgi_percentage, transaction_date, policy_number, policy_holder_name, commission_type, commission_type_code, platform_id, ifa_code, ifa_name, allocation_parent_id')
+      .select('id, amount, variable_amount, currency, ifa_percentage, suspense_percentage, wgi_percentage, transaction_date, policy_number, policy_holder_name, commission_type, commission_type_code, platform_id, ifa_code, ifa_name, allocation_parent_id')
       .eq('id', parent_record_id)
       .single()
 
@@ -124,6 +124,7 @@ export async function POST(request: Request) {
         commission_type_code: parent.commission_type_code,
         platform_id:         parent.platform_id,
         amount:              parent.amount,
+        variable_amount:     parent.variable_amount,
         currency:            parent.currency,
         ifa_id:              secondary_ifa_id ?? null,
         ifa_code:            secondary_ifa_code,

@@ -22,6 +22,7 @@ interface AllocParent {
   ifa_code: string | null
   ifa_name: string | null
   amount: number
+  variable_amount: number
   wgi_percentage: number
   ifa_percentage: number
   suspense_percentage: number
@@ -57,8 +58,9 @@ export function AddAllocationModal({
     .filter(a => a.source_bucket === form.source_bucket)
     .reduce((s, a) => s + a.percentage, 0)
   const available = bucketPct - alreadyAllocd
+  const gross = parent.amount + parent.variable_amount
   const previewPct = parseFloat(form.percentage) / 100
-  const previewAmt = !isNaN(previewPct) ? parent.amount * previewPct : 0
+  const previewAmt = !isNaN(previewPct) ? gross * previewPct : 0
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -89,7 +91,7 @@ export function AddAllocationModal({
             </select>
             <p className="text-xs text-gray-500 mt-1">
               Available from {form.source_bucket.toUpperCase()}: <strong className="text-[var(--wgi-navy)]">{(available * 100).toFixed(2)}%</strong>
-              {' '}= <strong className="text-[var(--wgi-navy)]">${(parent.amount * available).toFixed(3)}</strong>
+              {' '}= <strong className="text-[var(--wgi-navy)]">${(gross * available).toFixed(3)}</strong>
             </p>
           </div>
 

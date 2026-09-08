@@ -25,7 +25,6 @@ type Row = {
   ape: number | null
   ape_wgi: number | null
   due_wg: number | null
-  platform_payment_pct: number | null
   rate: number | null
   status: string
   is_deleted: boolean
@@ -46,7 +45,7 @@ type Row = {
 }
 
 const SELECT =
-  'id, policy_number, ifa_code, currency, platform_id, amount, variable_amount, paid, ifa_amount, suspense_amount, wg_amount, ape, ape_wgi, due_wg, platform_payment_pct, rate, status, is_deleted, is_advance, linked_record_id, allocation_parent_id, payment_batch_id, transaction_date, commencement_date, commission_type, notes, ifa_notes, ifa_percentage, suspense_percentage, wgi_percentage, merge_source_ids, allocations:commission_allocations!parent_record_id(id)'
+  'id, policy_number, ifa_code, currency, platform_id, amount, variable_amount, paid, ifa_amount, suspense_amount, wg_amount, ape, ape_wgi, due_wg, rate, status, is_deleted, is_advance, linked_record_id, allocation_parent_id, payment_batch_id, transaction_date, commencement_date, commission_type, notes, ifa_notes, ifa_percentage, suspense_percentage, wgi_percentage, merge_source_ids, allocations:commission_allocations!parent_record_id(id)'
 
 function normPolicy(p: string) {
   return p.trim().toUpperCase()
@@ -64,7 +63,7 @@ function sumNullable(rows: Row[], field: keyof Row): number {
   return rows.reduce((s, r) => s + (Number(r[field] ?? 0) || 0), 0)
 }
 
-function weightedAvg(rows: Row[], field: 'platform_payment_pct' | 'rate'): number | null {
+function weightedAvg(rows: Row[], field: 'rate'): number | null {
   let totalWeight = 0
   let weighted = 0
   for (const r of rows) {
@@ -201,7 +200,6 @@ function buildMergedUpdate(rows: Row[], survivor: Row) {
     ifa_percentage: ifaPct,
     suspense_percentage: suspPct,
     wgi_percentage: wgiPct,
-    platform_payment_pct: weightedAvg(rows, 'platform_payment_pct'),
     rate: weightedAvg(rows, 'rate'),
     status: mergeStatus(rows),
     transaction_date: latestDate,

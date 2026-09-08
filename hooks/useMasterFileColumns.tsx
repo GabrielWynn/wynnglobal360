@@ -193,14 +193,6 @@ export function useMasterFileColumns({
         cellStyle: (p: CellClassParams) =>
           p.node.rowPinned ? null : { ...yellowCell, fontWeight: 500, textAlign: 'center' },
       },
-      {
-        headerName: 'IA Rate', field: 'platform_payment_pct',
-        width: 90, editable: true, type: 'numericColumn', filter: 'agNumberColumnFilter',
-        valueFormatter: (p: ValueFormatterParams) =>
-          p.node?.rowPinned || p.value == null ? '' : String(parseFloat(Number(p.value).toFixed(4))),
-        valueParser: parseAmt,
-        cellStyle: (p: CellClassParams) => p.node.rowPinned ? null : yellowCell,
-      },
       // APE IFA — manually entered Annual Premium Equivalent (IFA-facing)
       {
         headerName: 'APE IFA', field: 'ape',

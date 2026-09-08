@@ -172,7 +172,9 @@ export async function POST(request: Request) {
           ? (row[mapping.type2_col] || '').trim() || null
           : null
 
-        // Capture platform-supplied payment/advisory fee percentage if present
+        // Capture platform-supplied payment/advisory fee percentage if present.
+        // Feeds the unified Rate column (commission_records.rate) — IA Rate and
+        // Rate used to be separate columns/fields; they were merged into one.
         const paymentPctRaw = mapping.payment_pct_col
           ? parseFloat(row[mapping.payment_pct_col] || '')
           : NaN
@@ -220,7 +222,7 @@ export async function POST(request: Request) {
             type2,
             amount:               grossAmount,
             currency,
-            platform_payment_pct: platformPaymentPct,
+            rate:                 platformPaymentPct,
             commencement_date:    commencementDate,
             ape,
             ifa_percentage:       null,
@@ -332,7 +334,7 @@ export async function POST(request: Request) {
           type2,
           amount:              grossAmount,
           currency,
-          platform_payment_pct: platformPaymentPct,
+          rate:                platformPaymentPct,
           commencement_date:   commencementDate,
           ape,
           ifa_percentage:      null,

@@ -15,6 +15,20 @@ const supabaseAdmin = createClient(
 
 const PAGE = 1000
 
+// supabase-js sends `.in('id', ids)` as a literal query-string filter
+// (id=in.(uuid1,uuid2,...)). With a large bulk selection (hundreds of UUIDs)
+// that string is long enough to hit URL-length limits in front of PostgREST,
+// so the whole request fails once the selection crosses that threshold —
+// which is why Bulk Apply worked for a handful of rows but broke for many.
+// Chunking keeps every request well under that limit regardless of scale.
+const ID_CHUNK_SIZE = 150
+
+function chunkIds(ids: string[]): string[][] {
+  const chunks: string[][] = []
+  for (let i = 0; i < ids.length; i += ID_CHUNK_SIZE) chunks.push(ids.slice(i, i + ID_CHUNK_SIZE))
+  return chunks
+}
+
 export async function GET(request: Request) {
   const userId = await requireAdmin(request)
   if (!userId) return unauthorised()
@@ -60,7 +74,7 @@ export async function GET(request: Request) {
 // instead of reassigning it.
 const EDITABLE_FIELDS = new Set([
   'transaction_date', 'commencement_date', 'policy_holder_name',
-  'commission_type', 'amount', 'currency', 'platform_payment_pct',
+  'commission_type', 'amount', 'currency',
   'ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage',
   'variable_amount', 'ape', 'ape_wgi', 'due_wg',
   'paid', 'paid_at', 'status', 'rate', 'notes', 'ifa_notes', 'type2', 'updated_at',
@@ -79,12 +93,16 @@ export async function PATCH(request: Request) {
 
     // Special case: set paid = ifa_amount (computed column) for each record individually
     if (mark_paid) {
-      const { data: records, error: fetchErr } = await supabaseAdmin
-        .from('commission_records')
-        .select('id, ifa_amount')
-        .in('id', ids)
+      const records: { id: string; ifa_amount: number }[] = []
+      for (const idChunk of chunkIds(ids)) {
+        const { data, error: fetchErr } = await supabaseAdmin
+          .from('commission_records')
+          .select('id, ifa_amount')
+          .in('id', idChunk)
 
-      if (fetchErr) return NextResponse.json({ error: fetchErr.message }, { status: 500 })
+        if (fetchErr) return NextResponse.json({ error: fetchErr.message }, { status: 500 })
+        records.push(...(data ?? []))
+      }
 
       const paidAt = new Date().toISOString()
       const results = await Promise.all(
@@ -108,12 +126,14 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
     }
 
-    const { error } = await supabaseAdmin
-      .from('commission_records')
-      .update(safeUpdates)
-      .in('id', ids)
+    for (const idChunk of chunkIds(ids)) {
+      const { error } = await supabaseAdmin
+        .from('commission_records')
+        .update(safeUpdates)
+        .in('id', idChunk)
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+      if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    }
 
     // For single-record cell edits, return the refreshed row so the grid updates inline
     if (ids.length === 1) {

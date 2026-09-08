@@ -21,6 +21,7 @@ interface AllocRecord {
   ifa_code: string | null
   ifa_name: string | null
   amount: number
+  variable_amount: number
   ifa_percentage: number
   wgi_percentage: number
   suspense_percentage: number
@@ -117,7 +118,7 @@ export function AllocationPanel({
                   </td>
                   <td className="px-3 py-2 border border-[var(--cm-status-advance-text)]/20 text-right text-gray-400">—</td>
                   <td className="px-3 py-2 border border-[var(--cm-status-advance-text)]/20 text-right font-bold text-[var(--cm-status-advance-text)]">{fmtP(alloc.percentage)}</td>
-                  <td className="px-3 py-2 border border-[var(--cm-status-advance-text)]/20 text-right font-bold text-[var(--cm-status-advance-text)]">{fmtA(record.amount * alloc.percentage)}</td>
+                  <td className="px-3 py-2 border border-[var(--cm-status-advance-text)]/20 text-right font-bold text-[var(--cm-status-advance-text)]">{fmtA((record.amount + record.variable_amount) * alloc.percentage)}</td>
                   <td className="px-3 py-2 border border-[var(--cm-status-advance-text)]/20 text-center">
                     <button
                       onClick={() => onDeleteAllocation(alloc.id)}
