@@ -131,7 +131,7 @@ const MONO_FIELDS = new Set<string>([
 const COL_GROUPS: { label: string; ids: string[] }[] = [
   { label: 'Identity',   ids: ['expand', 'transaction_date', 'commencement_date', 'policy_number', 'policy_holder_name', 'ifa_code', 'ifa_name'] },
   { label: 'Commission', ids: ['commission_type', 'type2', 'amount', 'variable_amount', 'adjusted', 'currency', 'ape', 'ape_wgi', 'ifa_percentage', 'ifa_amount', 'suspense_percentage', 'suspense_amount', 'wgi_percentage', 'wg_amount', 'pending_percentage', 'pending_amount'] },
-  { label: 'Payment',    ids: ['due_wg', 'due_wg_alloc', 'paid', 'unpaid', 'status'] },
+  { label: 'Payment',    ids: ['due_wg', 'paid', 'unpaid', 'status'] },
   { label: 'Metadata',   ids: ['rate', 'notes', 'ifa_notes', 'platform.name', 'upload_batch.filename'] },
 ]
 
@@ -722,36 +722,48 @@ export default function MasterFilePage() {
     [rowData]
   )
 
-  // For every Agent Adjustment row: how much of it is currently explained by
-  // Paid-tagged rows, and how much by Pending-tagged rows (Due = -pendingTotal,
-  // confirmed by the user; eligible = amount - paidTotal > 0, not yet fully paid off).
-  const eligibleAdjustments = useMemo(() => {
-    const paidByAdj    = new Map<string, number>()
-    const pendingByAdj = new Map<string, number>()
+  // Every Agent Adjustment row, keyed by id, regardless of eligibility — used
+  // to look up the currently-linked adjustment when reopening an already
+  // reconciled cell (it may have since become fully resolved and dropped out
+  // of `eligibleAdjustments` below, but we still need to show what it's linked to).
+  const allAdjustmentsById = useMemo(() => {
+    // Allocating is a one-step action that marks a row Paid immediately, so
+    // every allocated row counts toward what's mapped — no separate pending bucket.
+    const mappedByAdj = new Map<string, number>()
     for (const r of rowData) {
       if (!r.agent_adjustment_id || r.due_wg == null) continue
-      const bucket = r.due_wg_status === 'paid' ? paidByAdj : pendingByAdj
-      bucket.set(r.agent_adjustment_id, (bucket.get(r.agent_adjustment_id) ?? 0) + Number(r.due_wg))
+      mappedByAdj.set(r.agent_adjustment_id, (mappedByAdj.get(r.agent_adjustment_id) ?? 0) + Number(r.due_wg))
     }
-    return rowData
-      .filter(r => r.is_agent_adjustment)
-      .map(r => {
-        const paidTotal = paidByAdj.get(r.id) ?? 0
-        const pendingTotal = pendingByAdj.get(r.id) ?? 0
-        return {
-          id: r.id,
-          amount: r.amount ?? 0,
-          currency: r.currency,
-          transaction_date: r.transaction_date,
-          sourceFile: r.upload_batch?.filename ?? '— manual entry —',
-          due: -pendingTotal,
-          paidTotal,
-          remainder: (r.amount ?? 0) - paidTotal,
-        }
+    const map = new Map<string, { id: string; amount: number; currency: string; transaction_date: string; sourceFile: string; mappedTotal: number; remaining: number }>()
+    for (const r of rowData) {
+      if (!r.is_agent_adjustment) continue
+      const mappedTotal = mappedByAdj.get(r.id) ?? 0
+      map.set(r.id, {
+        id: r.id,
+        amount: r.amount ?? 0,
+        currency: r.currency,
+        transaction_date: r.transaction_date,
+        sourceFile: r.upload_batch?.filename ?? '— manual entry —',
+        mappedTotal,
+        remaining: (r.amount ?? 0) - mappedTotal,
       })
-      .filter(a => a.remainder > 0.005)
-      .sort((a, b) => b.transaction_date.localeCompare(a.transaction_date))
+    }
+    return map
   }, [rowData])
+
+  // Only adjustments not yet fully explained — a fresh, untouched adjustment
+  // always qualifies; one drops out once every allocated row against it is Paid.
+  const eligibleAdjustments = useMemo(
+    () => [...allAdjustmentsById.values()]
+      .filter(a => a.remaining > 0.005)
+      .sort((a, b) => b.transaction_date.localeCompare(a.transaction_date)),
+    [allAdjustmentsById]
+  )
+
+  const linkedAdjustment = useMemo(() => {
+    const id = dueWgAllocModal.record?.agent_adjustment_id
+    return id ? (allAdjustmentsById.get(id) ?? null) : null
+  }, [dueWgAllocModal.record, allAdjustmentsById])
 
   const openDueWgAllocModalCb = useCallback((record: CommissionRecord) => {
     setDueWgAllocModal({ open: true, record })
@@ -774,40 +786,38 @@ export default function MasterFilePage() {
     setRowData(prev => prev.map(r => r.id === id ? { ...r, ...updates } as CommissionRecord : r))
   }
 
+  // Picking an adjustment IS the confirmation — one step, straight to Paid/green.
+  // There's no separate "mark as paid" action; by the time an admin manually
+  // matches a Due WG row to a lump sum, they've already verified it belongs there.
   const handleConfirmDueWgAllocation = useCallback(async () => {
     const record = dueWgAllocModal.record
     if (!record || !selectedAdjustmentId) return
     setDueWgAllocating(true)
     try {
-      await patchDueWg(record.id, { agent_adjustment_id: selectedAdjustmentId, due_wg_status: 'pending' })
+      await patchDueWg(record.id, { agent_adjustment_id: selectedAdjustmentId, due_wg_status: 'paid' })
       setDueWgAllocModal({ open: false, record: null })
-      showFeedback('Allocated — linked as pending. Confirm it paid once the money is verified.')
+      showFeedback('Reconciled — cell marked paid.')
     } catch (err: any) {
-      alert(`Failed to allocate: ${err.message}`)
+      alert(`Failed to reconcile: ${err.message}`)
     } finally {
       setDueWgAllocating(false)
     }
   }, [dueWgAllocModal.record, selectedAdjustmentId]) // eslint-disable-line
 
-  const toggleDueWgStatusCb = useCallback(async (record: CommissionRecord) => {
-    const next = record.due_wg_status === 'paid' ? 'pending' : 'paid'
-    try {
-      await patchDueWg(record.id, { due_wg_status: next })
-      showFeedback(next === 'paid' ? 'Confirmed paid — the adjustment’s Due has been updated.' : 'Reverted to pending.')
-    } catch (err: any) {
-      alert(`Failed to update: ${err.message}`)
-    }
-  }, []) // eslint-disable-line
-
-  const unlinkDueWgCb = useCallback(async (record: CommissionRecord) => {
-    if (!confirm('Remove this allocation? The row goes back to unallocated.')) return
+  const handleUnlinkDueWg = useCallback(async () => {
+    const record = dueWgAllocModal.record
+    if (!record) return
+    setDueWgAllocating(true)
     try {
       await patchDueWg(record.id, { agent_adjustment_id: null, due_wg_status: 'pending' })
-      showFeedback('Allocation removed.')
+      setDueWgAllocModal({ open: false, record: null })
+      showFeedback('Allocation removed — back to unreconciled.')
     } catch (err: any) {
       alert(`Failed to remove allocation: ${err.message}`)
+    } finally {
+      setDueWgAllocating(false)
     }
-  }, []) // eslint-disable-line
+  }, [dueWgAllocModal.record]) // eslint-disable-line
 
   // ── Column Definitions ────────────────────────────────────────────────────────
   const columnDefs = useMasterFileColumns({
@@ -816,8 +826,6 @@ export default function MasterFilePage() {
     setDetailRecord,
     openAllocModalCb,
     openDueWgAllocModalCb,
-    toggleDueWgStatusCb,
-    unlinkDueWgCb,
   })
 
   const defaultColDef = useMemo<ColDef>(() => ({
@@ -2015,12 +2023,14 @@ export default function MasterFilePage() {
       <DueWgAllocationModal
         open={dueWgAllocModal.open}
         record={dueWgAllocModal.record}
+        linkedAdjustment={linkedAdjustment}
         eligibleAdjustments={eligibleAdjustments}
         selectedAdjustmentId={selectedAdjustmentId}
         onSelect={setSelectedAdjustmentId}
         allocating={dueWgAllocating}
         onCancel={() => setDueWgAllocModal({ open: false, record: null })}
         onConfirm={handleConfirmDueWgAllocation}
+        onUnlink={handleUnlinkDueWg}
       />
     </div>
   )

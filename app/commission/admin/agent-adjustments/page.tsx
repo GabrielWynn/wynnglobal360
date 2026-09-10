@@ -4,14 +4,14 @@
  * Agent Adjustments — read-only ledger of lump-sum "Agent Adjustments"
  * payments (no policy number, imported as-is from a statement).
  *
- * Each row's Due WG rows are allocated from the Master File (click a
- * row's "Allocate" button in the WG Alloc column), not from here — this
- * page exists so every adjustment stays visible for audit, including
- * ones that have already dropped out of the allocation picker because
- * they're fully resolved.
+ * Each row's Due WG rows are allocated from the Master File (click a Due WG
+ * cell directly), not from here — this page exists so every adjustment stays
+ * visible for audit, including ones that have already dropped out of the
+ * allocation picker because they're fully resolved.
  *
- * Due = -(sum of that adjustment's allocated rows still Pending).
- * Falls to 0 only once every allocated row has been manually confirmed Paid.
+ * Mapped = sum of allocated rows (allocating is a one-step action that marks
+ * a row Paid immediately, so every allocated row counts). Remaining = amount
+ * that hasn't been explained by any allocated row yet; falls to 0 once fully mapped.
  */
 
 import { useState, useEffect, useCallback, Fragment } from 'react'
@@ -35,10 +35,8 @@ interface Adjustment {
   platform: { name: string } | null
   upload_batch: { filename: string } | null
   allocated: AllocatedRow[]
-  paidTotal: number
-  pendingTotal: number
-  due: number
-  remainder: number
+  mappedTotal: number
+  remaining: number
 }
 
 function fmtMoney(v: number, currency = 'USD') {
@@ -85,8 +83,7 @@ export default function AgentAdjustmentsPage() {
 
       const built: Adjustment[] = (adjRows ?? []).map((r: any) => {
         const allocated: AllocatedRow[] = byAdjustment.get(r.id) ?? []
-        const paidTotal = allocated.filter(a => a.due_wg_status === 'paid').reduce((s, a) => s + Number(a.due_wg ?? 0), 0)
-        const pendingTotal = allocated.filter(a => a.due_wg_status !== 'paid').reduce((s, a) => s + Number(a.due_wg ?? 0), 0)
+        const mappedTotal = allocated.reduce((s, a) => s + Number(a.due_wg ?? 0), 0)
         return {
           id: r.id,
           amount: r.amount ?? 0,
@@ -96,10 +93,8 @@ export default function AgentAdjustmentsPage() {
           platform: r.platform ?? null,
           upload_batch: r.upload_batch ?? null,
           allocated,
-          paidTotal,
-          pendingTotal,
-          due: -pendingTotal,
-          remainder: (r.amount ?? 0) - paidTotal,
+          mappedTotal,
+          remaining: (r.amount ?? 0) - mappedTotal,
         }
       })
 
@@ -113,8 +108,8 @@ export default function AgentAdjustmentsPage() {
 
   useEffect(() => { load() }, [load])
 
-  const visible = adjustments.filter(a => showResolved || a.remainder > 0.005)
-  const openCount = adjustments.filter(a => a.remainder > 0.005).length
+  const visible = adjustments.filter(a => showResolved || a.remaining > 0.005)
+  const openCount = adjustments.filter(a => a.remaining > 0.005).length
 
   if (loading) {
     return (
@@ -163,8 +158,9 @@ export default function AgentAdjustmentsPage() {
                   <tr>
                     <th className="px-3 py-2.5 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em] w-6"></th>
                     <th className="px-3 py-2.5 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">Received</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">Due</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">Allocated</th>
+                    <th className="px-3 py-2.5 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">Mapped</th>
+                    <th className="px-3 py-2.5 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">Remaining to Map</th>
+                    <th className="px-3 py-2.5 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">Rows</th>
                     <th className="px-3 py-2.5 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">Platform</th>
                     <th className="px-3 py-2.5 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">Source File</th>
                     <th className="px-3 py-2.5 text-left text-[10px] font-bold text-white/85 uppercase tracking-[0.1em]">Date</th>
@@ -173,21 +169,22 @@ export default function AgentAdjustmentsPage() {
                 <tbody className="divide-y divide-gray-100">
                   {visible.map(a => {
                     const isOpen = expandedId === a.id
-                    const resolved = a.remainder <= 0.005
+                    const resolved = a.remaining <= 0.005
                     return (
                       <Fragment key={a.id}>
                         <tr className="hover:bg-gray-50 cursor-pointer" onClick={() => setExpandedId(isOpen ? null : a.id)}>
                           <td className="px-3 py-2.5 text-gray-400 font-bold">{a.allocated.length > 0 ? (isOpen ? '▼' : '▶') : ''}</td>
                           <td className="px-3 py-2.5 cm-mono font-semibold text-gray-900">{fmtMoney(a.amount, a.currency)}</td>
-                          <td className="px-3 py-2.5 cm-mono font-semibold" style={{ color: resolved ? 'var(--cm-status-paid-text)' : 'var(--cm-status-pending-text)' }}>
-                            {fmtMoney(a.due, a.currency)}
+                          <td className="px-3 py-2.5 cm-mono text-gray-700">{fmtMoney(a.mappedTotal, a.currency)}</td>
+                          <td className="px-3 py-2.5 cm-mono font-semibold" style={{ color: resolved ? 'var(--cm-status-approved-text)' : 'var(--cm-status-pending-text)' }}>
+                            {fmtMoney(a.remaining, a.currency)}
                           </td>
                           <td className="px-3 py-2.5">
                             <span
                               className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-[0.06em] uppercase"
                               style={{
-                                background: resolved ? 'var(--cm-status-paid-bg)' : 'var(--cm-status-pending-bg)',
-                                color: resolved ? 'var(--cm-status-paid-text)' : 'var(--cm-status-pending-text)',
+                                background: resolved ? 'var(--cm-status-approved-bg)' : 'var(--cm-status-pending-bg)',
+                                color: resolved ? 'var(--cm-status-approved-text)' : 'var(--cm-status-pending-text)',
                               }}
                             >
                               {resolved ? 'Resolved' : `${a.allocated.length} row${a.allocated.length === 1 ? '' : 's'} tagged`}
@@ -199,7 +196,7 @@ export default function AgentAdjustmentsPage() {
                         </tr>
                         {isOpen && a.allocated.length > 0 && (
                           <tr>
-                            <td colSpan={7} className="px-3 py-0 bg-[var(--wgi-bg)]">
+                            <td colSpan={8} className="px-3 py-0 bg-[var(--wgi-bg)]">
                               <table className="w-full text-xs my-2">
                                 <thead>
                                   <tr className="text-[10px] uppercase tracking-[0.08em] text-[var(--wgi-text-muted)]">
