@@ -78,6 +78,8 @@ const EDITABLE_FIELDS = new Set([
   'ifa_percentage', 'suspense_percentage', 'wgi_percentage', 'pending_percentage',
   'variable_amount', 'ape', 'ape_wgi', 'due_wg',
   'paid', 'paid_at', 'status', 'rate', 'notes', 'ifa_notes', 'type2', 'updated_at',
+  // Due WG <-> Agent Adjustment allocation (see agent-adjustments feature)
+  'agent_adjustment_id', 'due_wg_status',
 ])
 
 export async function PATCH(request: Request) {

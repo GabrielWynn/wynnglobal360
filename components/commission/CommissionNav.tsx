@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 const TABS: { href: string; label: string; exact?: boolean }[] = [
   { href: '/commission/admin',                label: 'Dashboard', exact: true },
   { href: '/commission/admin/master-file',    label: 'Master File' },
+  { href: '/commission/admin/agent-adjustments', label: 'Agent Adjustments' },
   { href: '/commission/admin/upload',         label: 'Upload' },
   { href: '/commission/admin/approvals',      label: 'Approvals' },
   { href: '/commission/admin/payments',       label: 'Payments' },

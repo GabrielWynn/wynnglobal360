@@ -32,6 +32,7 @@ const FIELD_LABELS: Record<string, string> = {
   notes: 'Notes', ifa_notes: 'IFA Notes', rate: 'Rate',
   ape: 'APE IFA', ape_wgi: 'APE WGI', is_deleted: 'Deleted',
   ifa_id: 'IFA', platform_id: 'Platform', commission_type: 'Comm. Type',
+  is_agent_adjustment: 'Agent Adjustment', agent_adjustment_id: 'WG Allocated To', due_wg_status: 'WG Alloc Status',
 }
 
 function fmtDateTime(iso: string): string {

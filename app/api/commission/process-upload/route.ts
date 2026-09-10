@@ -156,6 +156,10 @@ export async function POST(request: Request) {
           ? (row[mapping.commission_type_col] || '').trim()
           : ''
         const commissionTypeCode = normalizeCommissionType(rawCommissionType)
+        // Lump-sum, no-policy payments (e.g. RL360 "Agent Adjustments") need to be
+        // flagged so they can be routed to the Agent Adjustments queue instead of
+        // the main master file, and allocated against Due WG rows later.
+        const isAgentAdjustment = /agent adjustment/i.test(rawCommissionType)
         const rawCurrency = (mapping.currency_col
           ? (row[mapping.currency_col] || '').trim().toUpperCase()
           : '').slice(0, 10)
@@ -191,7 +195,9 @@ export async function POST(request: Request) {
 
         // ── Rows with no policy number ──────────────────────────────────
         // These are saved as commission_records with a '[NO POLICY]' placeholder
-        // so they appear in the master file for review (e.g. lump-sum adjustments).
+        // for review. Agent Adjustments rows are additionally flagged
+        // (is_agent_adjustment) so the master file hides them and the
+        // Agent Adjustments page picks them up instead.
         if (!policyNumber) {
           const noPolId = randomUUID()
           rawBatch.push({
@@ -230,6 +236,7 @@ export async function POST(request: Request) {
             wgi_percentage:       null,
             paid:                 0.00,
             status:               'pending',
+            is_agent_adjustment:  isAgentAdjustment,
             created_by:           userId,
             notes:                'No policy number in source file',
           })
@@ -342,6 +349,7 @@ export async function POST(request: Request) {
           wgi_percentage:      null,
           paid:                0.00,
           status:              'pending',
+          is_agent_adjustment: isAgentAdjustment,
           created_by:          userId,
           notes:               dateWarning
             ? 'Warning: transaction_date missing from source — upload date used as fallback'

@@ -17,6 +17,9 @@ interface UseMasterFileColumnsArgs {
   detailRecordRef: MutableRefObject<any>
   setDetailRecord: (record: any) => void
   openAllocModalCb: (record: any) => void
+  openDueWgAllocModalCb: (record: any) => void
+  toggleDueWgStatusCb: (record: any) => void
+  unlinkDueWgCb: (record: any) => void
 }
 
 export function useMasterFileColumns({
@@ -24,6 +27,9 @@ export function useMasterFileColumns({
   detailRecordRef,
   setDetailRecord,
   openAllocModalCb,
+  openDueWgAllocModalCb,
+  toggleDueWgStatusCb,
+  unlinkDueWgCb,
 }: UseMasterFileColumnsArgs): ColDef[] {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo<ColDef[]>(() => {
@@ -271,6 +277,68 @@ export function useMasterFileColumns({
         valueFormatter: (p: ValueFormatterParams) =>
           p.value != null ? fmtMoney(Number(p.value)) : '',
         valueParser: parseAmt,
+      },
+      // WG Alloc — links this row's Due WG amount to the Agent Adjustments
+      // lump-sum payment it belongs to. Unallocated + due_wg set: an "Allocate"
+      // button opens the picker. Allocated: a Pending/Paid pill (click to toggle
+      // — the only thing that reduces the adjustment's outstanding Due) plus a
+      // small unlink control. A separate column rather than embedded in the
+      // DUE WG cell itself, same reasoning as the 'expand' allocation column above.
+      {
+        colId: 'due_wg_alloc',
+        headerName: 'WG Alloc',
+        width: 120,
+        sortable: false, filter: false, editable: false,
+        suppressMovable: true, resizable: false,
+        cellStyle: { display: 'flex', alignItems: 'center' } as Record<string, string | number>,
+        cellRenderer: (p: any) => {
+          const data = p.data
+          if (!data || p.node?.rowPinned || data.is_agent_adjustment) return null
+          const dueWg = data.due_wg
+          if (dueWg == null || Number(dueWg) === 0) return null
+
+          if (!data.agent_adjustment_id) {
+            return (
+              <button
+                onClick={(e) => { e.stopPropagation(); openDueWgAllocModalCb(data) }}
+                title="Allocate this Due WG amount to an Agent Adjustment"
+                style={{
+                  fontSize: 10, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase',
+                  background: 'none', border: '1px solid var(--wgi-navy)', color: 'var(--wgi-navy)',
+                  borderRadius: 4, padding: '2px 6px', cursor: 'pointer',
+                }}
+              >
+                Allocate
+              </button>
+            )
+          }
+
+          const isPaid = data.due_wg_status === 'paid'
+          const bg   = isPaid ? 'var(--cm-status-paid-bg)'   : 'var(--cm-status-pending-bg)'
+          const text = isPaid ? 'var(--cm-status-paid-text)' : 'var(--cm-status-pending-text)'
+          return (
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <button
+                onClick={(e) => { e.stopPropagation(); toggleDueWgStatusCb(data) }}
+                title={isPaid ? 'Confirmed paid — click to revert to pending' : 'Linked, awaiting confirmation — click to confirm paid'}
+                style={{
+                  fontSize: 10, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase',
+                  background: bg, color: text, border: 'none', borderRadius: 4, padding: '2px 6px', cursor: 'pointer',
+                }}
+              >
+                {isPaid ? 'Paid' : 'Pending'}
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); unlinkDueWgCb(data) }}
+                title="Remove this allocation"
+                style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: 13, lineHeight: 1, padding: 0 }}
+              >
+                ×
+              </button>
+            </span>
+          )
+        },
+        valueGetter: () => null,
       },
       {
         headerName: 'Paid', field: 'paid',

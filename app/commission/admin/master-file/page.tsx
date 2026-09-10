@@ -19,6 +19,7 @@ import { computeMergePreview, getMergeBlockReason, type MergeableRecord } from '
 import { fmtMoney, normalizeCommissionType } from '@/lib/commission-format'
 import { useMasterFileColumns } from '@/hooks/useMasterFileColumns'
 import { ReconcileModal } from '@/components/commission/master-file/ReconcileModal'
+import { DueWgAllocationModal } from '@/components/commission/master-file/DueWgAllocationModal'
 import { DeleteModal } from '@/components/commission/master-file/DeleteModal'
 import { MergeModal } from '@/components/commission/master-file/MergeModal'
 import { AddRecordModal } from '@/components/commission/master-file/AddRecordModal'
@@ -67,6 +68,9 @@ interface CommissionRecord {
   reconciled_at: string | null
   allocation_parent_id: string | null
   payment_batch_id: string | null
+  is_agent_adjustment: boolean
+  agent_adjustment_id: string | null
+  due_wg_status: string
   allocations?: CommissionAllocation[]
   platform: { name: string } | null
   upload_batch: { filename: string } | null
@@ -127,7 +131,7 @@ const MONO_FIELDS = new Set<string>([
 const COL_GROUPS: { label: string; ids: string[] }[] = [
   { label: 'Identity',   ids: ['expand', 'transaction_date', 'commencement_date', 'policy_number', 'policy_holder_name', 'ifa_code', 'ifa_name'] },
   { label: 'Commission', ids: ['commission_type', 'type2', 'amount', 'variable_amount', 'adjusted', 'currency', 'ape', 'ape_wgi', 'ifa_percentage', 'ifa_amount', 'suspense_percentage', 'suspense_amount', 'wgi_percentage', 'wg_amount', 'pending_percentage', 'pending_amount'] },
-  { label: 'Payment',    ids: ['due_wg', 'paid', 'unpaid', 'status'] },
+  { label: 'Payment',    ids: ['due_wg', 'due_wg_alloc', 'paid', 'unpaid', 'status'] },
   { label: 'Metadata',   ids: ['rate', 'notes', 'ifa_notes', 'platform.name', 'upload_batch.filename'] },
 ]
 
@@ -367,6 +371,11 @@ export default function MasterFilePage() {
   // ── Reconcile ─────────────────────────────────────────────────────────────────
   const [reconcileModal, setReconcileModal] = useState(false)
   const [reconciling,    setReconciling]    = useState(false)
+
+  // ── Due WG ↔ Agent Adjustment allocation ────────────────────────────────────
+  const [dueWgAllocModal, setDueWgAllocModal] = useState<{ open: boolean; record: CommissionRecord | null }>({ open: false, record: null })
+  const [selectedAdjustmentId, setSelectedAdjustmentId] = useState<string | null>(null)
+  const [dueWgAllocating, setDueWgAllocating] = useState(false)
 
   // ── Merge selected rows ───────────────────────────────────────────────────────
   const [mergeModal,     setMergeModal]     = useState(false)
@@ -703,12 +712,112 @@ export default function MasterFilePage() {
     }
   }
 
+  // ── Due WG ↔ Agent Adjustment allocation ────────────────────────────────────
+  // The master file grid never shows Agent Adjustments rows inline — they're a
+  // lump-sum receipt, not a per-policy commission line. They still live in the
+  // same fetched dataset (so allocation math below can read them), just hidden
+  // from the grid and surfaced instead on the dedicated Agent Adjustments page.
+  const gridRowData = useMemo(
+    () => rowData.filter(r => !r.is_agent_adjustment),
+    [rowData]
+  )
+
+  // For every Agent Adjustment row: how much of it is currently explained by
+  // Paid-tagged rows, and how much by Pending-tagged rows (Due = -pendingTotal,
+  // confirmed by the user; eligible = amount - paidTotal > 0, not yet fully paid off).
+  const eligibleAdjustments = useMemo(() => {
+    const paidByAdj    = new Map<string, number>()
+    const pendingByAdj = new Map<string, number>()
+    for (const r of rowData) {
+      if (!r.agent_adjustment_id || r.due_wg == null) continue
+      const bucket = r.due_wg_status === 'paid' ? paidByAdj : pendingByAdj
+      bucket.set(r.agent_adjustment_id, (bucket.get(r.agent_adjustment_id) ?? 0) + Number(r.due_wg))
+    }
+    return rowData
+      .filter(r => r.is_agent_adjustment)
+      .map(r => {
+        const paidTotal = paidByAdj.get(r.id) ?? 0
+        const pendingTotal = pendingByAdj.get(r.id) ?? 0
+        return {
+          id: r.id,
+          amount: r.amount ?? 0,
+          currency: r.currency,
+          transaction_date: r.transaction_date,
+          sourceFile: r.upload_batch?.filename ?? '— manual entry —',
+          due: -pendingTotal,
+          paidTotal,
+          remainder: (r.amount ?? 0) - paidTotal,
+        }
+      })
+      .filter(a => a.remainder > 0.005)
+      .sort((a, b) => b.transaction_date.localeCompare(a.transaction_date))
+  }, [rowData])
+
+  const openDueWgAllocModalCb = useCallback((record: CommissionRecord) => {
+    setDueWgAllocModal({ open: true, record })
+    setSelectedAdjustmentId(null)
+  }, [])
+
+  async function patchDueWg(id: string, updates: Record<string, unknown>) {
+    const authHeaders = await getAuthHeaders()
+    const res = await fetch('/api/commission/commission-records', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
+      body: JSON.stringify({ ids: [id], updates: { ...updates, updated_at: new Date().toISOString() } }),
+    })
+    const result = await res.json()
+    if (!res.ok) throw new Error(result.error)
+    if (result.record) {
+      gridRef.current?.api.applyTransaction({ update: [result.record as unknown as CommissionRecord] })
+      recomputeSummary()
+    }
+    setRowData(prev => prev.map(r => r.id === id ? { ...r, ...updates } as CommissionRecord : r))
+  }
+
+  const handleConfirmDueWgAllocation = useCallback(async () => {
+    const record = dueWgAllocModal.record
+    if (!record || !selectedAdjustmentId) return
+    setDueWgAllocating(true)
+    try {
+      await patchDueWg(record.id, { agent_adjustment_id: selectedAdjustmentId, due_wg_status: 'pending' })
+      setDueWgAllocModal({ open: false, record: null })
+      showFeedback('Allocated — linked as pending. Confirm it paid once the money is verified.')
+    } catch (err: any) {
+      alert(`Failed to allocate: ${err.message}`)
+    } finally {
+      setDueWgAllocating(false)
+    }
+  }, [dueWgAllocModal.record, selectedAdjustmentId]) // eslint-disable-line
+
+  const toggleDueWgStatusCb = useCallback(async (record: CommissionRecord) => {
+    const next = record.due_wg_status === 'paid' ? 'pending' : 'paid'
+    try {
+      await patchDueWg(record.id, { due_wg_status: next })
+      showFeedback(next === 'paid' ? 'Confirmed paid — the adjustment’s Due has been updated.' : 'Reverted to pending.')
+    } catch (err: any) {
+      alert(`Failed to update: ${err.message}`)
+    }
+  }, []) // eslint-disable-line
+
+  const unlinkDueWgCb = useCallback(async (record: CommissionRecord) => {
+    if (!confirm('Remove this allocation? The row goes back to unallocated.')) return
+    try {
+      await patchDueWg(record.id, { agent_adjustment_id: null, due_wg_status: 'pending' })
+      showFeedback('Allocation removed.')
+    } catch (err: any) {
+      alert(`Failed to remove allocation: ${err.message}`)
+    }
+  }, []) // eslint-disable-line
+
   // ── Column Definitions ────────────────────────────────────────────────────────
   const columnDefs = useMasterFileColumns({
     allocationsByParentRef,
     detailRecordRef,
     setDetailRecord,
     openAllocModalCb,
+    openDueWgAllocModalCb,
+    toggleDueWgStatusCb,
+    unlinkDueWgCb,
   })
 
   const defaultColDef = useMemo<ColDef>(() => ({
@@ -1641,7 +1750,7 @@ export default function MasterFilePage() {
           <div className="ag-theme-alpine ag-theme-commission flex-1" style={{ minHeight: 0 }}>
           <AgGridReact
             ref={gridRef}
-            rowData={rowData}
+            rowData={gridRowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             quickFilterText={searchText}
@@ -1900,6 +2009,18 @@ export default function MasterFilePage() {
         reconciling={reconciling}
         onCancel={() => setReconcileModal(false)}
         onConfirm={handleReconcile}
+      />
+
+      {/* ── Due WG Allocation Modal ────────────────────────────────────────────── */}
+      <DueWgAllocationModal
+        open={dueWgAllocModal.open}
+        record={dueWgAllocModal.record}
+        eligibleAdjustments={eligibleAdjustments}
+        selectedAdjustmentId={selectedAdjustmentId}
+        onSelect={setSelectedAdjustmentId}
+        allocating={dueWgAllocating}
+        onCancel={() => setDueWgAllocModal({ open: false, record: null })}
+        onConfirm={handleConfirmDueWgAllocation}
       />
     </div>
   )
