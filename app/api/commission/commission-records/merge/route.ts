@@ -22,6 +22,7 @@ type Row = {
   ifa_amount: number
   suspense_amount: number
   wg_amount: number
+  pending_amount: number
   ape: number | null
   ape_wgi: number | null
   due_wg: number | null
@@ -37,15 +38,21 @@ type Row = {
   commission_type: string | null
   notes: string | null
   ifa_notes: string | null
-  ifa_percentage: number
-  suspense_percentage: number
-  wgi_percentage: number
+  ifa_percentage: number | null
+  suspense_percentage: number | null
+  wgi_percentage: number | null
+  pending_percentage: number | null
+  is_agent_adjustment: boolean
+  agent_adjustment_id: string | null
   allocations?: { id: string }[]
   merge_source_ids?: string[] | null
 }
 
 const SELECT =
-  'id, policy_number, ifa_code, currency, platform_id, amount, variable_amount, paid, ifa_amount, suspense_amount, wg_amount, ape, ape_wgi, due_wg, rate, status, is_deleted, is_advance, linked_record_id, allocation_parent_id, payment_batch_id, transaction_date, commencement_date, commission_type, notes, ifa_notes, ifa_percentage, suspense_percentage, wgi_percentage, merge_source_ids, allocations:commission_allocations!parent_record_id(id)'
+  'id, policy_number, ifa_code, currency, platform_id, amount, variable_amount, paid, ifa_amount, suspense_amount, wg_amount, pending_amount, ape, ape_wgi, due_wg, rate, status, is_deleted, is_advance, linked_record_id, allocation_parent_id, payment_batch_id, transaction_date, commencement_date, commission_type, notes, ifa_notes, ifa_percentage, suspense_percentage, wgi_percentage, pending_percentage, is_agent_adjustment, agent_adjustment_id, merge_source_ids, allocations:commission_allocations!parent_record_id(id)'
+
+/** Rule violations the admin can fix by changing the selection — returned as 400, not 500. */
+class MergeValidationError extends Error {}
 
 function normPolicy(p: string) {
   return p.trim().toUpperCase()
@@ -63,7 +70,7 @@ function sumNullable(rows: Row[], field: keyof Row): number {
   return rows.reduce((s, r) => s + (Number(r[field] ?? 0) || 0), 0)
 }
 
-function weightedAvg(rows: Row[], field: 'rate'): number | null {
+function weightedAvg(rows: Row[], survivor: Row, field: 'rate'): number | null {
   let totalWeight = 0
   let weighted = 0
   for (const r of rows) {
@@ -74,26 +81,23 @@ function weightedAvg(rows: Row[], field: 'rate'): number | null {
     weighted += v * w
     totalWeight += w
   }
-  if (totalWeight <= 0) {
-    const survivor = rows[0]
-    return survivor[field] ?? null
-  }
+  if (totalWeight <= 0) return survivor[field] ?? null
   return round6(weighted / totalWeight)
 }
 
-function mergeStatus(rows: Row[]): string {
+function mergeStatus(rows: Row[], tiebreakRows: Row[] = rows): string {
   if (rows.some(r => r.status === 'cancelled')) {
-    throw new Error('Cannot merge cancelled records')
+    throw new MergeValidationError('Cannot merge cancelled records')
   }
   if (rows.some(r => r.status === 'reconciled')) {
-    throw new Error('Cannot merge reconciled records — use the reconcile workflow')
+    throw new MergeValidationError('Cannot merge reconciled records — use the reconcile workflow')
   }
   if (rows.every(r => r.status === 'paid')) return 'paid'
   if (rows.some(r => r.status === 'pending')) return 'pending'
   if (rows.every(r => r.status === 'approved')) return 'approved'
   // Mixed approved / paid
-  const mergedIfa = sumNullable(rows, 'ifa_amount')
-  const mergedPaid = sumNullable(rows, 'paid')
+  const mergedIfa = sumNullable(tiebreakRows, 'ifa_amount')
+  const mergedPaid = sumNullable(tiebreakRows, 'paid')
   if (mergedPaid >= mergedIfa - 0.005) return 'paid'
   return 'approved'
 }
@@ -105,27 +109,32 @@ function mergeCommissionType(rows: Row[]): string | null {
   return types.join(' + ')
 }
 
-function mergeNotes(rows: Row[], survivorId: string, field: 'notes' | 'ifa_notes'): string | null {
+const MERGE_TAG = /^(\[merged \d+ row\(s\)\]\s*)+/
+
+/** `mergedCount` null = no "[merged N row(s)]" tag (ifa_notes is shown to the IFA; the tag is internal). */
+function mergeNotes(rows: Row[], field: 'notes' | 'ifa_notes', mergedCount: number | null): string | null {
   const parts: string[] = []
   for (const r of rows) {
-    const text = r[field]?.trim()
+    // A survivor of an earlier merge already carries the tag and ' | '-joined parts —
+    // unpack it so re-merging neither stacks tags nor repeats a note.
+    const text = r[field]?.trim().replace(MERGE_TAG, '')
     if (!text) continue
-    parts.push(text)
+    for (const p of text.split(' | ')) {
+      if (p.trim()) parts.push(p.trim())
+    }
   }
   if (parts.length === 0) return null
-  const unique = [...new Set(parts)]
-  const body = unique.join(' | ')
-  const sourceIds = rows.filter(r => r.id !== survivorId).map(r => r.id)
-  if (sourceIds.length === 0) return body
-  return `[merged ${sourceIds.length} row(s)] ${body}`.slice(0, 4000)
+  const body = [...new Set(parts)].join(' | ')
+  if (mergedCount == null) return body.slice(0, 4000)
+  return `[merged ${mergedCount} row(s)] ${body}`.slice(0, 4000)
 }
 
 function validateMergeGroup(rows: Row[], survivorId: string) {
   if (rows.length < 2) {
-    throw new Error('Select at least 2 records to merge')
+    throw new MergeValidationError('Select at least 2 records to merge')
   }
   if (!rows.some(r => r.id === survivorId)) {
-    throw new Error('survivor_id must be one of the selected records')
+    throw new MergeValidationError('survivor_id must be one of the selected records')
   }
 
   const policy = normPolicy(rows[0].policy_number)
@@ -134,47 +143,38 @@ function validateMergeGroup(rows: Row[], survivorId: string) {
   const platformId = rows[0].platform_id
 
   for (const r of rows) {
-    if (r.is_deleted) throw new Error('Cannot merge deleted records')
-    if (r.allocation_parent_id) throw new Error('Cannot merge allocation child rows')
+    if (r.is_deleted) throw new MergeValidationError('Cannot merge deleted records')
+    if (r.allocation_parent_id) throw new MergeValidationError('Cannot merge allocation child rows')
     if ((r.allocations?.length ?? 0) > 0) {
-      throw new Error(`Record ${r.policy_number} has commission allocations — remove allocations first`)
+      throw new MergeValidationError(`Record ${r.policy_number} has commission allocations — remove allocations first`)
     }
-    if (r.linked_record_id) throw new Error('Cannot merge advance/reconcile linked records')
-    if (r.is_advance) throw new Error('Cannot merge advance payment rows')
-    if (r.payment_batch_id) throw new Error('Cannot merge records that are part of a payment batch')
+    if (r.linked_record_id) throw new MergeValidationError('Cannot merge advance/reconcile linked records')
+    if (r.is_advance) throw new MergeValidationError('Cannot merge advance payment rows')
+    if (r.payment_batch_id) throw new MergeValidationError('Cannot merge records that are part of a payment batch')
+    if (r.is_agent_adjustment) throw new MergeValidationError('Cannot merge Agent Adjustment rows')
+    // The retired row would keep its link (and its Due WG) on the Agent Adjustment
+    // while the survivor carries the summed Due WG — the adjustment would be over-allocated.
+    if (r.agent_adjustment_id) {
+      throw new MergeValidationError(
+        `Record ${r.policy_number} has Due WG allocated to an Agent Adjustment — unlink it first`
+      )
+    }
     if (normPolicy(r.policy_number) !== policy) {
-      throw new Error('All selected records must have the same policy number')
+      throw new MergeValidationError('All selected records must have the same policy number')
     }
     if (r.ifa_code !== ifaCode) {
-      throw new Error('All selected records must belong to the same IFA')
+      throw new MergeValidationError('All selected records must belong to the same IFA')
     }
     if (r.currency !== currency) {
-      throw new Error('All selected records must use the same currency')
+      throw new MergeValidationError('All selected records must use the same currency')
     }
     if (r.platform_id !== platformId) {
-      throw new Error('All selected records must use the same platform')
+      throw new MergeValidationError('All selected records must use the same platform')
     }
   }
 }
 
-function buildMergedUpdate(rows: Row[], survivor: Row) {
-  const sumAmount = round2(sumNullable(rows, 'amount'))
-  const sumIfaAmt = sumNullable(rows, 'ifa_amount')
-  const sumSuspAmt = sumNullable(rows, 'suspense_amount')
-  const sumWgAmt = sumNullable(rows, 'wg_amount')
-
-  let ifaPct = survivor.ifa_percentage
-  let suspPct = survivor.suspense_percentage
-  let wgiPct = survivor.wgi_percentage
-
-  if (Math.abs(sumAmount) > 1e-9) {
-    ifaPct = round6(sumIfaAmt / sumAmount)
-    suspPct = round6(sumSuspAmt / sumAmount)
-    wgiPct = round6(sumWgAmt / sumAmount)
-  } else if (sumIfaAmt !== 0 || sumSuspAmt !== 0 || sumWgAmt !== 0) {
-    throw new Error('Cannot merge: total received is zero but commission amounts are non-zero')
-  }
-
+function buildMergedUpdate(rows: Row[], survivor: Row, mode: 'sum' | 'keep_amount') {
   const latestDate = rows
     .map(r => r.transaction_date)
     .sort()
@@ -184,15 +184,66 @@ function buildMergedUpdate(rows: Row[], survivor: Row) {
     rows.map(r => r.commencement_date).filter(Boolean).sort().reverse()[0] ?? survivor.commencement_date
 
   const sourceIds = rows.filter(r => r.id !== survivor.id).map(r => r.id)
-  const existingSources = survivor.merge_source_ids ?? []
+  const mergeSourceIds = [...(survivor.merge_source_ids ?? []), ...sourceIds]
+
+  const tiebreakRows = mode === 'keep_amount' ? [survivor] : rows
+
+  const base = {
+    status: mergeStatus(rows, tiebreakRows),
+    transaction_date: latestDate,
+    commencement_date: commencement,
+    commission_type: mergeCommissionType(rows),
+    notes: mergeNotes(rows, 'notes', mergeSourceIds.length),
+    ifa_notes: mergeNotes(rows, 'ifa_notes', null),
+    merge_source_ids: mergeSourceIds,
+  }
+
+  if (mode === 'keep_amount') {
+    // amount/variable_amount/paid/ape/ape_wgi/due_wg/ifa_percentage/suspense_percentage/
+    // wgi_percentage/pending_percentage/rate are intentionally omitted — the survivor's pre-merge
+    // values stand, and Postgres recomputes the generated columns (ifa_amount, unpaid, etc.) from them unchanged.
+    return base
+  }
+
+  const sumAmount = round2(sumNullable(rows, 'amount'))
+  const sumVariable = round2(sumNullable(rows, 'variable_amount'))
+  const sumIfaAmt = sumNullable(rows, 'ifa_amount')
+  const sumSuspAmt = sumNullable(rows, 'suspense_amount')
+  const sumWgAmt = sumNullable(rows, 'wg_amount')
+  const sumPendingAmt = sumNullable(rows, 'pending_amount')
+
+  let ifaPct = survivor.ifa_percentage
+  let suspPct = survivor.suspense_percentage
+  let wgiPct = survivor.wgi_percentage
+  let pendingPct = survivor.pending_percentage
+
+  // The generated split columns are Gross (Received + Expect) × percentage, so the
+  // blended percentage has to be derived from Gross too — dividing by Received alone
+  // inflates every split whenever a row carries an Expect amount.
+  const sumGross = round2(sumAmount + sumVariable)
+
+  // A percentage that is blank (null) on every row means "split not assigned yet" —
+  // keep it blank rather than writing 0%, which reads as a deliberate zero split.
+  const blend = (sum: number, field: 'ifa_percentage' | 'suspense_percentage' | 'wgi_percentage' | 'pending_percentage') =>
+    rows.every(r => r[field] == null) ? null : round6(sum / sumGross)
+
+  if (Math.abs(sumGross) > 1e-9) {
+    ifaPct = blend(sumIfaAmt, 'ifa_percentage')
+    suspPct = blend(sumSuspAmt, 'suspense_percentage')
+    wgiPct = blend(sumWgAmt, 'wgi_percentage')
+    pendingPct = blend(sumPendingAmt, 'pending_percentage')
+  } else if (sumIfaAmt !== 0 || sumSuspAmt !== 0 || sumWgAmt !== 0 || sumPendingAmt !== 0) {
+    throw new MergeValidationError('Cannot merge: total gross is zero but commission amounts are non-zero')
+  }
 
   const sumApe = round2(sumNullable(rows, 'ape'))
   const sumApeWgi = round2(sumNullable(rows, 'ape_wgi'))
   const sumDueWg = round2(sumNullable(rows, 'due_wg'))
 
   return {
+    ...base,
     amount: sumAmount,
-    variable_amount: round2(sumNullable(rows, 'variable_amount')),
+    variable_amount: sumVariable,
     paid: round2(sumNullable(rows, 'paid')),
     ape: rows.some(r => r.ape != null) ? sumApe : null,
     ape_wgi: rows.some(r => r.ape_wgi != null) ? sumApeWgi : null,
@@ -200,15 +251,8 @@ function buildMergedUpdate(rows: Row[], survivor: Row) {
     ifa_percentage: ifaPct,
     suspense_percentage: suspPct,
     wgi_percentage: wgiPct,
-    rate: weightedAvg(rows, 'rate'),
-    status: mergeStatus(rows),
-    transaction_date: latestDate,
-    commencement_date: commencement,
-    commission_type: mergeCommissionType(rows),
-    notes: mergeNotes(rows, survivor.id, 'notes'),
-    ifa_notes: mergeNotes(rows, survivor.id, 'ifa_notes'),
-    merge_source_ids: [...existingSources, ...sourceIds],
-    updated_at: new Date().toISOString(),
+    pending_percentage: pendingPct,
+    rate: weightedAvg(rows, survivor, 'rate'),
   }
 }
 
@@ -217,15 +261,24 @@ export async function POST(request: Request) {
   if (!userId) return unauthorised()
 
   let actorEmail = `${userId}@local`
+  // admin_audit_log.actor_id references ifas(id), not the auth user id — inserting
+  // userId there violates the FK and the merge entry is silently lost.
+  let actorIfaId: string | null = null
   try {
     const { data } = await supabaseAdmin.auth.admin.getUserById(userId)
     actorEmail = data.user?.email ?? actorEmail
+    const { data: byUserId } = await supabaseAdmin.from('ifas').select('id').eq('user_id', userId).maybeSingle()
+    actorIfaId = byUserId?.id ?? null
+    if (!actorIfaId && data.user?.email) {
+      const { data: byEmail } = await supabaseAdmin.from('ifas').select('id').eq('email', data.user.email).maybeSingle()
+      actorIfaId = byEmail?.id ?? null
+    }
   } catch {
     /* keep fallback */
   }
 
   try {
-    const { ids, survivor_id } = await request.json()
+    const { ids, survivor_id, merge_mode } = await request.json()
 
     if (!Array.isArray(ids) || ids.length < 2) {
       return NextResponse.json({ error: 'ids must contain at least 2 record IDs' }, { status: 400 })
@@ -233,6 +286,10 @@ export async function POST(request: Request) {
     if (!survivor_id || typeof survivor_id !== 'string') {
       return NextResponse.json({ error: 'survivor_id is required' }, { status: 400 })
     }
+    if (merge_mode != null && merge_mode !== 'sum' && merge_mode !== 'keep_amount') {
+      return NextResponse.json({ error: `merge_mode must be 'sum' or 'keep_amount'` }, { status: 400 })
+    }
+    const mode: 'sum' | 'keep_amount' = merge_mode === 'keep_amount' ? 'keep_amount' : 'sum'
 
     const uniqueIds = [...new Set(ids as string[])]
     if (uniqueIds.length !== ids.length) {
@@ -253,34 +310,21 @@ export async function POST(request: Request) {
     validateMergeGroup(typed, survivor_id)
 
     const survivor = typed.find(r => r.id === survivor_id)!
-    const merged = buildMergedUpdate(typed, survivor)
-    const now = new Date().toISOString()
+    const merged = buildMergedUpdate(typed, survivor, mode)
     const absorbedIds = typed.filter(r => r.id !== survivor_id).map(r => r.id)
 
-    const { error: updateErr } = await supabaseAdmin
-      .from('commission_records')
-      .update(merged)
-      .eq('id', survivor_id)
+    // One transaction: the survivor update and the retirement of the absorbed rows either
+    // both land or neither does — a half-applied merge would double-count the money.
+    // The function also re-checks, under row locks, that no selected row was deleted or
+    // merged since it was read above (P0001).
+    const { error: mergeErr } = await supabaseAdmin.rpc('merge_commission_records', {
+      p_survivor_id: survivor_id,
+      p_absorbed_ids: absorbedIds,
+      p_update: merged,
+    })
 
-    if (updateErr) return NextResponse.json({ error: updateErr.message }, { status: 500 })
-
-    if (absorbedIds.length > 0) {
-      const { error: absorbErr } = await supabaseAdmin
-        .from('commission_records')
-        .update({
-          is_deleted: true,
-          merged_into_id: survivor_id,
-          merged_at: now,
-          updated_at: now,
-        })
-        .in('id', absorbedIds)
-
-      if (absorbErr) {
-        return NextResponse.json(
-          { error: `Survivor updated but failed to retire merged rows: ${absorbErr.message}` },
-          { status: 500 }
-        )
-      }
+    if (mergeErr) {
+      return NextResponse.json({ error: mergeErr.message }, { status: mergeErr.code === 'P0001' ? 409 : 500 })
     }
 
     const { data: record, error: freshErr } = await supabaseAdmin
@@ -292,8 +336,9 @@ export async function POST(request: Request) {
     if (freshErr) return NextResponse.json({ error: freshErr.message }, { status: 500 })
 
     try {
-      await supabaseAdmin.from('admin_audit_log').insert({
-        actor_id: userId,
+      // supabase-js reports failures via the returned error, it does not throw.
+      const { error: auditErr } = await supabaseAdmin.from('admin_audit_log').insert({
+        actor_id: actorIfaId,
         actor_email: actorEmail,
         action: 'commission.record.merge',
         target_id: survivor_id,
@@ -308,8 +353,10 @@ export async function POST(request: Request) {
           survivor_id,
           merged_count: absorbedIds.length,
           merge_source_ids: merged.merge_source_ids,
+          merge_mode: mode,
         },
       })
+      if (auditErr) console.error('[commission merge] audit log insert failed:', auditErr.message)
     } catch {
       /* best-effort */
     }
@@ -321,7 +368,7 @@ export async function POST(request: Request) {
     })
   } catch (err: any) {
     const message = err?.message ?? 'Merge failed'
-    const status = message.includes('Cannot merge') || message.includes('must') ? 400 : 500
+    const status = err instanceof MergeValidationError ? 400 : 500
     return NextResponse.json({ error: message }, { status })
   }
 }

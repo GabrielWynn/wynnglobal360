@@ -35,17 +35,32 @@ interface MergeModalProps {
   preview: MergePreview | null
   rows: MergeRow[]
   survivorId: string
+  mode: 'sum' | 'keep_amount'
   merging: boolean
   error: string
   onSurvivorChange: (id: string) => void
+  onModeChange: (mode: 'sum' | 'keep_amount') => void
   onCancel: () => void
   onConfirm: () => void
 }
 
 export function MergeModal({
-  open, preview, rows, survivorId, merging, error, onSurvivorChange, onCancel, onConfirm,
+  open, preview, rows, survivorId, mode, merging, error, onSurvivorChange, onModeChange, onCancel, onConfirm,
 }: MergeModalProps) {
   if (!open || !preview) return null
+
+  const survivorRow = rows.find(r => r.id === survivorId)
+  const sumTerms = rows.slice(0, 2).map(r => `$${fmtMoney(r.amount)}`)
+  const sumExtra = rows.length > 2 ? ` + ${rows.length - 2} more` : ''
+  const sumTotal = rows.reduce((s, r) => s + (r.amount ?? 0), 0)
+  const sumExample = `${sumTerms.join(' + ')}${sumExtra} = $${fmtMoney(sumTotal)}`
+  const keepExample = survivorRow
+    ? `Keep $${fmtMoney(survivorRow.amount)} (survivor's Received amount)`
+    : "Select a survivor row below"
+
+  const cardBase = 'text-left rounded p-3 border transition-colors'
+  const cardSelected = 'border-2 border-[var(--wgi-navy)] bg-[var(--wgi-bg)]'
+  const cardUnselected = 'border-gray-200 bg-white hover:border-gray-300'
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -54,6 +69,30 @@ export function MergeModal({
         <p className="text-sm text-gray-600">
           Only the rows you selected will be combined. Other rows for this policy are unchanged.
         </p>
+
+        <div>
+          <p className="text-xs font-medium text-gray-700 mb-2">How should amounts be combined?</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => onModeChange('sum')}
+              className={`${cardBase} ${mode === 'sum' ? cardSelected : cardUnselected}`}
+            >
+              <div className="text-sm font-semibold text-[var(--wgi-navy)]">Merge &amp; Sum Amounts</div>
+              <div className="text-xs text-gray-600">Add amounts together</div>
+              <div className="text-xs cm-mono mt-1 text-gray-700">{sumExample}</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => onModeChange('keep_amount')}
+              className={`${cardBase} ${mode === 'keep_amount' ? cardSelected : cardUnselected}`}
+            >
+              <div className="text-sm font-semibold text-[var(--wgi-navy)]">Merge Without Changing Amounts</div>
+              <div className="text-xs text-gray-600">Keep the survivor row&apos;s amount as-is</div>
+              <div className="text-xs cm-mono mt-1 text-gray-700">{keepExample}</div>
+            </button>
+          </div>
+        </div>
 
         <div className="overflow-x-auto border border-gray-200 rounded">
           <table className="min-w-full text-xs">
@@ -100,6 +139,12 @@ export function MergeModal({
           <div><span className="text-gray-500 block text-xs">Trans date</span><strong>{preview.transaction_date}</strong></div>
         </div>
 
+        {mode === 'keep_amount' && (
+          <p className="text-xs text-gray-500 italic">
+            Amounts kept from survivor row — not summed.
+          </p>
+        )}
+
         <p className="text-xs text-gray-500">
           Policy <strong>{rows[0]?.policy_number}</strong> · IFA <strong>{rows[0]?.ifa_code}</strong> · {rows.length} rows → 1 row
         </p>
@@ -115,7 +160,11 @@ export function MergeModal({
           </button>
           <button onClick={onConfirm} disabled={merging || !survivorId}
             className="flex-1 bg-[var(--wgi-navy)] text-white py-2 rounded text-sm font-medium hover:bg-[var(--wgi-navy-600)] disabled:opacity-40">
-            {merging ? 'Merging…' : `Merge ${rows.length} rows`}
+            {merging
+              ? 'Merging…'
+              : mode === 'sum'
+                ? `Merge & Sum ${rows.length} rows`
+                : `Merge ${rows.length} rows (keep amount)`}
           </button>
         </div>
       </div>

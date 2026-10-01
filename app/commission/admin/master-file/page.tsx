@@ -15,7 +15,7 @@ import type {
   CellClassParams,
 } from 'ag-grid-community'
 import * as XLSX from 'xlsx'
-import { computeMergePreview, getMergeBlockReason, type MergeableRecord } from '@/lib/commission-merge'
+import { computeMergePreview, computeMergePreviewKeepAmount, getMergeBlockReason, type MergeableRecord } from '@/lib/commission-merge'
 import { fmtMoney, normalizeCommissionType } from '@/lib/commission-format'
 import { useMasterFileColumns } from '@/hooks/useMasterFileColumns'
 import { ReconcileModal } from '@/components/commission/master-file/ReconcileModal'
@@ -380,6 +380,7 @@ export default function MasterFilePage() {
   // ── Merge selected rows ───────────────────────────────────────────────────────
   const [mergeModal,     setMergeModal]     = useState(false)
   const [mergeSurvivorId, setMergeSurvivorId] = useState('')
+  const [mergeMode,      setMergeMode]      = useState<'sum' | 'keep_amount'>('sum')
   const [merging,        setMerging]        = useState(false)
   const [mergeError,     setMergeError]     = useState('')
 
@@ -559,6 +560,16 @@ export default function MasterFilePage() {
     filtersRestoredRef.current = true
   }
 
+  // Due WG cell is yellow (unreconciled — amount entered, not yet linked to an
+  // Agent Adjustment and confirmed) vs green (reconciled) — see the due_wg
+  // cellStyle in useMasterFileColumns.tsx. The DUE WG summary total should only
+  // reflect what's still outstanding, so reconciled (green) rows are excluded.
+  function isDueWgUnreconciled(r: CommissionRecord): boolean {
+    if (r.due_wg == null || Number(r.due_wg) === 0) return false
+    const reconciled = !!r.agent_adjustment_id && r.due_wg_status === 'paid'
+    return !reconciled
+  }
+
   // ── Summary row computation ───────────────────────────────────────────────────
   function recomputeSummary() {
     const api = gridRef.current?.api
@@ -588,7 +599,7 @@ export default function MasterFilePage() {
       fUnpaid += r.unpaid          ?? 0
       fApe    += r.ape             ?? 0
       fApeWgi += r.ape_wgi         ?? 0
-      fDueWg  += r.due_wg          ?? 0
+      if (isDueWgUnreconciled(r)) fDueWg += r.due_wg ?? 0
     })
 
     const allRow: Record<string, unknown> = {
@@ -621,7 +632,7 @@ export default function MasterFilePage() {
         sUnpaid += r.unpaid          ?? 0
         sApe    += r.ape             ?? 0
         sApeWgi += r.ape_wgi         ?? 0
-        sDueWg  += r.due_wg          ?? 0
+        if (isDueWgUnreconciled(r)) sDueWg += r.due_wg ?? 0
       })
       const selRow: Record<string, unknown> = {
         _summary: true, _selected: true,
@@ -1244,6 +1255,8 @@ export default function MasterFilePage() {
       linked_record_id: r.linked_record_id,
       allocation_parent_id: r.allocation_parent_id,
       payment_batch_id: r.payment_batch_id,
+      is_agent_adjustment: r.is_agent_adjustment,
+      agent_adjustment_id: r.agent_adjustment_id,
       transaction_date: r.transaction_date,
       commission_type: r.commission_type,
       has_allocations:
@@ -1259,8 +1272,10 @@ export default function MasterFilePage() {
 
   const mergePreview = useMemo(() => {
     if (mergeBlockReason || mergeCandidates.length < 2) return null
-    return computeMergePreview(mergeCandidates)
-  }, [mergeBlockReason, mergeCandidates])
+    return mergeMode === 'sum'
+      ? computeMergePreview(mergeCandidates)
+      : computeMergePreviewKeepAmount(mergeCandidates, mergeSurvivorId)
+  }, [mergeBlockReason, mergeCandidates, mergeMode, mergeSurvivorId])
 
   function openMergeModal() {
     if (mergeBlockReason) {
@@ -1269,6 +1284,7 @@ export default function MasterFilePage() {
     }
     const sorted = [...selectedRows].sort((a, b) => b.transaction_date.localeCompare(a.transaction_date))
     setMergeSurvivorId(sorted[0]?.id ?? '')
+    setMergeMode('sum')
     setMergeError('')
     setMergeModal(true)
   }
@@ -1285,6 +1301,7 @@ export default function MasterFilePage() {
         body: JSON.stringify({
           ids: mergeCandidates.map(r => r.id),
           survivor_id: mergeSurvivorId,
+          merge_mode: mergeMode,
         }),
       })
       const data = await res.json()
@@ -1293,7 +1310,9 @@ export default function MasterFilePage() {
       setSelectedRows([])
       gridRef.current?.api.deselectAll()
       showFeedback(
-        `Merged ${data.merged_count} row(s) into one record for policy ${data.record?.policy_number ?? ''}.`,
+        mergeMode === 'sum'
+          ? `Merged ${data.merged_count} row(s) into one record (amounts summed) for policy ${data.record?.policy_number ?? ''}.`
+          : `Merged ${data.merged_count} row(s) into one record (amounts kept from survivor) for policy ${data.record?.policy_number ?? ''}.`,
       )
       await loadData()
     } catch (err: any) {
@@ -2003,9 +2022,11 @@ export default function MasterFilePage() {
         preview={mergePreview}
         rows={selectedRows}
         survivorId={mergeSurvivorId}
+        mode={mergeMode}
         merging={merging}
         error={mergeError}
         onSurvivorChange={setMergeSurvivorId}
+        onModeChange={setMergeMode}
         onCancel={() => setMergeModal(false)}
         onConfirm={handleConfirmMerge}
       />

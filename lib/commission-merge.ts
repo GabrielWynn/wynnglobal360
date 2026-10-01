@@ -18,6 +18,8 @@ export interface MergeableRecord {
   linked_record_id?: string | null
   allocation_parent_id?: string | null
   payment_batch_id?: string | null
+  is_agent_adjustment?: boolean
+  agent_adjustment_id?: string | null
   transaction_date: string
   commission_type?: string | null
   has_allocations?: boolean
@@ -57,6 +59,8 @@ export function getMergeBlockReason(rows: MergeableRecord[]): string | null {
     if (r.linked_record_id) return 'Cannot merge linked advance/reconcile rows'
     if (r.is_advance) return 'Cannot merge advance payment rows'
     if (r.payment_batch_id) return 'Cannot merge rows already in a payment batch'
+    if (r.is_agent_adjustment) return 'Cannot merge Agent Adjustment rows'
+    if (r.agent_adjustment_id) return 'Unlink the Due WG allocation before merging'
     if (r.status === 'cancelled') return 'Cannot merge cancelled rows'
     if (r.status === 'reconciled') return 'Cannot merge reconciled rows'
     if (normPolicy(r.policy_number) !== policy) return 'Selected rows must share the same policy number'
@@ -68,12 +72,12 @@ export function getMergeBlockReason(rows: MergeableRecord[]): string | null {
   return null
 }
 
-function previewStatus(rows: MergeableRecord[]): string {
+function previewStatus(rows: MergeableRecord[], tiebreakRows: MergeableRecord[] = rows): string {
   if (rows.every(r => r.status === 'paid')) return 'paid'
   if (rows.some(r => r.status === 'pending')) return 'pending'
   if (rows.every(r => r.status === 'approved')) return 'approved'
-  const ifa = rows.reduce((s, r) => s + (r.ifa_amount ?? 0), 0)
-  const paid = rows.reduce((s, r) => s + (r.paid ?? 0), 0)
+  const ifa = tiebreakRows.reduce((s, r) => s + (r.ifa_amount ?? 0), 0)
+  const paid = tiebreakRows.reduce((s, r) => s + (r.paid ?? 0), 0)
   return paid >= ifa - 0.005 ? 'paid' : 'approved'
 }
 
@@ -92,6 +96,27 @@ export function computeMergePreview(rows: MergeableRecord[]): MergePreview {
     paid,
     unpaid: round2(ifa_amount - paid),
     status: previewStatus(rows),
+    transaction_date,
+  }
+}
+
+/** Preview for "Merge Without Changing Amounts": amount fields come only from the survivor, not summed. */
+export function computeMergePreviewKeepAmount(rows: MergeableRecord[], survivorId: string): MergePreview {
+  const survivor = rows.find(r => r.id === survivorId) ?? rows[0]
+  const amount = round2(survivor.amount ?? 0)
+  const variable_amount = round2(survivor.variable_amount ?? 0)
+  const ifa_amount = round2(survivor.ifa_amount ?? 0)
+  const paid = round2(survivor.paid ?? 0)
+  const transaction_date = rows.map(r => r.transaction_date).sort().reverse()[0]
+
+  return {
+    amount,
+    variable_amount,
+    gross: round2(amount + variable_amount),
+    ifa_amount,
+    paid,
+    unpaid: round2(ifa_amount - paid),
+    status: previewStatus(rows, [survivor]),
     transaction_date,
   }
 }
