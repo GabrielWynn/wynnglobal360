@@ -67,6 +67,12 @@ export async function bulkLookupIFAs(policyNumbers: string[]): Promise<
   const results = new Map<string, { ifa_code: string; ifa_name: string }>()
   if (policyNumbers.length === 0) return results
 
+  // SQL Server matches PlanNumber ignoring case and trailing spaces, so the value it
+  // returns can differ from the one asked for. Key results by the requested spelling —
+  // callers look them up (and update rows) with their own policy number.
+  const norm = (p: string) => p.trim().toUpperCase()
+  const requestedByNorm = new Map(policyNumbers.map(p => [norm(p), p]))
+
   const pool = new sql.ConnectionPool(config)
   try {
     await pool.connect()
@@ -91,7 +97,7 @@ export async function bulkLookupIFAs(policyNumbers: string[]): Promise<
 
       result.recordset.forEach(record => {
         if (record.policy_number && record.ifa_code) {
-          results.set(record.policy_number, {
+          results.set(requestedByNorm.get(norm(record.policy_number)) ?? record.policy_number, {
             ifa_code: record.ifa_code,
             ifa_name: record.ifa_name || record.ifa_code,
           })

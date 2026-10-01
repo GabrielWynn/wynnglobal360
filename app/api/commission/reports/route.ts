@@ -3,6 +3,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { requireAdmin, unauthorised } from '@/lib/auth-guard'
+import { fetchUnmappedPolicies } from '@/lib/commission-unmapped'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -95,13 +96,14 @@ export async function GET(request: Request) {
       }
 
       case 'unmapped': {
-        const { data, error } = await supabaseAdmin
-          .from('unmapped_policies')
-          .select('id, policy_number, policy_holder_name, status, created_at, platforms ( name )')
-          .order('created_at', { ascending: false })
-
-        if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-        return NextResponse.json({ report: data ?? [] })
+        try {
+          const unmapped = await fetchUnmappedPolicies(supabaseAdmin)
+          return NextResponse.json({
+            report: unmapped.map(({ platform, ...p }) => ({ ...p, platforms: platform })),
+          })
+        } catch (err: any) {
+          return NextResponse.json({ error: err.message }, { status: 500 })
+        }
       }
 
       case 'payments': {

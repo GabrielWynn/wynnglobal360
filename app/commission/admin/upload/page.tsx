@@ -814,7 +814,7 @@ export default function UploadPage() {
             {result.unmapped > 0 && (
               <div className="bg-amber-50 border border-amber-200 rounded-md p-4 text-sm text-amber-800">
                 <strong>{result.unmapped} unmapped policies</strong> were not found in Azure SQL.
-                Use the <em>Master File → Map Unmapped</em> button after updating the Azure database.
+                Assign them on the <em>Unmapped Policies</em> page, or use <em>Retry Azure Lookup</em> there after updating the Azure database.
               </div>
             )}
 

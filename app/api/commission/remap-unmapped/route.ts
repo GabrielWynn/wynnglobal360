@@ -7,6 +7,7 @@ import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { bulkLookupIFAs } from '@/lib/azure'
 import { requireAdmin, unauthorised } from '@/lib/auth-guard'
+import { NO_POLICY } from '@/lib/commission-unmapped'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
     for (const r of unmappedCR) {
       // Skip the [NO POLICY] placeholder — it represents lump-sum adjustments
       // that have no real policy number and will never resolve in Azure.
-      if (!r.policy_number || r.policy_number === '[NO POLICY]') continue
+      if (!r.policy_number || r.policy_number === NO_POLICY) continue
       if (!policyMeta.has(r.policy_number)) {
         policyMeta.set(r.policy_number, {
           platform_id: r.platform_id ?? null,
@@ -142,7 +143,7 @@ export async function POST(request: Request) {
         }
 
         // ── Update commission_records ──────────────────────────────────────
-        const { error: crError } = await supabaseAdmin
+        const { data: updatedCR, error: crError } = await supabaseAdmin
           .from('commission_records')
           .update({
             ifa_id:    ifaId,
@@ -152,9 +153,15 @@ export async function POST(request: Request) {
           })
           .eq('policy_number', policyNumber)
           .is('ifa_id', null)
+          .select('id')
 
         if (crError) {
           stats.errors.push(`Failed to update commission_records for ${policyNumber}: ${crError.message}`)
+          continue
+        }
+        // Only count a policy as mapped if its records were actually updated.
+        if (!updatedCR?.length) {
+          stats.errors.push(`Found ${policyNumber} in Azure but no commission records were updated`)
           continue
         }
 
@@ -166,12 +173,6 @@ export async function POST(request: Request) {
           .eq('mapping_status', 'unmapped')
 
         stats.newly_mapped++
-
-        // ── Remove from unmapped_policies queue ────────────────────────────
-        await supabaseAdmin
-          .from('unmapped_policies')
-          .delete()
-          .eq('policy_number', policyNumber)
 
       } catch (policyErr: any) {
         stats.errors.push(`Error processing ${policyNumber}: ${policyErr.message}`)

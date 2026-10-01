@@ -5,10 +5,10 @@
 //   2. Marks raw_commission_data rows as 'mapped'
 //   3. Upserts into manual_policy_mappings (persistent — future uploads auto-resolve)
 //   4. Upserts the policies table
-//   5. Deletes from unmapped_policies
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { requireAdmin, unauthorised } from '@/lib/auth-guard'
+import { NO_POLICY } from '@/lib/commission-unmapped'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -26,6 +26,15 @@ export async function POST(request: Request) {
     if (!policy_number || !ifa_id) {
       return NextResponse.json(
         { error: 'policy_number and ifa_id are required' },
+        { status: 400 }
+      )
+    }
+
+    // '[NO POLICY]' is a shared placeholder, not a policy — assigning it would hand every
+    // no-policy row (Agent Adjustments included) to one IFA and persist that as a mapping.
+    if (policy_number === NO_POLICY) {
+      return NextResponse.json(
+        { error: 'Rows without a policy number cannot be assigned here — set the IFA on each row in the Master File' },
         { status: 400 }
       )
     }
@@ -112,12 +121,6 @@ export async function POST(request: Request) {
         .update({ ifa_id: ifa.id })
         .eq('id', existingPolicy.id)
     }
-
-    // 6. Remove from unmapped_policies queue
-    await supabaseAdmin
-      .from('unmapped_policies')
-      .delete()
-      .eq('policy_number', policy_number)
 
     return NextResponse.json({
       success: true,

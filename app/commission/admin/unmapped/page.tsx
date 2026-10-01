@@ -2,17 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { getAuthHeaders, supabase } from '@/lib/supabase'
+import { fetchUnmappedPolicies, type UnmappedPolicy } from '@/lib/commission-unmapped'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
-
-interface UnmappedPolicy {
-  id: string
-  policy_number: string
-  policy_holder_name: string | null
-  status: string
-  created_at: string
-  platform: { name: string } | null
-}
 
 interface IFA {
   id: string
@@ -34,6 +26,7 @@ export default function UnmappedPage() {
   const [policies,      setPolicies]      = useState<UnmappedPolicy[]>([])
   const [ifas,          setIfas]          = useState<IFA[]>([])
   const [loading,       setLoading]       = useState(true)
+  const [loadFailed,    setLoadFailed]    = useState(false)
   const [retrying,      setRetrying]      = useState(false)
   const [retryResult,   setRetryResult]   = useState<RetryResult | null>(null)
   const [assignments,   setAssignments]   = useState<Record<string, string>>({})
@@ -45,36 +38,24 @@ export default function UnmappedPage() {
 
   const load = useCallback(async () => {
     setLoading(true)
-    const headers = await getAuthHeaders()
-    const [{ data: crRows }, ifasRes] = await Promise.all([
-      supabase
-        .from('commission_records')
-        .select('policy_number, policy_holder_name, created_at, platform:platforms(name)')
-        .is('ifa_id', null)
-        .eq('is_deleted', false)
-        .order('created_at', { ascending: false }),
-      fetch('/api/commission/ifas', { headers }).then(r => r.ok ? r.json() : { ifas: [] }),
-    ])
-    const ifaList: IFA[] = ifasRes?.ifas ?? ifasRes ?? []
+    setLoadFailed(false)
+    try {
+      const headers = await getAuthHeaders()
+      const [unmapped, ifasRes] = await Promise.all([
+        fetchUnmappedPolicies(supabase),
+        fetch('/api/commission/ifas', { headers }).then(r => r.ok ? r.json() : { ifas: [] }),
+      ])
+      const ifaList: IFA[] = ifasRes?.ifas ?? ifasRes ?? []
 
-    // Deduplicate by policy_number — keep earliest created_at per policy
-    const seen = new Map<string, UnmappedPolicy>()
-    for (const row of crRows ?? []) {
-      if (!seen.has(row.policy_number)) {
-        seen.set(row.policy_number, {
-          id: row.policy_number,
-          policy_number: row.policy_number,
-          policy_holder_name: row.policy_holder_name ?? null,
-          status: 'pending',
-          created_at: row.created_at,
-          platform: (row.platform as any) ?? null,
-        })
-      }
+      setPolicies(unmapped)
+      setIfas((ifaList ?? []) as IFA[])
+    } catch (e: any) {
+      // A failed load must not look like "all policies matched".
+      setLoadFailed(true)
+      setError(`Could not load unmapped policies: ${e.message}`)
+    } finally {
+      setLoading(false)
     }
-
-    setPolicies([...seen.values()])
-    setIfas((ifaList ?? []) as IFA[])
-    setLoading(false)
   }, [])
 
   useEffect(() => { load() }, [load])
@@ -150,7 +131,9 @@ export default function UnmappedPage() {
           <div>
             <h1 className="text-[18px] font-bold text-[var(--wgi-navy)]">Unmapped Policies</h1>
             <p className="mt-0.5 text-[11px] font-medium text-[var(--wgi-text-muted)]">
-              {policies.length === 0
+              {loadFailed
+                ? 'Unmapped policies could not be loaded'
+                : policies.length === 0
                 ? 'All policies have been matched to an IFA'
                 : `${policies.length} polic${policies.length === 1 ? 'y' : 'ies'} could not be matched to an IFA`}
             </p>
@@ -202,7 +185,14 @@ export default function UnmappedPage() {
         )}
 
         {/* ── Empty state ─────────────────────────────────────────────────── */}
-        {policies.length === 0 ? (
+        {loadFailed ? (
+          <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-12 text-center">
+            <p className="text-lg font-medium text-gray-700">Could not load unmapped policies</p>
+            <button onClick={load} className="mt-3 rounded-[4px] bg-[var(--wgi-navy)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[var(--wgi-navy-600)]">
+              Try again
+            </button>
+          </div>
+        ) : policies.length === 0 ? (
           <div className="bg-[var(--wgi-surface)] rounded-[6px] border border-[var(--wgi-border)] p-12 text-center">
             <div className="text-green-500 text-5xl mb-3">✓</div>
             <p className="text-lg font-medium text-gray-700">No unmapped policies</p>
@@ -232,7 +222,12 @@ export default function UnmappedPage() {
                 <tbody className="divide-y divide-gray-100">
                   {policies.map(p => (
                     <tr key={p.policy_number} className="hover:bg-gray-50">
-                      <td className="px-3 py-2.5 cm-mono font-medium text-gray-900">{p.policy_number}</td>
+                      <td className="px-3 py-2.5 cm-mono font-medium text-gray-900">
+                        {p.policy_number}
+                        {p.record_count > 1 && (
+                          <span className="ml-2 text-[11px] font-normal text-gray-500">{p.record_count} records</span>
+                        )}
+                      </td>
                       <td className="px-3 py-2.5 text-gray-600">{p.policy_holder_name || <span className="text-gray-400">—</span>}</td>
                       <td className="px-3 py-2.5 text-gray-600">{p.platform?.name || <span className="text-gray-400">—</span>}</td>
                       <td className="px-3 py-2.5 text-gray-500 whitespace-nowrap">

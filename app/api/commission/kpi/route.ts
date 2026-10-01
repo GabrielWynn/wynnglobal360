@@ -11,6 +11,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { requireAdmin, unauthorised } from '@/lib/auth-guard'
+import { fetchUnmappedPolicies } from '@/lib/commission-unmapped'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -254,10 +255,8 @@ export async function GET(request: Request) {
       .gte('transaction_date', current.start)
       .lte('transaction_date', current.end),
 
-    // 14. Unmapped count
-    supabaseAdmin
-      .from('unmapped_policies')
-      .select('id', { count: 'exact', head: true }),
+    // 14. Unmapped count (same list the Unmapped Policies page shows)
+    fetchUnmappedPolicies(supabaseAdmin).then(p => ({ count: p.length }), () => ({ count: null })),
 
     // 15. Paid this month
     supabaseAdmin

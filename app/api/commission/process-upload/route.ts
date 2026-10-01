@@ -138,8 +138,6 @@ export async function POST(request: Request) {
     // ── Build batch arrays (all in-memory, no per-row DB calls) ──────────
     const rawBatch: any[] = []
     const crBatch: any[] = []
-    // Deduplicated by policy_number for unmapped_policies upsert
-    const unmappedPolicies = new Map<string, any>()
 
     for (const row of rows) {
       try {
@@ -299,13 +297,9 @@ export async function POST(request: Request) {
         if (isMapped) {
           stats.mapped++
         } else {
+          // Unmapped policies are derived from commission_records (ifa_id null) —
+          // see lib/commission-unmapped.ts — so there is no separate queue to write.
           stats.unmapped++
-          unmappedPolicies.set(policyNumber, {
-            policy_number:      policyNumber,
-            platform_id,
-            policy_holder_name: holderName,
-            status:             'pending',
-          })
         }
 
         // Pre-generate UUID so raw_data_id can be set in commission_records
@@ -388,14 +382,6 @@ export async function POST(request: Request) {
       }
     }
     stats.saved = crSaved
-
-    // ── Batch upsert unmapped_policies (deduped) ──────────────────────────
-    const unmappedArr = [...unmappedPolicies.values()]
-    for (let i = 0; i < unmappedArr.length; i += CHUNK) {
-      await supabaseAdmin
-        .from('unmapped_policies')
-        .upsert(unmappedArr.slice(i, i + CHUNK), { onConflict: 'policy_number' })
-    }
 
     // ── Update batch status ────────────────────────────────────────────────
     await supabaseAdmin

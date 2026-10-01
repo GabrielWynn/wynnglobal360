@@ -12,6 +12,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
+import { fetchUnmappedPolicies } from '@/lib/commission-unmapped'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -71,7 +72,7 @@ export async function GET(request: Request) {
         .eq('status', 'approved').eq('is_deleted', false).lt('updated_at', thirtyDaysAgo),
       supabaseAdmin.from('commission_records').select('id, ifa_code, unpaid, currency')
         .eq('is_deleted', false).lt('unpaid', 0),
-      supabaseAdmin.from('unmapped_policies').select('id', { count: 'exact', head: true }),
+      fetchUnmappedPolicies(supabaseAdmin).then(p => ({ count: p.length }), () => ({ count: null })),
       supabaseAdmin.from('payment_batches').select('total_amount, currency').gte('payment_date', monthStart),
       supabaseAdmin.from('commission_records').select('is_advance, reconciled_at, created_at')
         .eq('is_advance', true).eq('is_deleted', false).is('reconciled_at', null),
