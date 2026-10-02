@@ -48,10 +48,13 @@ export default async function ModelPortfolioLayout({
 
   return (
     <>
-      <Navbar />
+      {/* Fixed nav bars would repeat on every printed page — hidden in print */}
+      <div className="mp-no-print">
+        <Navbar />
+        {/* 40 px sub-nav sits directly below the 64 px main navbar */}
+        <SubNav isAdmin={isAdmin} />
+      </div>
       <SessionTimeout />
-      {/* 40 px sub-nav sits directly below the 64 px main navbar */}
-      <SubNav isAdmin={isAdmin} />
       {/* pt-[104px] = 64 px navbar + 40 px sub-nav */}
       <div
         className={`mp-shell pt-[104px] min-h-screen ${mpFont.className}`}

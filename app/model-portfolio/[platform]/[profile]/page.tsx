@@ -7,15 +7,18 @@ import {
   buildDailyReturns,
   buildChartSeries,
   computeStandardReturns,
+  computeTrailingReturns,
   computeAnnualReturns,
 } from "@/lib/portfolio-compositions";
 import { getPortfolioFundamentals } from "@/lib/portfolio-fundamentals";
 import { profileColor, profileToSlug, slugToProfileLabel } from "@/lib/mp-profiles";
 
 import PerformanceSummaryCards from "@/components/model-portfolio/PerformanceSummaryCards";
+import AnnualisedPerformance   from "@/components/model-portfolio/AnnualisedPerformance";
 import InteractiveChart        from "@/components/model-portfolio/InteractiveChart";
 import AnnualPerformance       from "@/components/model-portfolio/AnnualPerformance";
 import FundamentalsSection     from "@/components/model-portfolio/FundamentalsSection";
+import PrintButton             from "@/components/model-portfolio/PrintButton";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -100,6 +103,7 @@ async function getData(platformSlug: string, profileSlug: string) {
   const dailyReturns   = buildDailyReturns(compositions, fundPriceRows ?? []);
   const chartSeries    = buildChartSeries(dailyReturns);
   const standardRet    = computeStandardReturns(dailyReturns);
+  const trailingRet    = computeTrailingReturns(dailyReturns);
   const annualRet      = computeAnnualReturns(dailyReturns);
 
   const activeComposition = getCurrentComposition(compositions);
@@ -117,6 +121,7 @@ async function getData(platformSlug: string, profileSlug: string) {
     compositions,
     chartSeries,
     standardRet,
+    trailingRet,
     annualRet,
     fundamentals,
   };
@@ -130,13 +135,33 @@ export default async function ProfileDetailPage({ params }: PageProps) {
   const data = await getData(params.platform, params.profile);
   if (!data) notFound();
 
-  const { platform, profile, profileTabs, compositions, chartSeries, standardRet, annualRet, fundamentals } = data;
+  const { platform, profile, profileTabs, compositions, chartSeries, standardRet, trailingRet, annualRet, fundamentals } = data;
+
+  const printedOn = new Date().toLocaleDateString("en-GB", {
+    day: "2-digit", month: "long", year: "numeric",
+  });
 
   return (
-    <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 space-y-6">
+    <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 space-y-6 mp-print-page">
+
+      {/* ── Print-only report header ───────────────────────────────────── */}
+      <div className="mp-print-only items-center justify-between text-xs" style={{ color: "var(--wgi-text-muted)" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/logo.png"
+          alt="Wynn Global Inc"
+          style={{ height: "36px", width: "auto" }}
+        />
+        <span className="text-right">
+          <span className="block font-bold" style={{ color: "var(--wgi-navy)" }}>
+            Model Portfolio
+          </span>
+          {printedOn}
+        </span>
+      </div>
 
       {/* ── Breadcrumb ─────────────────────────────────────────────────── */}
-      <div className="flex items-center gap-2 text-sm" style={{ color: "var(--wgi-text-muted)" }}>
+      <div className="flex items-center gap-2 text-sm mp-no-print" style={{ color: "var(--wgi-text-muted)" }}>
         <Link href="/model-portfolio" className="hover:underline mp-text-link">
           Model Portfolio
         </Link>
@@ -165,28 +190,35 @@ export default async function ProfileDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Profile tabs */}
-        <div className="flex rounded-xl border overflow-hidden mp-profile-tabs" style={{ borderColor: "var(--wgi-border)" }}>
-          {profileTabs.map((label, index) => {
-            const active = label === profile.label;
-            return (
-              <Link
-                key={label}
-                href={`/model-portfolio/${platform.slug}/${profileToSlug(label)}`}
-                className={`px-4 py-2 text-sm font-semibold transition-colors${active ? " mp-tab-active" : ""}`}
-                style={{
-                  borderRight: index < profileTabs.length - 1 ? "1px solid var(--wgi-border)" : undefined,
-                }}
-              >
-                {label}
-              </Link>
-            );
-          })}
+        <div className="flex flex-wrap items-center gap-3 mp-no-print">
+          {/* Profile tabs */}
+          <div className="flex rounded-xl border overflow-hidden mp-profile-tabs" style={{ borderColor: "var(--wgi-border)" }}>
+            {profileTabs.map((label, index) => {
+              const active = label === profile.label;
+              return (
+                <Link
+                  key={label}
+                  href={`/model-portfolio/${platform.slug}/${profileToSlug(label)}`}
+                  className={`px-4 py-2 text-sm font-semibold transition-colors${active ? " mp-tab-active" : ""}`}
+                  style={{
+                    borderRight: index < profileTabs.length - 1 ? "1px solid var(--wgi-border)" : undefined,
+                  }}
+                >
+                  {label}
+                </Link>
+              );
+            })}
+          </div>
+
+          <PrintButton />
         </div>
       </div>
 
       {/* ── Performance Cards ───────────────────────────────────────────── */}
       <PerformanceSummaryCards returns={standardRet} />
+
+      {/* ── Annualised Performance (1Y / 2Y / 3Y / 5Y) ──────────────────── */}
+      <AnnualisedPerformance returns={trailingRet} />
 
       {/* ── Interactive Chart + Holdings ─────────────────────────────── */}
       <InteractiveChart
