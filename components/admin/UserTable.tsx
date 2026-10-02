@@ -273,7 +273,12 @@ export default function UserTable({ initialUsers }: UserTableProps) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to invite user");
-      showToast(`Invitation sent to ${inviteEmail}`, "success");
+      showToast(
+        data.already_registered
+          ? `${inviteEmail} already has an account — user added, no new email sent`
+          : `Invitation sent to ${inviteEmail}`,
+        "success"
+      );
       setInviteOpen(false);
       setInviteName("");
       setInviteEmail("");

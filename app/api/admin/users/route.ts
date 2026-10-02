@@ -90,25 +90,17 @@ export async function POST(request: Request) {
     );
   }
 
-  // Send Supabase invite email
-  const { data: authData, error: inviteError } =
-    await supabaseAdmin.auth.admin.inviteUserByEmail(email.trim(), {
-      data: { name: name.trim(), role },
-    });
-
-  if (inviteError) {
-    return NextResponse.json({ error: inviteError.message }, { status: 500 });
-  }
-
-  // Create the ifas record (user_id may already be set if email existed in auth)
-  const { data: ifa, error: ifaError } = await supabaseAdmin
+  // Create the ifas record first so a failed insert never leaves an invited
+  // auth user without a matching row. ifas.code is NOT NULL; it defaults to
+  // the name, the same convention the commission IFA records use.
+  const { data: created, error: ifaError } = await supabaseAdmin
     .from("ifas")
     .insert({
+      code: name.trim(),
       name: name.trim(),
       email: email.trim().toLowerCase(),
       role,
       status: "active",
-      user_id: authData.user?.id ?? null,
     })
     .select()
     .single();
@@ -117,11 +109,42 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: ifaError.message }, { status: 500 });
   }
 
+  let ifa = created;
+
+  // Send Supabase invite email
+  const { data: authData, error: inviteError } =
+    await supabaseAdmin.auth.admin.inviteUserByEmail(email.trim(), {
+      data: { name: name.trim(), role },
+    });
+
+  // The email already has a Supabase Auth account (e.g. an earlier invite) —
+  // keep the row; it is linked on next login via /api/auth/link-ifa.
+  const alreadyRegistered =
+    !!inviteError && /already.*registered/i.test(inviteError.message);
+
+  if (inviteError && !alreadyRegistered) {
+    await supabaseAdmin.from("ifas").delete().eq("id", ifa.id);
+    return NextResponse.json({ error: inviteError.message }, { status: 500 });
+  }
+
+  if (authData?.user?.id) {
+    const { data: linked } = await supabaseAdmin
+      .from("ifas")
+      .update({ user_id: authData.user.id })
+      .eq("id", ifa.id)
+      .select()
+      .single();
+    if (linked) ifa = linked;
+  }
+
   await writeAuditLog(userId, "user.invite", ifa.id, ifa.email, {
     name: ifa.name,
     role: ifa.role,
     status: ifa.status,
   });
 
-  return NextResponse.json(ifa, { status: 201 });
+  return NextResponse.json(
+    { ...ifa, already_registered: alreadyRegistered },
+    { status: 201 }
+  );
 }
