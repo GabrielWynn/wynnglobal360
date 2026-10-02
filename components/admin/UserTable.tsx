@@ -10,6 +10,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { createBrowserClient } from "@/lib/supabase";
+import type { UserRole } from "@/lib/roles";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -20,7 +21,7 @@ export interface IFAUser {
   code: string | null;
   name: string;
   email: string;
-  role: "admin" | "ifa";
+  role: UserRole;
   status: string;
   user_id: string | null;
 }
@@ -62,12 +63,22 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-function RoleBadge({ role }: { role: "admin" | "ifa" }) {
-  return role === "admin" ? (
-    <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-700">
-      Admin
-    </span>
-  ) : (
+function RoleBadge({ role }: { role: UserRole }) {
+  if (role === "admin") {
+    return (
+      <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-700">
+        Admin
+      </span>
+    );
+  }
+  if (role === "compliance") {
+    return (
+      <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-teal-100 text-teal-700">
+        Compliance
+      </span>
+    );
+  }
+  return (
     <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
       Advisor
     </span>
@@ -195,11 +206,11 @@ export default function UserTable({ initialUsers }: UserTableProps) {
   // ── Invite form ────────────────────────────────────────────────────────────
   const [inviteName, setInviteName] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState<"ifa" | "admin">("ifa");
+  const [inviteRole, setInviteRole] = useState<UserRole>("ifa");
   const [inviteLoading, setInviteLoading] = useState(false);
 
   // ── Edit role form ─────────────────────────────────────────────────────────
-  const [editRole, setEditRole] = useState<"ifa" | "admin">("ifa");
+  const [editRole, setEditRole] = useState<UserRole>("ifa");
   const [editLoading, setEditLoading] = useState(false);
 
   // ── Status change ──────────────────────────────────────────────────────────
@@ -372,6 +383,7 @@ export default function UserTable({ initialUsers }: UserTableProps) {
             <option value="all">All Roles</option>
             <option value="admin">Admin</option>
             <option value="ifa">Advisor</option>
+            <option value="compliance">Compliance</option>
           </select>
 
           {/* Status filter */}
@@ -583,13 +595,14 @@ export default function UserTable({ initialUsers }: UserTableProps) {
             <select
               value={inviteRole}
               onChange={(e) =>
-                setInviteRole(e.target.value as "ifa" | "admin")
+                setInviteRole(e.target.value as UserRole)
               }
               className={inputClass}
               style={inputStyle}
             >
               <option value="ifa">Advisor (IFA)</option>
               <option value="admin">Administrator</option>
+              <option value="compliance">Compliance</option>
             </select>
           </FormField>
 
@@ -641,13 +654,14 @@ export default function UserTable({ initialUsers }: UserTableProps) {
               <select
                 value={editRole}
                 onChange={(e) =>
-                  setEditRole(e.target.value as "ifa" | "admin")
+                  setEditRole(e.target.value as UserRole)
                 }
                 className={inputClass}
                 style={inputStyle}
               >
                 <option value="ifa">Advisor (IFA)</option>
                 <option value="admin">Administrator</option>
+                <option value="compliance">Compliance</option>
               </select>
             </FormField>
 

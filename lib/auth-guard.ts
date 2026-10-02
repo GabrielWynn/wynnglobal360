@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServerClient as _createServerClient } from "@supabase/ssr";
 import { supabaseAdmin } from "@/lib/supabase";
+import type { UserRole } from "@/lib/roles";
 
 // ---------------------------------------------------------------------------
 // Shared helpers
@@ -80,7 +81,7 @@ export async function requireAuth(request: Request): Promise<string | null> {
 export interface IFARecord {
   userId: string;
   ifaId: string;
-  role: "admin" | "ifa";
+  role: UserRole;
 }
 
 export async function requireIFARecord(request: Request): Promise<IFARecord | null> {
@@ -100,7 +101,7 @@ export async function requireIFARecord(request: Request): Promise<IFARecord | nu
     return {
       userId,
       ifaId: (byUserId as { id: string; role: string }).id,
-      role: (byUserId as { id: string; role: string }).role as "admin" | "ifa",
+      role: (byUserId as { id: string; role: string }).role as UserRole,
     };
   }
 
@@ -118,8 +119,24 @@ export async function requireIFARecord(request: Request): Promise<IFARecord | nu
   return {
     userId,
     ifaId: (byEmail as { id: string; role: string }).id,
-    role: (byEmail as { id: string; role: string }).role as "admin" | "ifa",
+    role: (byEmail as { id: string; role: string }).role as UserRole,
   };
+}
+
+// ---------------------------------------------------------------------------
+// requireRole
+// Validates the Bearer token then checks that the matching ifas row has one
+// of the allowed roles, e.g. requireRole(request, ["admin", "compliance"]).
+// Returns { userId, ifaId, role } on success, null otherwise.
+// ---------------------------------------------------------------------------
+
+export async function requireRole(
+  request: Request,
+  allowed: readonly UserRole[]
+): Promise<IFARecord | null> {
+  const record = await requireIFARecord(request);
+  if (!record) return null;
+  return allowed.includes(record.role) ? record : null;
 }
 
 export async function requireAdmin(request: Request): Promise<string | null> {

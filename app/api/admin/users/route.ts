@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin, unauthorised } from "@/lib/auth-guard";
 import { supabaseAdmin } from "@/lib/supabase";
+import { USER_ROLES, isUserRole } from "@/lib/roles";
 
 async function writeAuditLog(
   actorUserId: string,
@@ -46,7 +47,7 @@ export async function GET(request: Request) {
 
 // ---------------------------------------------------------------------------
 // POST /api/admin/users — invite a new user
-// Body: { name: string; email: string; role: "admin" | "ifa" }
+// Body: { name: string; email: string; role: "admin" | "ifa" | "compliance" }
 // ---------------------------------------------------------------------------
 export async function POST(request: Request) {
   const userId = await requireAdmin(request);
@@ -68,8 +69,11 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!["admin", "ifa"].includes(role)) {
-    return NextResponse.json({ error: "role must be admin or ifa" }, { status: 400 });
+  if (!isUserRole(role)) {
+    return NextResponse.json(
+      { error: `role must be one of: ${USER_ROLES.join(", ")}` },
+      { status: 400 }
+    );
   }
 
   // Guard: prevent duplicate emails in ifas

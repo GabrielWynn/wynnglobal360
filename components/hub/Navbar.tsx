@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { IconLogout, IconSettings } from "@tabler/icons-react";
 import { createBrowserClient } from "@/lib/supabase";
+import type { UserRole } from "@/lib/roles";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -23,7 +24,7 @@ function getInitials(name: string): string {
 
 interface IFAProfile {
   name: string;
-  role: "admin" | "ifa";
+  role: UserRole;
 }
 
 // ---------------------------------------------------------------------------
@@ -132,12 +133,12 @@ export default function Navbar() {
               >
                 {profile.name}
               </p>
-              {profile.role === "admin" && (
+              {profile.role !== "ifa" && (
                 <p
                   className="text-xs leading-tight"
                   style={{ color: "var(--wgi-text-muted)" }}
                 >
-                  Administrator
+                  {profile.role === "admin" ? "Administrator" : "Compliance"}
                 </p>
               )}
             </div>
