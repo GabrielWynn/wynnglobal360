@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createServerClient as _createServerClient } from "@supabase/ssr";
 import { supabaseAdmin } from "@/lib/supabase";
 import type { UserRole } from "@/lib/roles";
+import type { AppSlug } from "@/lib/apps";
 
 // ---------------------------------------------------------------------------
 // Shared helpers
@@ -137,6 +138,32 @@ export async function requireRole(
   const record = await requireIFARecord(request);
   if (!record) return null;
   return allowed.includes(record.role) ? record : null;
+}
+
+// ---------------------------------------------------------------------------
+// requireApp
+// Validates the Bearer token then checks that the user has been given the
+// app (a user_app_access row; admins can open every app),
+// e.g. requireApp(request, "risk-matrix").
+// Returns { userId, ifaId, role } on success, null otherwise.
+// ---------------------------------------------------------------------------
+
+export async function requireApp(
+  request: Request,
+  slug: AppSlug
+): Promise<IFARecord | null> {
+  const record = await requireIFARecord(request);
+  if (!record) return null;
+  if (record.role === "admin") return record;
+
+  const { data } = await supabaseAdmin
+    .from("user_app_access")
+    .select("app_slug")
+    .eq("ifa_id", record.ifaId)
+    .eq("app_slug", slug)
+    .maybeSingle();
+
+  return data ? record : null;
 }
 
 export async function requireAdmin(request: Request): Promise<string | null> {

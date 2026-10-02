@@ -1,16 +1,11 @@
 import UserTable from "@/components/admin/UserTable";
-import { supabaseAdmin } from "@/lib/supabase";
+import { listUsersWithApps } from "@/lib/app-access";
 import type { IFAUser } from "@/components/admin/UserTable";
 
 // Auth is already verified by app/admin/layout.tsx.
 // This page only fetches data and renders the client table.
 export default async function AdminUsersPage() {
-  const { data } = await supabaseAdmin
-    .from("ifas")
-    .select("id, code, name, email, role, status, user_id")
-    .order("name");
-
-  const users: IFAUser[] = data ?? [];
+  const users: IFAUser[] = await listUsersWithApps();
 
   return (
     <div className="p-6 md:p-8 max-w-7xl">
@@ -26,7 +21,7 @@ export default async function AdminUsersPage() {
           className="mt-1 text-sm"
           style={{ color: "var(--wgi-text-muted)" }}
         >
-          Manage IFA advisor accounts, roles, and access
+          Manage user accounts, roles, and which apps each user can open
         </p>
       </div>
 

@@ -1,9 +1,8 @@
-import { redirect } from "next/navigation";
 import { Raleway } from "next/font/google";
 import Navbar from "@/components/hub/Navbar";
 import SessionTimeout from "@/components/SessionTimeout";
 import SubNav from "@/components/model-portfolio/SubNav";
-import { createServerClient, supabaseAdmin } from "@/lib/supabase";
+import { requireAppAccess } from "@/lib/app-access";
 import "./model-portfolio.css";
 
 const mpFont = Raleway({
@@ -17,34 +16,9 @@ export default async function ModelPortfolioLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login?redirectTo=/model-portfolio");
-  }
-
-  // Resolve admin role (user_id first, email fallback)
-  let isAdmin = false;
-
-  const { data: byId } = await supabaseAdmin
-    .from("ifas")
-    .select("role")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (byId?.role === "admin") {
-    isAdmin = true;
-  } else if (user.email) {
-    const { data: byEmail } = await supabaseAdmin
-      .from("ifas")
-      .select("role")
-      .eq("email", user.email)
-      .maybeSingle();
-    if (byEmail?.role === "admin") isAdmin = true;
-  }
+  // Users with the Model Portfolio app only; admins also get the admin tab
+  const hubUser = await requireAppAccess("model-portfolio");
+  const isAdmin = hubUser.role === "admin";
 
   return (
     <>

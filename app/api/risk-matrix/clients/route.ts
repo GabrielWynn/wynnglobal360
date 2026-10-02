@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { requireRole, unauthorised } from "@/lib/auth-guard";
+import { requireApp, unauthorised } from "@/lib/auth-guard";
 import { listClientSummaries } from "@/lib/risk-matrix/service";
 
 export async function GET(request: Request) {
-  const rec = await requireRole(request, ["admin", "compliance"]);
+  const rec = await requireApp(request, "risk-matrix");
   if (!rec) return unauthorised();
 
   try {

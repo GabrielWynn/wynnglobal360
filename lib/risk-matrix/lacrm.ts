@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // LACRM contacts for the Risk Matrix — read-only queries against
 // ContactsExport, the Azure SQL copy of Less Annoying CRM (see lib/azure.ts).
-// Server-side only. Callers are responsible for the admin/compliance role
+// Server-side only. Callers are responsible for the Risk Matrix app-access
 // check and for handling an unreachable database.
 // ---------------------------------------------------------------------------
 

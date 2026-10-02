@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireRole, unauthorised } from "@/lib/auth-guard";
+import { requireApp, unauthorised } from "@/lib/auth-guard";
 import { getLacrmContact } from "@/lib/risk-matrix/lacrm";
 import { LACRM_CONTACT_ID, contactToAnswers } from "@/lib/risk-matrix/lacrm-map";
 
@@ -10,7 +10,7 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const rec = await requireRole(request, ["admin", "compliance"]);
+  const rec = await requireApp(request, "risk-matrix");
   if (!rec) return unauthorised();
 
   if (!LACRM_CONTACT_ID.test(params.id)) {

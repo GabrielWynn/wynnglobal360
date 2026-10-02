@@ -11,7 +11,7 @@ export default async function RiskMatrixLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Admin and compliance only
+  // Users with the Risk Matrix app only
   await requireRiskMatrixAccess();
 
   // Reminder badge on the sub-nav; never let it take the whole module down

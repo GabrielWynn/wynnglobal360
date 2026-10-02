@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireRole, unauthorised } from "@/lib/auth-guard";
+import { requireApp, unauthorised } from "@/lib/auth-guard";
 import { evaluate } from "@/lib/risk-matrix/engine";
 import { blockingFields, sanitiseAnswers } from "@/lib/risk-matrix/form";
 import { LACRM_CONTACT_ID } from "@/lib/risk-matrix/lacrm-map";
@@ -11,7 +11,7 @@ import { saveEvaluation } from "@/lib/risk-matrix/service";
 // The result is recomputed here; nothing scored in the browser is trusted.
 // ---------------------------------------------------------------------------
 export async function POST(request: Request) {
-  const rec = await requireRole(request, ["admin", "compliance"]);
+  const rec = await requireApp(request, "risk-matrix");
   if (!rec) return unauthorised();
 
   let body: { answers?: unknown; lacrmContactId?: unknown };

@@ -34,6 +34,8 @@ function actionLabel(action: string): { label: string; color: string } {
       return { label: "User Invited", color: "bg-blue-100 text-blue-700" };
     case "user.role_change":
       return { label: "Role Changed", color: "bg-purple-100 text-purple-700" };
+    case "user.access_change":
+      return { label: "App Access Changed", color: "bg-teal-100 text-teal-700" };
     case "user.deactivate":
       return { label: "Deactivated", color: "bg-red-100 text-red-700" };
     case "user.reactivate":
@@ -144,6 +146,7 @@ export default function AuditLogTable() {
             <option value="all">All Actions</option>
             <option value="user.invite">User Invited</option>
             <option value="user.role_change">Role Changed</option>
+            <option value="user.access_change">App Access Changed</option>
             <option value="user.deactivate">Deactivated</option>
             <option value="user.reactivate">Reactivated</option>
           </select>

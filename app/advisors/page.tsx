@@ -1,6 +1,6 @@
 import CarouselHub from "@/components/hub/CarouselHub";
-import { createServerClient, supabaseAdmin } from "@/lib/supabase";
-import type { UserRole } from "@/lib/roles";
+import { createServerClient } from "@/lib/supabase";
+import { getHubUser } from "@/lib/app-access";
 
 export default async function AdvisorsPage() {
   // Identify the authenticated user from the cookie-based session
@@ -9,31 +9,9 @@ export default async function AdvisorsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  let name = "";
-  let role: UserRole = "ifa";
+  // user_id first, email fallback for rows not yet linked. A user without
+  // an ifas row has no apps.
+  const hubUser = user ? await getHubUser(user.id, user.email) : null;
 
-  if (user) {
-    // Try user_id first, fall back to email for rows not yet linked —
-    // mirrors the same dual-lookup used in auth-guard and all IFA API routes.
-    const { data: byUserId } = await supabaseAdmin
-      .from("ifas")
-      .select("name, role")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    const { data } = byUserId
-      ? { data: byUserId }
-      : await supabaseAdmin
-          .from("ifas")
-          .select("name, role")
-          .ilike("email", user.email ?? "")
-          .maybeSingle();
-
-    if (data) {
-      name = data.name ?? "";
-      role = (data.role as UserRole) ?? "ifa";
-    }
-  }
-
-  return <CarouselHub name={name} role={role} />;
+  return <CarouselHub name={hubUser?.name ?? ""} apps={hubUser?.apps ?? []} />;
 }
