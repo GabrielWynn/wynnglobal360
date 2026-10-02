@@ -8,6 +8,7 @@ import {
   Card,
   type CardType,
 } from "@/components/ui/apple-cards-carousel";
+import type { UserRole } from "@/lib/roles";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -57,7 +58,13 @@ const ComingSoonOverlay = () => (
 // Card definitions
 // ---------------------------------------------------------------------------
 
-function buildCards(navigate: (path: string) => void, showToast: () => void): CardType[] {
+function buildCards(
+  navigate: (path: string) => void,
+  showToast: () => void,
+  role: UserRole
+): CardType[] {
+  const canSeeRiskMatrix = role === "admin" || role === "compliance";
+
   return [
     // ── Card 1: Commission (Live) ────────────────────────────────────────
     {
@@ -113,7 +120,29 @@ function buildCards(navigate: (path: string) => void, showToast: () => void): Ca
       onClick: () => navigate("/model-portfolio"),
     },
 
-    // ── Card 4: AI Chatbot (Coming Soon) ────────────────────────────────
+    // ── Card 4: Risk Matrix (Live, admin + compliance only) ─────────────
+    ...(canSeeRiskMatrix
+      ? [
+          {
+            category: "Live",
+            title: "Risk Matrix",
+            description: "AML/CFT client risk classification and periodic reviews",
+            background: (
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #2b1f3d 0%, #3f2d5c 55%, #1d1530 100%)",
+                }}
+              />
+            ),
+            extra: <LiveBadge />,
+            onClick: () => navigate("/risk-matrix"),
+          },
+        ]
+      : []),
+
+    // ── Card 5: AI Chatbot (Coming Soon) ────────────────────────────────
     {
       category: "Coming Soon",
       title: "AI Assistant",
@@ -167,10 +196,10 @@ function Toast({
 
 interface CarouselHubProps {
   name: string;
-  role: "admin" | "ifa";
+  role: UserRole;
 }
 
-export default function CarouselHub({ name, role: _role }: CarouselHubProps) {
+export default function CarouselHub({ name, role }: CarouselHubProps) {
   const router = useRouter();
   const [greeting, setGreeting] = useState(`Welcome, ${name.trim().split(/\s+/)[0]}`);
   const [toast, setToast] = useState<string | null>(null);
@@ -187,7 +216,7 @@ export default function CarouselHub({ name, role: _role }: CarouselHubProps) {
     toastTimerRef.current = setTimeout(() => setToast(null), 3500);
   }
 
-  const cards = buildCards(router.push, showToast);
+  const cards = buildCards(router.push, showToast, role);
 
   const carouselItems = cards.map((card, i) => (
     <Card key={i} card={card} index={i} layout />

@@ -71,7 +71,10 @@ export async function middleware(request: NextRequest) {
   }
 
   // Cron routes handle their own Bearer-token auth
-  if (pathname.startsWith("/api/model-portfolio/cron/")) {
+  if (
+    pathname.startsWith("/api/model-portfolio/cron/") ||
+    pathname.startsWith("/api/risk-matrix/cron/")
+  ) {
     return NextResponse.next();
   }
 
