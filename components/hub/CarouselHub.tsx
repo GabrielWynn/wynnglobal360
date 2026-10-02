@@ -8,7 +8,7 @@ import {
   Card,
   type CardType,
 } from "@/components/ui/apple-cards-carousel";
-import type { UserRole } from "@/lib/roles";
+import type { AppSlug } from "@/lib/apps";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -58,16 +58,18 @@ const ComingSoonOverlay = () => (
 // Card definitions
 // ---------------------------------------------------------------------------
 
+// Each card belongs to one app; the hub shows only the apps the user has
+// been given (user_app_access — see lib/apps.ts).
+type HubCard = CardType & { slug: AppSlug };
+
 function buildCards(
   navigate: (path: string) => void,
-  showToast: () => void,
-  role: UserRole
-): CardType[] {
-  const canSeeRiskMatrix = role === "admin" || role === "compliance";
-
+  showToast: () => void
+): HubCard[] {
   return [
     // ── Card 1: Commission (Live) ────────────────────────────────────────
     {
+      slug: "commission",
       category: "Live",
       title: "Commission Management",
       description: "Track IFA commissions, approvals and payment history",
@@ -86,6 +88,7 @@ function buildCards(
 
     // ── Card 2: Financial Planner (Live) ────────────────────────────────
     {
+      slug: "financial-planner",
       category: "Live",
       title: "Financial Planner",
       description: "Comprehensive financial planning tools for advisors",
@@ -104,6 +107,7 @@ function buildCards(
 
     // ── Card 3: Model Portfolio (Live) ──────────────────────────────────
     {
+      slug: "model-portfolio",
       category: "Live",
       title: "Model Portfolio",
       description: "Track portfolio performance across all platforms and profiles",
@@ -120,30 +124,28 @@ function buildCards(
       onClick: () => navigate("/model-portfolio"),
     },
 
-    // ── Card 4: Risk Matrix (Live, admin + compliance only) ─────────────
-    ...(canSeeRiskMatrix
-      ? [
-          {
-            category: "Live",
-            title: "Risk Matrix",
-            description: "AML/CFT client risk classification and periodic reviews",
-            background: (
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #2b1f3d 0%, #3f2d5c 55%, #1d1530 100%)",
-                }}
-              />
-            ),
-            extra: <LiveBadge />,
-            onClick: () => navigate("/risk-matrix"),
-          },
-        ]
-      : []),
+    // ── Card 4: Risk Matrix (Live) ──────────────────────────────────────
+    {
+      slug: "risk-matrix",
+      category: "Live",
+      title: "Risk Matrix",
+      description: "AML/CFT client risk classification and periodic reviews",
+      background: (
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(135deg, #2b1f3d 0%, #3f2d5c 55%, #1d1530 100%)",
+          }}
+        />
+      ),
+      extra: <LiveBadge />,
+      onClick: () => navigate("/risk-matrix"),
+    },
 
     // ── Card 5: AI Chatbot (Coming Soon) ────────────────────────────────
     {
+      slug: "ai-chatbot",
       category: "Coming Soon",
       title: "AI Assistant",
       description: "AI-powered advisory support and insights",
@@ -196,10 +198,11 @@ function Toast({
 
 interface CarouselHubProps {
   name: string;
-  role: UserRole;
+  /** Apps this user can open; cards for other apps are not shown. */
+  apps: AppSlug[];
 }
 
-export default function CarouselHub({ name, role }: CarouselHubProps) {
+export default function CarouselHub({ name, apps }: CarouselHubProps) {
   const router = useRouter();
   const [greeting, setGreeting] = useState(`Welcome, ${name.trim().split(/\s+/)[0]}`);
   const [toast, setToast] = useState<string | null>(null);
@@ -216,7 +219,9 @@ export default function CarouselHub({ name, role }: CarouselHubProps) {
     toastTimerRef.current = setTimeout(() => setToast(null), 3500);
   }
 
-  const cards = buildCards(router.push, showToast, role);
+  const cards = buildCards(router.push, showToast).filter((card) =>
+    apps.includes(card.slug)
+  );
 
   const carouselItems = cards.map((card, i) => (
     <Card key={i} card={card} index={i} layout />
@@ -244,7 +249,17 @@ export default function CarouselHub({ name, role }: CarouselHubProps) {
       </div>
 
       {/* ── Carousel ── */}
-      <Carousel items={carouselItems} />
+      {cards.length > 0 ? (
+        <Carousel items={carouselItems} />
+      ) : (
+        <p
+          className="px-6 md:px-10 pt-10 max-w-7xl mx-auto text-sm"
+          style={{ color: "var(--wgi-text-muted)" }}
+        >
+          No applications have been assigned to your account yet. Please
+          contact your administrator.
+        </p>
+      )}
 
       {/* ── Coming Soon toast ── */}
       {toast && (

@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import {
+  IconApps,
   IconBan,
   IconCircleCheck,
   IconPencil,
@@ -11,6 +12,7 @@ import {
 } from "@tabler/icons-react";
 import { createBrowserClient } from "@/lib/supabase";
 import type { UserRole } from "@/lib/roles";
+import { APPS, type AppSlug } from "@/lib/apps";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -24,6 +26,8 @@ export interface IFAUser {
   role: UserRole;
   status: string;
   user_id: string | null;
+  /** Apps this user can open. Admins get every app. */
+  apps: AppSlug[];
 }
 
 // ---------------------------------------------------------------------------
@@ -82,6 +86,38 @@ function RoleBadge({ role }: { role: UserRole }) {
     <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
       Advisor
     </span>
+  );
+}
+
+function AppsCell({ user }: { user: IFAUser }) {
+  if (user.role === "admin") {
+    return (
+      <span className="text-xs" style={{ color: "var(--wgi-text-muted)" }}>
+        All apps
+      </span>
+    );
+  }
+  const granted = APPS.filter((a) => user.apps.includes(a.slug));
+  if (granted.length === 0) {
+    return (
+      <span className="text-xs" style={{ color: "var(--wgi-text-light)" }}>
+        None
+      </span>
+    );
+  }
+  return (
+    <div className="flex flex-wrap gap-1 w-44">
+      {granted.map((a) => (
+        <span
+          key={a.slug}
+          title={a.name}
+          className="inline-flex px-2 py-0.5 rounded text-[11px] font-medium border whitespace-nowrap"
+          style={{ borderColor: "var(--wgi-border)", color: "var(--wgi-text-muted)" }}
+        >
+          {a.short}
+        </span>
+      ))}
+    </div>
   );
 }
 
@@ -197,11 +233,13 @@ export default function UserTable({ initialUsers }: UserTableProps) {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [appFilter, setAppFilter] = useState("all");
 
   // ── Modal visibility ───────────────────────────────────────────────────────
   const [inviteOpen, setInviteOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<IFAUser | null>(null);
   const [statusTarget, setStatusTarget] = useState<IFAUser | null>(null);
+  const [accessTarget, setAccessTarget] = useState<IFAUser | null>(null);
 
   // ── Invite form ────────────────────────────────────────────────────────────
   const [inviteName, setInviteName] = useState("");
@@ -212,6 +250,23 @@ export default function UserTable({ initialUsers }: UserTableProps) {
   // ── Edit role form ─────────────────────────────────────────────────────────
   const [editRole, setEditRole] = useState<UserRole>("ifa");
   const [editLoading, setEditLoading] = useState(false);
+
+  // ── Edit access form ───────────────────────────────────────────────────────
+  const [accessApps, setAccessApps] = useState<AppSlug[]>([]);
+  const [accessConfirmed, setAccessConfirmed] = useState(false);
+  const [accessLoading, setAccessLoading] = useState(false);
+
+  // Sensitive apps being newly granted need an explicit confirmation
+  const newSensitiveApps = APPS.filter(
+    (a) =>
+      a.sensitive &&
+      accessApps.includes(a.slug) &&
+      !accessTarget?.apps.includes(a.slug)
+  );
+  const accessChanged =
+    !!accessTarget &&
+    (accessApps.length !== accessTarget.apps.length ||
+      accessApps.some((a) => !accessTarget.apps.includes(a)));
 
   // ── Status change ──────────────────────────────────────────────────────────
   const [statusLoading, setStatusLoading] = useState(false);
@@ -245,6 +300,7 @@ export default function UserTable({ initialUsers }: UserTableProps) {
   const filtered = users.filter((u) => {
     if (roleFilter !== "all" && u.role !== roleFilter) return false;
     if (statusFilter !== "all" && u.status !== statusFilter) return false;
+    if (appFilter !== "all" && !u.apps.includes(appFilter as AppSlug)) return false;
     if (search) {
       const q = search.toLowerCase();
       if (!u.name.toLowerCase().includes(q) && !u.email.toLowerCase().includes(q))
@@ -320,6 +376,32 @@ export default function UserTable({ initialUsers }: UserTableProps) {
     }
   }
 
+  async function handleEditAccess(e: React.FormEvent) {
+    e.preventDefault();
+    if (!accessTarget) return;
+    setAccessLoading(true);
+    try {
+      const headers = await authHeaders();
+      const res = await fetch(`/api/admin/users/${accessTarget.id}/access`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ apps: accessApps }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Failed to update access");
+      showToast("App access updated successfully", "success");
+      setAccessTarget(null);
+      await reloadUsers();
+    } catch (err) {
+      showToast(
+        err instanceof Error ? err.message : "Failed to update access",
+        "error"
+      );
+    } finally {
+      setAccessLoading(false);
+    }
+  }
+
   async function handleStatusChange() {
     if (!statusTarget) return;
     const action =
@@ -391,6 +473,21 @@ export default function UserTable({ initialUsers }: UserTableProps) {
             <option value="compliance">Compliance</option>
           </select>
 
+          {/* App filter — who has access to an app */}
+          <select
+            value={appFilter}
+            onChange={(e) => setAppFilter(e.target.value)}
+            className="px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2"
+            style={inputStyle}
+          >
+            <option value="all">All Apps</option>
+            {APPS.map((a) => (
+              <option key={a.slug} value={a.slug}>
+                Access to {a.name}
+              </option>
+            ))}
+          </select>
+
           {/* Status filter */}
           <select
             value={statusFilter}
@@ -430,12 +527,12 @@ export default function UserTable({ initialUsers }: UserTableProps) {
                   background: "var(--wgi-bg)",
                 }}
               >
-                {["Name", "Email", "Role", "Status", "Actions"].map(
+                {["Name", "Email", "Role", "Apps", "Status", "Actions"].map(
                   (h, i) => (
                     <th
                       key={h}
-                      className={`px-5 py-3.5 text-xs font-semibold uppercase tracking-wide ${
-                        i === 4 ? "text-right" : ""
+                      className={`px-4 py-3.5 text-xs font-semibold uppercase tracking-wide ${
+                        i === 5 ? "text-right" : ""
                       }`}
                       style={{ color: "var(--wgi-text-muted)" }}
                     >
@@ -450,8 +547,8 @@ export default function UserTable({ initialUsers }: UserTableProps) {
                 /* Loading skeleton */
                 Array.from({ length: 4 }).map((_, i) => (
                   <tr key={i}>
-                    {Array.from({ length: 5 }).map((__, j) => (
-                      <td key={j} className="px-5 py-4">
+                    {Array.from({ length: 6 }).map((__, j) => (
+                      <td key={j} className="px-4 py-4">
                         <div className="h-4 rounded bg-slate-100 animate-pulse" />
                       </td>
                     ))}
@@ -460,7 +557,7 @@ export default function UserTable({ initialUsers }: UserTableProps) {
               ) : filtered.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={6}
                     className="px-5 py-12 text-center text-sm"
                     style={{ color: "var(--wgi-text-muted)" }}
                   >
@@ -475,7 +572,7 @@ export default function UserTable({ initialUsers }: UserTableProps) {
                     style={{ borderColor: "var(--wgi-border)" }}
                   >
                     {/* Name */}
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-4">
                       <div className="flex items-center gap-3">
                         <Avatar name={user.name} />
                         <span
@@ -489,32 +586,37 @@ export default function UserTable({ initialUsers }: UserTableProps) {
 
                     {/* Email */}
                     <td
-                      className="px-5 py-4"
+                      className="px-4 py-4"
                       style={{ color: "var(--wgi-text-muted)" }}
                     >
                       {user.email}
                     </td>
 
                     {/* Role */}
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-4">
                       <RoleBadge role={user.role} />
                     </td>
 
+                    {/* Apps */}
+                    <td className="px-4 py-4">
+                      <AppsCell user={user} />
+                    </td>
+
                     {/* Status */}
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-4">
                       <StatusBadge status={user.status} />
                     </td>
 
                     {/* Actions */}
-                    <td className="px-5 py-4">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="px-4 py-4">
+                      <div className="flex flex-wrap items-center justify-end gap-2 min-w-[210px]">
                         {/* Edit role */}
                         <button
                           onClick={() => {
                             setEditTarget(user);
                             setEditRole(user.role);
                           }}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors hover:bg-gray-50"
+                          className="flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors hover:bg-gray-50"
                           style={{
                             borderColor: "var(--wgi-border)",
                             color: "var(--wgi-text)",
@@ -524,10 +626,27 @@ export default function UserTable({ initialUsers }: UserTableProps) {
                           Edit Role
                         </button>
 
+                        {/* Edit app access */}
+                        <button
+                          onClick={() => {
+                            setAccessTarget(user);
+                            setAccessApps(user.apps);
+                            setAccessConfirmed(false);
+                          }}
+                          className="flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors hover:bg-gray-50"
+                          style={{
+                            borderColor: "var(--wgi-border)",
+                            color: "var(--wgi-text)",
+                          }}
+                        >
+                          <IconApps size={12} />
+                          Edit Access
+                        </button>
+
                         {/* Deactivate / Reactivate */}
                         <button
                           onClick={() => setStatusTarget(user)}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                          className={`flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                             user.status === "active"
                               ? "border-red-200 text-red-600 hover:bg-red-50"
                               : "border-emerald-200 text-emerald-600 hover:bg-emerald-50"
@@ -609,6 +728,11 @@ export default function UserTable({ initialUsers }: UserTableProps) {
               <option value="admin">Administrator</option>
               <option value="compliance">Compliance</option>
             </select>
+            <p className="mt-1.5 text-xs" style={{ color: "var(--wgi-text-muted)" }}>
+              {inviteRole === "admin"
+                ? "Administrators can open every app and manage users."
+                : "The user starts with the default apps for this role. Use Edit Access to change them."}
+            </p>
           </FormField>
 
           <div className="flex justify-end gap-2 pt-1">
@@ -668,6 +792,11 @@ export default function UserTable({ initialUsers }: UserTableProps) {
                 <option value="admin">Administrator</option>
                 <option value="compliance">Compliance</option>
               </select>
+              <p className="mt-1.5 text-xs" style={{ color: "var(--wgi-text-muted)" }}>
+                {editRole === "admin"
+                  ? "Administrators can open every app and manage users."
+                  : "Changing the role does not change which apps the user can open. Use Edit Access for that."}
+              </p>
             </FormField>
 
             <div className="flex justify-end gap-2 pt-1">
@@ -690,6 +819,113 @@ export default function UserTable({ initialUsers }: UserTableProps) {
               >
                 {editLoading ? "Saving…" : "Save Changes"}
               </button>
+            </div>
+          </form>
+        )}
+      </Modal>
+
+      {/* ================================================================
+          Edit Access Modal
+          ================================================================ */}
+      <Modal
+        open={!!accessTarget}
+        onClose={() => setAccessTarget(null)}
+        title="Edit App Access"
+      >
+        {accessTarget && (
+          <form onSubmit={handleEditAccess} className="space-y-4">
+            <p className="text-sm" style={{ color: "var(--wgi-text-muted)" }}>
+              Apps{" "}
+              <span
+                className="font-semibold"
+                style={{ color: "var(--wgi-text)" }}
+              >
+                {accessTarget.name}
+              </span>{" "}
+              can open
+            </p>
+
+            {accessTarget.role === "admin" ? (
+              <p className="text-sm" style={{ color: "var(--wgi-text-muted)" }}>
+                Administrators can open every app. To limit this user, change
+                their role first.
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {APPS.map((a) => (
+                  <label
+                    key={a.slug}
+                    className="flex items-center gap-3 px-3.5 py-2.5 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                    style={{ borderColor: "var(--wgi-border)" }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={accessApps.includes(a.slug)}
+                      onChange={(e) => {
+                        setAccessConfirmed(false);
+                        setAccessApps((prev) =>
+                          e.target.checked
+                            ? [...prev, a.slug]
+                            : prev.filter((s) => s !== a.slug)
+                        );
+                      }}
+                      className="w-4 h-4"
+                    />
+                    <span className="text-sm" style={{ color: "var(--wgi-text)" }}>
+                      {a.name}
+                    </span>
+                    {a.sensitive && (
+                      <span className="ml-auto inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-700">
+                        Sensitive
+                      </span>
+                    )}
+                  </label>
+                ))}
+              </div>
+            )}
+
+            {newSensitiveApps.length > 0 && (
+              <label className="flex items-start gap-3 px-3.5 py-3 rounded-lg bg-amber-50 border border-amber-200 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={accessConfirmed}
+                  onChange={(e) => setAccessConfirmed(e.target.checked)}
+                  className="w-4 h-4 mt-0.5"
+                />
+                <span className="text-xs leading-relaxed text-amber-800">
+                  {newSensitiveApps.map((a) => a.name).join(", ")} holds
+                  sensitive compliance data. I confirm {accessTarget.name}{" "}
+                  should have access.
+                </span>
+              </label>
+            )}
+
+            <div className="flex justify-end gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setAccessTarget(null)}
+                className="px-4 py-2.5 text-sm font-medium rounded-lg border transition-colors hover:bg-gray-50"
+                style={{
+                  borderColor: "var(--wgi-border)",
+                  color: "var(--wgi-text)",
+                }}
+              >
+                Cancel
+              </button>
+              {accessTarget.role !== "admin" && (
+                <button
+                  type="submit"
+                  disabled={
+                    accessLoading ||
+                    !accessChanged ||
+                    (newSensitiveApps.length > 0 && !accessConfirmed)
+                  }
+                  className="px-5 py-2.5 text-sm font-semibold text-white rounded-lg transition-opacity disabled:opacity-60"
+                  style={{ background: "var(--wgi-navy)" }}
+                >
+                  {accessLoading ? "Saving…" : "Save Changes"}
+                </button>
+              )}
             </div>
           </form>
         )}

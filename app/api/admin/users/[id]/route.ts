@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin, unauthorised } from "@/lib/auth-guard";
 import { supabaseAdmin } from "@/lib/supabase";
 import { USER_ROLES, isUserRole } from "@/lib/roles";
+import { grantRoleDefaultsIfEmpty } from "@/lib/app-access";
 
 async function writeAuditLog(
   actorUserId: string,
@@ -76,6 +77,10 @@ export async function PATCH(
       .single();
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    // A role change leaves app access as it is, except that a former admin
+    // (who needed no grants) starts from the new role's default apps.
+    if (current?.role === "admin") await grantRoleDefaultsIfEmpty(id, role, null);
 
     await writeAuditLog(
       adminId, "user.role_change", id, data.email,

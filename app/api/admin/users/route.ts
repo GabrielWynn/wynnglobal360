@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin, unauthorised } from "@/lib/auth-guard";
 import { supabaseAdmin } from "@/lib/supabase";
 import { USER_ROLES, isUserRole } from "@/lib/roles";
+import { getAllowedApps, listUsersWithApps } from "@/lib/app-access";
 
 async function writeAuditLog(
   actorUserId: string,
@@ -27,22 +28,17 @@ async function writeAuditLog(
 }
 
 // ---------------------------------------------------------------------------
-// GET /api/admin/users — list all IFA records
+// GET /api/admin/users — list all IFA records with the apps each can open
 // ---------------------------------------------------------------------------
 export async function GET(request: Request) {
   const userId = await requireAdmin(request);
   if (!userId) return unauthorised();
 
-  const { data, error } = await supabaseAdmin
-    .from("ifas")
-    .select("id, code, name, email, role, status, user_id")
-    .order("name");
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    return NextResponse.json(await listUsersWithApps());
+  } catch (err) {
+    return NextResponse.json({ error: (err as Error).message }, { status: 500 });
   }
-
-  return NextResponse.json(data);
 }
 
 // ---------------------------------------------------------------------------
@@ -93,6 +89,8 @@ export async function POST(request: Request) {
   // Create the ifas record first so a failed insert never leaves an invited
   // auth user without a matching row. ifas.code is NOT NULL; it defaults to
   // the name, the same convention the commission IFA records use.
+  // The new row gets its role's default apps from a database trigger
+  // (role_app_defaults); an admin can adjust them afterwards.
   const { data: created, error: ifaError } = await supabaseAdmin
     .from("ifas")
     .insert({
@@ -137,10 +135,13 @@ export async function POST(request: Request) {
     if (linked) ifa = linked;
   }
 
+  const apps = await getAllowedApps(ifa.id, ifa.role).catch(() => []);
+
   await writeAuditLog(userId, "user.invite", ifa.id, ifa.email, {
     name: ifa.name,
     role: ifa.role,
     status: ifa.status,
+    apps: ifa.role === "admin" ? "all" : [...apps].sort().join(", ") || "none",
   });
 
   return NextResponse.json(

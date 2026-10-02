@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { requireRole, unauthorised } from "@/lib/auth-guard";
+import { requireApp, unauthorised } from "@/lib/auth-guard";
 import { searchLacrmContacts } from "@/lib/risk-matrix/lacrm";
 
 export const dynamic = "force-dynamic";
 
 // GET /api/risk-matrix/lacrm/search?q= — find LACRM contacts to prefill an evaluation
 export async function GET(request: Request) {
-  const rec = await requireRole(request, ["admin", "compliance"]);
+  const rec = await requireApp(request, "risk-matrix");
   if (!rec) return unauthorised();
 
   const q = (new URL(request.url).searchParams.get("q") ?? "").slice(0, 100);

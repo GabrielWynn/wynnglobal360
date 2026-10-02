@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------
 // Matriz de Riesgo PLAyFT — data access (server-side only, service role).
-// Callers are responsible for the admin/compliance role check.
+// Callers are responsible for the Risk Matrix app-access check.
 // ---------------------------------------------------------------------------
 
 import { supabaseAdmin } from "@/lib/supabase";

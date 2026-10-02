@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireRole, unauthorised } from "@/lib/auth-guard";
+import { requireApp, unauthorised } from "@/lib/auth-guard";
 import { getClientWithEvaluations } from "@/lib/risk-matrix/service";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -8,7 +8,7 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const rec = await requireRole(request, ["admin", "compliance"]);
+  const rec = await requireApp(request, "risk-matrix");
   if (!rec) return unauthorised();
 
   if (!UUID.test(params.id)) {

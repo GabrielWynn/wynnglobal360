@@ -1,8 +1,7 @@
-import { redirect } from "next/navigation";
 import { Raleway, JetBrains_Mono } from "next/font/google";
 import Navbar from "@/components/hub/Navbar";
 import SessionTimeout from "@/components/SessionTimeout";
-import { createServerClient } from "@/lib/supabase";
+import { requireAppAccess } from "@/lib/app-access";
 
 // Commission design system typography (DESIGN-COMMISSION.md):
 //  - Raleway is the WGI brand UI font, applied to all commission page content.
@@ -22,21 +21,14 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-// Auth is verified by middleware, but we do a lightweight server-side
-// session check here so unauthenticated direct hits get a clean redirect.
+// Auth and app access are verified by middleware; this server-side check is
+// defence-in-depth and gives unauthenticated direct hits a clean redirect.
 export default async function CommissionLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login?redirectTo=/commission/ifa");
-  }
+  await requireAppAccess("commission");
 
   return (
     <>

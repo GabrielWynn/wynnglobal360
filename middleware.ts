@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
+import { appForPath, canOpenApp, type AppSlug } from "@/lib/apps";
 
 // ---------------------------------------------------------------------------
 // Routes that do not require authentication
@@ -189,9 +190,9 @@ export async function middleware(request: NextRequest) {
   // ------------------------------------------------------------------
   if (user && pathname.startsWith("/admin")) {
     try {
-      const role = await resolveRole(user.id, user.email ?? undefined);
+      const access = await resolveAccess(user.id, user.email ?? undefined);
 
-      if (role !== "admin") {
+      if (access?.role !== "admin") {
         const redirect = NextResponse.redirect(
           new URL("/advisors", request.url)
         );
@@ -206,6 +207,30 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // ------------------------------------------------------------------
+  // Per-user app access: /<app> pages and /api/<app> routes are only
+  // reachable by users who have been given that app (see lib/apps.ts).
+  // Fails closed — an error resolving access denies the request.
+  // ------------------------------------------------------------------
+  const app = user ? appForPath(pathname) : null;
+  if (user && app) {
+    let allowed = false;
+    try {
+      const access = await resolveAccess(user.id, user.email ?? undefined, app);
+      allowed = !!access && canOpenApp(access.role, access.apps, app);
+    } catch (error) {
+      console.error("middleware: app access resolution failed", error);
+    }
+
+    if (!allowed) {
+      const denied = pathname.startsWith("/api/")
+        ? NextResponse.json({ error: "Forbidden" }, { status: 403 })
+        : NextResponse.redirect(new URL("/advisors", request.url));
+      copyCookies(response, denied);
+      return denied;
+    }
+  }
+
   return response;
 }
 
@@ -214,13 +239,15 @@ export async function middleware(request: NextRequest) {
 // ---------------------------------------------------------------------------
 
 /**
- * Returns the `role` from the `ifas` table for the given Supabase user.
+ * Returns the `role` from the `ifas` table for the given Supabase user and,
+ * when `app` is given, whether the user has a user_app_access row for it.
  * Tries user_id first; falls back to email for rows not yet linked.
  */
-async function resolveRole(
+async function resolveAccess(
   userId: string,
-  email: string | undefined
-): Promise<string | null> {
+  email: string | undefined,
+  app?: AppSlug
+): Promise<{ role: string | null; apps: AppSlug[] } | null> {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (!serviceKey || !supabaseUrl) return null;
@@ -232,22 +259,36 @@ async function resolveRole(
   // Primary: match by user_id
   const { data: byUserId } = await admin
     .from("ifas")
-    .select("role")
+    .select("id, role")
     .eq("user_id", userId)
     .maybeSingle();
 
-  if (byUserId) return byUserId.role as string;
+  let ifa = byUserId as { id: string; role: string | null } | null;
 
   // Fallback: match by email (unlinked rows)
-  if (!email) return null;
+  if (!ifa && email) {
+    const { data: byEmail } = await admin
+      .from("ifas")
+      .select("id, role")
+      .eq("email", email)
+      .maybeSingle();
+    ifa = byEmail as { id: string; role: string | null } | null;
+  }
 
-  const { data: byEmail } = await admin
-    .from("ifas")
-    .select("role")
-    .eq("email", email)
+  if (!ifa) return null;
+
+  // Admins can open every app, so the grant lookup is skipped for them.
+  if (!app || ifa.role === "admin") return { role: ifa.role, apps: [] };
+
+  const { data: grant, error } = await admin
+    .from("user_app_access")
+    .select("app_slug")
+    .eq("ifa_id", ifa.id)
+    .eq("app_slug", app)
     .maybeSingle();
 
-  return byEmail ? (byEmail.role as string) : null;
+  if (error) throw new Error(error.message);
+  return { role: ifa.role, apps: grant ? [app] : [] };
 }
 
 // ---------------------------------------------------------------------------

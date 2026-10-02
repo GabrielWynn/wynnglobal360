@@ -4,7 +4,8 @@
  * Weekly reminder email for periodic client reviews — triggered by Vercel
  * Cron every Monday at 13:00 UTC (see vercel.json). Lists clients whose
  * review is overdue or due within REVIEW_NOTICE_DAYS and sends it to every
- * active compliance user. Nothing is sent when no review is due.
+ * active user who has been given the Risk Matrix app. Nothing is sent when
+ * no review is due.
  *
  * Auth: Authorization: Bearer <CRON_SECRET>
  *
@@ -91,10 +92,18 @@ export async function GET(request: Request) {
       return NextResponse.json({ sent: false, message: "No reviews due" });
     }
 
+    // Admins can open every app without a user_app_access row, so they are
+    // not notified unless they are given Risk Matrix explicitly.
+    const { data: grants, error: grantsError } = await supabaseAdmin
+      .from("user_app_access")
+      .select("ifa_id")
+      .eq("app_slug", "risk-matrix");
+    if (grantsError) throw new Error(grantsError.message);
+
     const { data: users, error } = await supabaseAdmin
       .from("ifas")
       .select("email")
-      .eq("role", "compliance")
+      .in("id", (grants ?? []).map((g) => (g as { ifa_id: string }).ifa_id))
       .eq("status", "active");
     if (error) throw new Error(error.message);
 
@@ -102,7 +111,7 @@ export async function GET(request: Request) {
       .map((u) => (u as { email: string | null }).email?.trim())
       .filter((e): e is string => !!e);
     if (recipients.length === 0) {
-      return NextResponse.json({ sent: false, message: "No active compliance users to notify" });
+      return NextResponse.json({ sent: false, message: "No active Risk Matrix users to notify" });
     }
 
     const overdue = due.filter((c) => c.next_review_date! < today);
