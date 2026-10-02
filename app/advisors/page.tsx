@@ -1,5 +1,6 @@
 import CarouselHub from "@/components/hub/CarouselHub";
 import { createServerClient, supabaseAdmin } from "@/lib/supabase";
+import type { UserRole } from "@/lib/roles";
 
 export default async function AdvisorsPage() {
   // Identify the authenticated user from the cookie-based session
@@ -9,7 +10,7 @@ export default async function AdvisorsPage() {
   } = await supabase.auth.getUser();
 
   let name = "";
-  let role: "admin" | "ifa" = "ifa";
+  let role: UserRole = "ifa";
 
   if (user) {
     // Try user_id first, fall back to email for rows not yet linked —
@@ -30,7 +31,7 @@ export default async function AdvisorsPage() {
 
     if (data) {
       name = data.name ?? "";
-      role = (data.role as "admin" | "ifa") ?? "ifa";
+      role = (data.role as UserRole) ?? "ifa";
     }
   }
 

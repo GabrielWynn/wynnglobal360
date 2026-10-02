@@ -7,6 +7,7 @@ import {
   createClient as _createAdminClient,
   type SupabaseClient,
 } from "@supabase/supabase-js";
+import type { UserRole } from "@/lib/roles";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -84,7 +85,7 @@ export async function getCurrentUser() {
   return user;
 }
 
-export type UserType = "admin" | "ifa" | null;
+export type UserType = UserRole | null;
 
 /** Returns the role stored in the ifas table for the current user. */
 export async function getUserType(): Promise<UserType> {
@@ -127,7 +128,7 @@ export interface IFADetails {
   code: string;
   name: string;
   email: string;
-  role: "admin" | "ifa";
+  role: UserRole;
   status: string;
   user_id: string | null;
 }

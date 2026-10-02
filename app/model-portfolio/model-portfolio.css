@@ -109,3 +109,70 @@
 .mp-shell .mp-text-link:hover {
   color: var(--wgi-gold);
 }
+
+/* Print-only elements stay hidden on screen */
+.mp-print-only {
+  display: none;
+}
+
+/* ── Print layout (portfolio detail → Print button / Ctrl+P) ───────────── */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  .mp-no-print,
+  .mp-range-group {
+    display: none !important;
+  }
+
+  .mp-print-only {
+    display: flex;
+  }
+
+  /* Keep gain/loss colours, bars and navy badges on paper */
+  .mp-shell {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background: #fff !important;
+    padding-top: 0 !important;
+    min-height: 0 !important;
+  }
+
+  .mp-print-page {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  /* Don't split a panel or a table row across pages */
+  .mp-print-block,
+  .mp-summary-strip,
+  .mp-shell .rounded-2xl,
+  .mp-shell tr {
+    break-inside: avoid;
+  }
+
+  /* The holdings table can outgrow a page — let it flow */
+  .mp-shell .mp-holdings-table {
+    break-inside: auto;
+  }
+
+  /* Chart is drawn at screen width; scale its SVG down to the paper width */
+  .mp-shell .recharts-responsive-container,
+  .mp-shell .recharts-wrapper {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .mp-shell .recharts-wrapper > svg.recharts-surface {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Interactive-only chart parts */
+  .mp-shell .recharts-brush,
+  .mp-shell .recharts-tooltip-wrapper {
+    display: none !important;
+  }
+}

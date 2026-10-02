@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin, unauthorised } from "@/lib/auth-guard";
 import { supabaseAdmin } from "@/lib/supabase";
+import { USER_ROLES, isUserRole } from "@/lib/roles";
 
 async function writeAuditLog(
   actorUserId: string,
@@ -30,7 +31,7 @@ async function writeAuditLog(
 // ---------------------------------------------------------------------------
 // PATCH /api/admin/users/[id]
 //
-// Role update:   { type: "role",   role: "admin" | "ifa" }
+// Role update:   { type: "role",   role: "admin" | "ifa" | "compliance" }
 // Status update: { type: "status", action: "deactivate" | "reactivate" }
 // ---------------------------------------------------------------------------
 export async function PATCH(
@@ -53,9 +54,9 @@ export async function PATCH(
   if (body.type === "role") {
     const { role } = body;
 
-    if (!role || !["admin", "ifa"].includes(role)) {
+    if (!isUserRole(role)) {
       return NextResponse.json(
-        { error: "role must be admin or ifa" },
+        { error: `role must be one of: ${USER_ROLES.join(", ")}` },
         { status: 400 }
       );
     }

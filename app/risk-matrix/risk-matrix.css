@@ -1,0 +1,51 @@
+/* Risk Matrix design tokens (--rm-*): classification colours.
+   Scoped to the module shell; everything else uses the shared --wgi-* tokens. */
+.rm-shell {
+  --rm-bajo: #2E7A57;
+  --rm-bajo-bg: #E6F2EC;
+  --rm-medio: #A86B12;
+  --rm-medio-bg: #F7EEDC;
+  --rm-alto: #B0353B;
+  --rm-alto-bg: #F7E3E4;
+  --rm-decl: #4A1E2B;
+  --rm-decl-bg: #EBDDE1;
+  --rm-pend: #6B7280;
+  --rm-pend-bg: #ECEEF1;
+}
+
+.rm-num {
+  font-variant-numeric: tabular-nums;
+}
+
+.rm-input {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid var(--wgi-border);
+  border-radius: 8px;
+  background: white;
+  color: var(--wgi-text);
+  font-size: 14px;
+}
+.rm-input:focus {
+  outline: none;
+  border-color: var(--wgi-navy-400);
+  box-shadow: 0 0 0 2px rgba(61, 104, 152, 0.18);
+}
+.rm-input:disabled {
+  background: var(--wgi-bg);
+  color: var(--wgi-text-light);
+  cursor: not-allowed;
+}
+.rm-input.rm-miss {
+  border-color: var(--rm-alto);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rm-marker {
+    transition: left 0.35s ease;
+  }
+  .rm-bar {
+    transition: width 0.35s ease;
+  }
+}

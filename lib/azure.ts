@@ -23,6 +23,22 @@ const config: sql.config = {
 }
 
 /**
+ * Runs `fn` against a fresh pool and always closes it (see note at the top).
+ * Errors propagate to the caller.
+ */
+export async function withAzurePool<T>(
+  fn: (pool: sql.ConnectionPool) => Promise<T>
+): Promise<T> {
+  const pool = new sql.ConnectionPool(config)
+  try {
+    await pool.connect()
+    return await fn(pool)
+  } finally {
+    await pool.close().catch(() => {})
+  }
+}
+
+/**
  * Look up IFA for a single policy number.
  */
 export async function lookupIFAForPolicy(policyNumber: string): Promise<{

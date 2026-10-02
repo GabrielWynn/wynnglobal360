@@ -231,6 +231,61 @@ export function computeStandardReturns(dailyReturns: DailyReturn[]): StandardRet
 }
 
 // ---------------------------------------------------------------------------
+// Trailing annualised returns (1Y, 2Y, 3Y, 5Y)
+// ---------------------------------------------------------------------------
+
+export interface TrailingReturn {
+  cumulative: number;  // total return over the period, decimal
+  annualised: number;  // compound annual rate (p.a.), decimal
+}
+
+export type TrailingKey = "1Y" | "2Y" | "3Y" | "5Y";
+
+export type TrailingReturns = Record<TrailingKey, TrailingReturn | null>;
+
+const TRAILING_YEARS: Record<TrailingKey, number> = { "1Y": 1, "2Y": 2, "3Y": 3, "5Y": 5 };
+
+// Slack allowed between the period start and the first available return,
+// so weekends / holidays at inception don't disqualify a full period.
+const TRAILING_GRACE_DAYS = 7;
+
+export function computeTrailingReturns(dailyReturns: DailyReturn[]): TrailingReturns {
+  const result: TrailingReturns = { "1Y": null, "2Y": null, "3Y": null, "5Y": null };
+  if (!dailyReturns.length) return result;
+
+  const now       = new Date();
+  const firstDate = dailyReturns[0].date;
+
+  for (const key of Object.keys(TRAILING_YEARS) as TrailingKey[]) {
+    const years = TRAILING_YEARS[key];
+
+    const start = new Date(now);
+    start.setFullYear(start.getFullYear() - years);
+    const cutoffDate = start.toISOString().slice(0, 10);
+
+    // Null when the portfolio has less history than the period — a shorter
+    // window annualised over `years` would understate the real rate.
+    const grace = new Date(start);
+    grace.setDate(grace.getDate() + TRAILING_GRACE_DAYS);
+    if (firstDate > grace.toISOString().slice(0, 10)) continue;
+
+    const slice = dailyReturns.filter((d) => d.date > cutoffDate);
+    if (!slice.length) continue;
+
+    const cumulative = slice.reduce(
+      (acc, d) => (1 + acc) * (1 + d.portfolioReturn) - 1,
+      0
+    );
+    result[key] = {
+      cumulative,
+      annualised: Math.pow(1 + cumulative, 1 / years) - 1,
+    };
+  }
+
+  return result;
+}
+
+// ---------------------------------------------------------------------------
 // Annual performance — complete calendar years only
 // ---------------------------------------------------------------------------
 
